@@ -28,7 +28,7 @@ import simulation.Simulation;
 public class MainWindow extends JFrame {
 
 	public static final String OPEN_SCENE_DIALOG = "\u0410\u0434\u0447\u044B\u043D\u0456\u0446\u044C \u0444\u0430\u0439\u043B \u0441\u0446\u044D\u043D\u044B";
-	public static final String IMAGE_SAVING_DIALOG = "Захаванне выявы";
+	public static final String IMAGE_SAVING_DIALOG = "\u0417\u0430\u0445\u0430\u0432\u0430\u043D\u043D\u0435 \u0432\u044B\u044F\u0432\u044B";
 	public static final String FILE_WRITING_ERROR_MESSAGE = "\u041F\u0430\u043C\u044B\u043B\u043A\u0430 \u043F\u0430\u0434\u0447\u0430\u0441 \u0437\u0430\u0445\u0430\u0432\u0430\u043D\u043D\u044F \u045E \u0444\u0430\u0439\u043B";
 	public static final String FILE_ACESS_DENIED = "\u0424\u0430\u0439\u043B \u0437\u0430\u043D\u044F\u0442\u044B";
 	public static final String CANT_WRITE_FILE_MESSAGE = "\u041D\u0435\u043C\u0430\u0433\u0447\u044B\u043C\u0430 \u043F\u0456\u0441\u0430\u0446\u044C \u0434\u0430\u0434\u0437\u0435\u043D\u044B\u044F \u045E \u0444\u0430\u0439\u043B";
