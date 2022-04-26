@@ -36,8 +36,6 @@ public class MainWindow extends JFrame {
 	private static MainWindowEvent mwe;
 	private static ViewportEvent ve;
 	private static EditBoundariesWindow ebw;
-	private Particle activeParticle;
-	private Spring activeSpring;
 	public static Thread calc, paint;
 	public static int viewportInitWidth = 960, viewportInitHeight = 512;
 	public static final int RECORDER_MAX_ROWS = 8;
@@ -45,7 +43,6 @@ public class MainWindow extends JFrame {
 	JButton startButton, dtDecrease, dtFix, dtIncrease, dtRealScale;
 	private static JTextArea textArea1;
 	private static JScrollPane scrollArea;
-	private ButtonGroup groupS, groupC;
 	private JLabel lblDt;	
 	private JFileChooser openSceneChooser, saveSceneChooser;
 
@@ -65,7 +62,7 @@ public class MainWindow extends JFrame {
 		initDialogs();
 
 		setFocusTo(Simulation.getReferenceParticle());
-		activeSpring = Simulation.getReferenceSpring();
+		Simulation.getReferenceSpring();
 
 		setResizable(true);
 		setIconImage(Toolkit.getDefaultToolkit().getImage("Letter-m-icon.png"));
@@ -120,8 +117,8 @@ public class MainWindow extends JFrame {
 		startButton.addActionListener(mwe);
 		getContentPane().add(startButton);
 
-		groupS = new ButtonGroup();
-		groupC = new ButtonGroup();
+		new ButtonGroup();
+		new ButtonGroup();
 
 		textArea1 = new JTextArea();
 		textArea1.setLineWrap(true);
@@ -206,15 +203,14 @@ public class MainWindow extends JFrame {
 
 	public void setFocusTo(Particle p) {
 		if (Simulation.getSelectedParticles().size() > 0)
-			activeParticle = Simulation.getSelectedParticle(Simulation.getSelectedParticles().size() - 1);
-		else
-			activeParticle = p;
+			Simulation.getSelectedParticle(Simulation.getSelectedParticles().size() - 1);
+		else {
+		}
 	}
 
 	public void setFocusTo(Spring s) {
 		if (Simulation.getSelectedSprings().size() > 0)
-			activeSpring = Simulation.getSelectedSpring(Simulation.getSelectedSprings().size() - 1);
-		activeSpring = s;
+			Simulation.getSelectedSpring(Simulation.getSelectedSprings().size() - 1);
 		System.out.println("Spring angle, rad: " + s.defineAngle());
 	}
 
