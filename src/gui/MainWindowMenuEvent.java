@@ -116,7 +116,7 @@ public class MainWindowMenuEvent implements ActionListener {
 		} else if (src.equals(mainWindowMenu.menuItemScene2)) {
 			Simulation.clearSimulation();
 			JOptionPane.showMessageDialog(null, "На стварэнне сцэны спатрэбіцца некаторы час. Чакайце... :)",
-					MainWindow.appName, JOptionPane.INFORMATION_MESSAGE);
+					Lang.APP_NAME, JOptionPane.INFORMATION_MESSAGE);
 			mainWindow.refreshGUIControls();
 		} else if (src.equals(mainWindowMenu.menuItemScene3)) {
 			Simulation.clearSimulation();

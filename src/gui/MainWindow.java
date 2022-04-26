@@ -28,7 +28,6 @@ import simulation.Simulation;
 public class MainWindow extends JFrame {
 
 	private static MainWindow instance;
-	public static final String appName = "Млын2D (v.0.9)";
 	private static final long serialVersionUID = 6398390928434245781L;
 	public static Simulation simulation;
 	public static Viewport viewport;
@@ -36,8 +35,6 @@ public class MainWindow extends JFrame {
 	private static MainWindowEvent mwe;
 	private static ViewportEvent ve;
 	private static EditBoundariesWindow ebw;
-	private Particle activeParticle;
-	private Spring activeSpring;
 	public static Thread calc, paint;
 	public static int viewportInitWidth = 960, viewportInitHeight = 512;
 	public static final int RECORDER_MAX_ROWS = 8;
@@ -45,8 +42,7 @@ public class MainWindow extends JFrame {
 	JButton startButton, dtDecrease, dtFix, dtIncrease, dtRealScale;
 	private static JTextArea textArea1;
 	private static JScrollPane scrollArea;
-	private ButtonGroup groupS, groupC;
-	private JLabel lblDt;	
+	private JLabel lblDt;
 	private JFileChooser openSceneChooser, saveSceneChooser;
 
 	public MainWindow() {
@@ -65,7 +61,7 @@ public class MainWindow extends JFrame {
 		initDialogs();
 
 		setFocusTo(Simulation.getReferenceParticle());
-		activeSpring = Simulation.getReferenceSpring();
+		Simulation.getReferenceSpring();
 
 		setResizable(true);
 		setIconImage(Toolkit.getDefaultToolkit().getImage("Letter-m-icon.png"));
@@ -110,8 +106,7 @@ public class MainWindow extends JFrame {
 
 		addComponentListener(mwe);
 
-		startButton = new JButton(
-				"\u0421\u0442\u0430\u0440\u0442/\u043F\u0430\u045E\u0437\u0430 \u0441\u0456\u043C\u0443\u043B\u044F\u0446\u044B\u0456");
+		startButton = new JButton(Lang.START_PAUSE_BUTTON);
 
 		startButton.setBackground(UIManager.getColor("Button.background"));
 
@@ -120,8 +115,8 @@ public class MainWindow extends JFrame {
 		startButton.addActionListener(mwe);
 		getContentPane().add(startButton);
 
-		groupS = new ButtonGroup();
-		groupC = new ButtonGroup();
+		new ButtonGroup();
+		new ButtonGroup();
 
 		textArea1 = new JTextArea();
 		textArea1.setLineWrap(true);
@@ -133,7 +128,7 @@ public class MainWindow extends JFrame {
 		scrollArea.setViewportView(textArea1);
 		getContentPane().add(scrollArea);
 
-		lblDt = new JLabel("\u041A\u0440\u043E\u043A \u043F\u0430 \u0447\u0430\u0441\u0435:");
+		lblDt = new JLabel(Lang.TIMESTEP_LABEL);
 		lblDt.setHorizontalAlignment(SwingConstants.TRAILING);
 
 		getContentPane().add(lblDt);
@@ -153,7 +148,7 @@ public class MainWindow extends JFrame {
 
 		getContentPane().add(dtRealScale);
 
-		dtFix = new JButton("\u041F\u0430\u0441\u0442\u0430\u044F\u043D\u043D\u044B");
+		dtFix = new JButton(Lang.TIMESTEP_FIXED);
 		dtFix.setFont(new Font("Dialog", Font.BOLD, 11));
 		dtFix.addActionListener(mwe);
 
@@ -166,8 +161,7 @@ public class MainWindow extends JFrame {
 		scrollArea.setBounds(textArea1.getBounds());
 		int buttonsY = getHeight() - scrollArea.getHeight() - 97;
 		startButton.setBounds(getWidth() - 216, buttonsY, 192, 24);
-		viewport.setBounds(0, 0, getWidth() - 14,
-				getHeight() - textArea1.getHeight() - 76 - startButton.getHeight());
+		viewport.setBounds(0, 0, getWidth() - 14, getHeight() - textArea1.getHeight() - 76 - startButton.getHeight());
 		viewport.refreshStaticSizeConstants();
 		viewport.initTracksImage();
 		lblDt.setBounds(1, buttonsY + 4, 89, 16);
@@ -180,7 +174,7 @@ public class MainWindow extends JFrame {
 	private void initDialogs() {
 		openSceneChooser = new JFileChooser(new java.io.File("").getAbsolutePath());
 		saveSceneChooser = new JFileChooser(new java.io.File("").getAbsolutePath());
-		FileFilter filter = new FileNameExtensionFilter("Сцэны для сімуляцыі", "xml");
+		FileFilter filter = new FileNameExtensionFilter(Lang.FILETYPE_DESCRIPTION, "xml");
 		openSceneChooser.setFileFilter(filter);
 		saveSceneChooser.setFileFilter(filter);
 	}
@@ -206,15 +200,14 @@ public class MainWindow extends JFrame {
 
 	public void setFocusTo(Particle p) {
 		if (Simulation.getSelectedParticles().size() > 0)
-			activeParticle = Simulation.getSelectedParticle(Simulation.getSelectedParticles().size() - 1);
-		else
-			activeParticle = p;
+			Simulation.getSelectedParticle(Simulation.getSelectedParticles().size() - 1);
+		else {
+		}
 	}
 
 	public void setFocusTo(Spring s) {
 		if (Simulation.getSelectedSprings().size() > 0)
-			activeSpring = Simulation.getSelectedSpring(Simulation.getSelectedSprings().size() - 1);
-		activeSpring = s;
+			Simulation.getSelectedSpring(Simulation.getSelectedSprings().size() - 1);
 		System.out.println("Spring angle, rad: " + s.defineAngle());
 	}
 
@@ -239,7 +232,7 @@ public class MainWindow extends JFrame {
 		if (Simulation.getInstance().isActive())
 			refreshTimeStepReserveDisplay();
 		Viewport.getScale();
-}
+	}
 
 	private void refreshTimeStepReserveDisplay() {
 		double r = Simulation.interactionProcessor.getTimeStepReserveRatio();
@@ -274,38 +267,36 @@ public class MainWindow extends JFrame {
 	}
 
 	public void showAboutWindow() {
-		JOptionPane.showMessageDialog(null, "Праграма для мадэлявання паводзінаў у часе простых механічных сістэм",
-				"Аб праграме " + appName, JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(null, Lang.ABOUT, "Аб праграме " + Lang.APP_NAME, JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	public static void NothingIsSelectedMessage() {
-		JOptionPane.showMessageDialog(null, "Нічога не абрана", "Выбраць часціцу", JOptionPane.WARNING_MESSAGE);
-	}
-
-	public static void VibratorIsEmptyMessage() {
-		JOptionPane.showMessageDialog(null, "Няма аніводнай часціцы, звязанай са стэндам!", "Вібрацыя",
+		JOptionPane.showMessageDialog(null, Lang.NOTHING_SELECTED_MESSAGE, Lang.SELECT_PARTICLE_DIALOG,
 				JOptionPane.WARNING_MESSAGE);
 	}
 
+	public static void VibratorIsEmptyMessage() {
+		JOptionPane.showMessageDialog(null, Lang.EMPTY_VIBRATOR_MESSAGE, Lang.VIBRATION_DIALOG, JOptionPane.WARNING_MESSAGE);
+	}
+
 	public static void uncompatibleRecordingModeMessage() {
-		JOptionPane.showMessageDialog(null, "Адсутнічае вібрастэнд, неабходны каб пісаць частотны водгук сістэмы",
-				"Рэгістратар", JOptionPane.WARNING_MESSAGE);
+		JOptionPane.showMessageDialog(null, Lang.NO_VIBRATOR_FOR_AFCH_MESSAGE, Lang.RECORDER_DIALOG, JOptionPane.WARNING_MESSAGE);
 	}
 
 	public static void fileWriteErrorMessage(String fileName) {
-		JOptionPane.showMessageDialog(null, "Немагчыма пісаць дадзеныя ў файл " + fileName, "Файл заняты",
+		JOptionPane.showMessageDialog(null, Lang.CANT_WRITE_FILE_MESSAGE + " " + fileName, Lang.FILE_ACESS_DENIED,
 				JOptionPane.ERROR_MESSAGE);
 	}
 
 	public static void imageWriteErrorMessage(String fileName) {
-		JOptionPane.showMessageDialog(null, "Памылка падчас захавання ў файл " + fileName, "Захаванне выявы",
+		JOptionPane.showMessageDialog(null, Lang.FILE_WRITING_ERROR_MESSAGE + " " + fileName, Lang.IMAGE_SAVING_DIALOG,
 				JOptionPane.ERROR_MESSAGE);
 	}
 
 	public void openSceneDialog() {
 		SAXelementParser parser = new SAXelementParser();
 		Simulation.stopSimulation();
-		int ret = openSceneChooser.showDialog(null, "Адчыніць файл сцэны");
+		int ret = openSceneChooser.showDialog(null, Lang.OPEN_SCENE_DIALOG);
 		if (ret == JFileChooser.APPROVE_OPTION) {
 			Simulation.clearSimulation();
 			File selectedFile = openSceneChooser.getSelectedFile();
@@ -335,7 +326,7 @@ public class MainWindow extends JFrame {
 	}
 
 	public static void setCaption(String name) {
-		instance.setTitle(name + " - " + appName);
+		instance.setTitle(name + " - " + Lang.APP_NAME);
 	}
 
 	public void saveImageToFile() {
