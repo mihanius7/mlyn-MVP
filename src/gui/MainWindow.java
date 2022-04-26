@@ -42,7 +42,7 @@ public class MainWindow extends JFrame {
 	public static final String TIMESTEP_FIXED = "\u041F\u0430\u0441\u0442\u0430\u044F\u043D\u043D\u044B";
 	public static final String TIMESTEP_LABEL = "\u041A\u0440\u043E\u043A \u043F\u0430 \u0447\u0430\u0441\u0435:";
 	public static final String START_PAUSE_BUTTON = "\u0421\u0442\u0430\u0440\u0442/\u043F\u0430\u045E\u0437\u0430 \u0441\u0456\u043C\u0443\u043B\u044F\u0446\u044B\u0456";
-	public static final String APP_NAME = "Ìכûם2D (v.0.9)";
+	public static final String APP_NAME = "\u041C\u043B\u044B\u043D2D (v.0.9)";
 	private static MainWindow instance;
 	private static final long serialVersionUID = 6398390928434245781L;
 	public static Simulation simulation;
