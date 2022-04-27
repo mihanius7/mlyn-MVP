@@ -101,8 +101,6 @@ public abstract class ForcePair implements ForceElement {
 		refreshTimeStepReserve();
 		if (timeStepReserve < 1) {
 			timeStepController.setTimeStepAlarm();
-			MainWindow.println("Часціцы " + Simulation.getIndex(p1) + " і " + Simulation.getIndex(p2)
-					+ " зблізіліся занадта хутка!");
 		}
 	}
 }
