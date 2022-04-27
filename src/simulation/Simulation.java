@@ -12,6 +12,7 @@ import elements.groups.SpringGroup;
 import elements.point_mass.Particle;
 import evaluation.MyMath;
 import evaluation.interaction.InteractionProcessor;
+import gui.Lang;
 import gui.MainWindow;
 import gui.Viewport;
 import main.SampleScenes;
@@ -70,7 +71,7 @@ public class Simulation implements Runnable {
 	@Override
 	public void run() {
 		isRunning = true;
-		MainWindow.println("Паток разліку сімуляцыі запушчаны!");
+		MainWindow.println(Lang.SIMULATION_THREAD_STARTED);
 		Simulation.interactionProcessor.recalculateNeighborsNeeded();
 		while (isRunning) {
 			long t0 = System.nanoTime();
@@ -79,7 +80,7 @@ public class Simulation implements Runnable {
 			perfomStep();
 			stepEvaluationTime = System.nanoTime() - t0;
 		}
-		MainWindow.println("Цыкл і паток разліку сімуляцыі завершаныя");
+		MainWindow.println(Lang.SIMULATION_THREAD_ENDED);
 	}
 
 	public boolean isActive() {
@@ -94,13 +95,13 @@ public class Simulation implements Runnable {
 
 	public static void perfomStep(int stepNumber) {
 		long t = System.nanoTime();
-		MainWindow.println("Крок па часе " + timeStepController.getTimeStepSize() + " c");
+		MainWindow.println(Lang.TIMESTEP + " " + timeStepController.getTimeStepSize() + " c");
 		for (int i = 1; i < stepNumber; i++)
 			perfomStep();
-		MainWindow.println("Выканана " + stepNumber + " крокаў");
-		MainWindow.println("	час: " + (System.nanoTime() - t) / 1E6 + " мс");
-		MainWindow.println("	пошукаў суседзяў: " + interactionProcessor.getNeighborSearchsNumber());
-		MainWindow.println("Крок па часе " + timeStepController.getTimeStepSize() + " c");
+		MainWindow.println("Done " + stepNumber + " steps");
+		MainWindow.println("	elapsed: " + (System.nanoTime() - t) / 1E6 + " ms");
+		MainWindow.println("	neighbor searches: " + interactionProcessor.getNeighborSearchsNumber());
+		MainWindow.println(Lang.TIMESTEP + " " + timeStepController.getTimeStepSize() + " s");
 	}
 
 	public static void perfomSimulation(double simulationTime) {
@@ -111,7 +112,7 @@ public class Simulation implements Runnable {
 		try {
 			Thread.sleep(200);
 		} catch (InterruptedException e) {
-			MainWindow.println("Паток разліку сімуляцыі ня можа быць працягнуты!");
+			MainWindow.println(Lang.SIMULATION_THREAD_CANT_BE_CONTINUED);
 			e.printStackTrace();
 		}
 	}
@@ -156,7 +157,7 @@ public class Simulation implements Runnable {
 		} else
 			content.particles.addAll(pp);
 		interactionProcessor.recalculateNeighborsNeeded();
-		MainWindow.println("Часціцы дададзены");
+		MainWindow.println(Lang.PARTICLES_ADDED);
 	}
 
 	public static void addToSimulation(SpringGroup ss) {
@@ -166,7 +167,7 @@ public class Simulation implements Runnable {
 		} else
 			content.springs.addAll(ss);
 		interactionProcessor.recalculateNeighborsNeeded();
-		MainWindow.println("Пружыны дададзены");
+		MainWindow.println(Lang.SPRINGS_ADDED);
 	}
 
 	public static synchronized void addToSimulation(OneTimePerStepProcessable arg) {
@@ -176,7 +177,7 @@ public class Simulation implements Runnable {
 			wasActive = true;
 		}
 		oneTimePerStepProcessables.add((OneTimePerStepProcessable) arg);
-		MainWindow.println("У сімуляцыю дададзены " + arg.getClass().getSimpleName());
+		MainWindow.println(Lang.TO_SIMULATION_ADDED +" " + arg.getClass().getSimpleName());
 		if (wasActive)
 			MainWindow.getInstance().startSimulationThread();
 	}
@@ -252,9 +253,9 @@ public class Simulation implements Runnable {
 
 	public static void clearSimulation() {
 		MainWindow.clearConsole();
-		MainWindow.print("Тэрміновае спыненне сімуляцыі... ");
+		MainWindow.print(Lang.FORCE_SIMULATION_STOP + " ");
 		stopSimulationAndWait();
-		MainWindow.println("выканана!");
+		MainWindow.println(Lang.DONE);
 		reset();
 	}
 
@@ -367,16 +368,16 @@ public class Simulation implements Runnable {
 		Viewport.reset();
 		Viewport.setCrossX(0);
 		Viewport.setCrossY(0);
-		MainWindow.println("Ачышчана");
+		MainWindow.println(Lang.CLEARED);
 		interactionProcessor.reset();
-		MainWindow.println("Модуль разліку скінуты");
+		MainWindow.println(Lang.INTERACTION_PROCESSOR_RESTARTED);
 		timeStepController.resetTimeStep();
-		MainWindow.println("Модуль кроку па часе скінуты");
-		MainWindow.println("Загрузка пустой сцэны...");
+		MainWindow.println(Lang.TIMESTEP_CONTROLLER_RESTARTED);
+		MainWindow.println(Lang.EMPTY_SCENE_LOADING);
 		SampleScenes.emptyScene();
-		MainWindow.println("	...загружана");
+		MainWindow.println("	"+ Lang.DONE);
 		Viewport.scaleToBoundaries();
-		MainWindow.println("Аўтамаштаб");
+		MainWindow.println(Lang.AUTOSCALE);
 	}
 
 	private static void refreshContent() {
@@ -536,6 +537,6 @@ public class Simulation implements Runnable {
 
 	public static SimulationContent getContent() {
 		return content;
-	}	
+	}
 
 }
