@@ -8,6 +8,7 @@ import java.util.Iterator;
 import elements.point_mass.Particle;
 import evaluation.MyMath;
 import evaluation.Vector;
+import gui.Lang;
 import gui.MainWindow;
 import gui.Viewport;
 import simulation.Simulation;
@@ -60,7 +61,7 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 	public void setZeroVelocities() {
 		for (Particle p : this)
 			p.setVelocity(0, 0);
-		MainWindow.println("Скорасці абнулены");
+		MainWindow.println(Lang.VELOCITIES_NULLIFIED);
 	}
 
 	public void colorizeByCharge() {
@@ -71,13 +72,13 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 				p.setColor(Color.BLUE);
 			else if (p.getCharge() == 0)
 				p.setColor(Viewport.PARTICLE_DEFAULT);
-		MainWindow.println("Ужытыя колеры у адпаведнасці са знакам зараду (для " + this.size() + " часціц)");
+		MainWindow.println(Lang.PARTICLE_COLOURS_CORRESPONDS_TO_CHARGE);
 	}
 
 	public void setRandomVelocities(double range) {
 		for (Particle p : this)
 			p.setVelocity(random() * 2 * Math.PI, range * random());
-		MainWindow.println("Скорасці зададзены выпадкова");
+		MainWindow.println(Lang.PARTICLE_VELOCITIES_RANDOMIZED);
 	}
 
 	public Vector defineCenterOfMass() {
@@ -125,6 +126,7 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 		}
 	}
 
+	@Override
 	public String toString() {
 		String s = "Size = " + size();
 		for (Particle p : this)
@@ -138,7 +140,7 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 			try {
 				clonedList.add(get(i).clone());
 			} catch (CloneNotSupportedException e) {
-				MainWindow.println("Не атрымалася скапіраваць часціцу");
+				MainWindow.println(Lang.CANT_COPY_A_PARTICLE);
 			}	
 		}
 		
