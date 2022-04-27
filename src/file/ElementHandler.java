@@ -9,6 +9,7 @@ import org.xml.sax.SAXException;
 
 import elements.force_pair.Spring;
 import elements.point_mass.Particle;
+import gui.Lang;
 import gui.MainWindow;
 import gui.Viewport;
 import simulation.Simulation;
@@ -26,7 +27,7 @@ public class ElementHandler implements ContentHandler {
 
 	@Override
 	public void startDocument() throws SAXException {
-		MainWindow.println("Загрузка файла распачата");
+		MainWindow.println(Lang.FILE_LOADING_STARTET);
 	}
 
 	@Override
@@ -122,7 +123,7 @@ public class ElementHandler implements ContentHandler {
 
 	@Override
 	public void endDocument() throws SAXException {
-		MainWindow.println("Загрузка файла скончана");
+		MainWindow.println(Lang.FILE_LOADING_FINISHED);
 		Viewport.scaleToBoundaries();
 	}
 
