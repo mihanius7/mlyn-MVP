@@ -95,4 +95,9 @@ public class Lang {
 	public static final String COLLISIONS_PP = "\u0421\u0443\u0442\u044B\u043A\u043D\u0435\u043D\u043D\u0456 \u0447\u0430\u0441\u0446\u0456\u0446\u0430-\u0447\u0430\u0441\u0446\u0456\u0446\u0430";
 	public static final String EXTERNAL_FORCES = "\u0417\u043D\u0435\u0448\u043D\u0456\u044F \u0441\u0456\u043B\u044B";
 	public static final String RECOIL_BY_HERTZ = "\u0421\u0443\u0442\u044B\u043A\u043D\u0435\u043D\u043D\u0456 \u043F\u0430 \u0413\u0435\u0440\u0446\u0443";
+
+	public static final String BOTTOM_BOUNDARY = "\u041D\u0456\u0436\u043D\u044F\u044F \u043C\u044F\u0436\u0430";
+	public static final String UPPER_BOUNDARY = "\u0412\u0435\u0440\u0445\u043D\u044F\u044F \u043C\u044F\u0436\u0430";
+	public static final String RIGHT_BOUNDARY = "\u041F\u0440\u0430\u0432\u0430\u044F \u043C\u044F\u0436\u0430";
+	public static final String LEFT_BOUNDARY = "\u041B\u0435\u0432\u0430\u044F \u043C\u044F\u0436\u0430";
 }

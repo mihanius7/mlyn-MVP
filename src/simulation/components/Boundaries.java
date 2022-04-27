@@ -2,14 +2,12 @@ package simulation.components;
 
 import static simulation.Simulation.*;
 import static java.lang.Math.abs;
+
+import gui.Lang;
 import gui.MainWindow;
 import static constants.PhysicalConstants.cm;
 
 public class Boundaries implements Cloneable {
-	private static final String BOTTOM_BOUNDARY = "Ніжняя мяжа";
-	private static final String UPPER_BOUNDARY = "Верхняя мяжа";
-	private static final String RIGHT_BOUNDARY = "Правая мяжа";
-	private static final String LEFT_BOUNDARY = "Левая мяжа";
 	private double left, right, upper, bottom;
 	private double leftEffective, rightEffective, upperEffective, bottomEffective;
 	private double autosizeMargin = 10 * cm;
@@ -28,13 +26,13 @@ public class Boundaries implements Cloneable {
 
 	public void setBounds(double left, double right, double upper, double bottom) {
 		this.left = left;
-		MainWindow.println(LEFT_BOUNDARY + ", m: " + this.left);
+		MainWindow.println(Lang.LEFT_BOUNDARY + ", m: " + this.left);
 		this.right = right;
-		MainWindow.println(RIGHT_BOUNDARY + ", m: " + this.right);
+		MainWindow.println(Lang.RIGHT_BOUNDARY + ", m: " + this.right);
 		this.upper = upper;
-		MainWindow.println(UPPER_BOUNDARY + "m: " + this.upper);
+		MainWindow.println(Lang.UPPER_BOUNDARY + ", m: " + this.upper);
 		this.bottom = bottom;
-		MainWindow.println(BOTTOM_BOUNDARY + ", m: " + this.bottom);
+		MainWindow.println(Lang.BOTTOM_BOUNDARY + ", m: " + this.bottom);
 	}
 
 	public double getLeft() {
