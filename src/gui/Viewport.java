@@ -59,9 +59,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public static final int FRAME_PAINT_DELAY = 18;
 	public static final int AUTOSCALE_MARGIN = 75;
 	public static final double DEFAULT_GRID_SIZE = 20 * cm;
-	public static boolean drawTags = false, drawMessages = true, drawVelocities = false,
-			drawForces = false, drawParticleBorders = true, drawNeighbourRadius = false,
-			useGrid = true, drawGradientParticles = false;
+	public static boolean drawTags = false, drawMessages = true, drawVelocities = false, drawForces = false,
+			drawParticleBorders = true, drawNeighbourRadius = false, useGrid = true, drawGradientParticles = false;
 	private static boolean drawTracks = false, drawHeatMap = false;
 	private ParticleGroup particles;
 	private SpringGroup springs;
@@ -98,7 +97,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public void run() {
 		refreshLabelsTimer.start();
 		long sleep;
-		MainWindow.println("Паток графікі запушчаны!");
+		MainWindow.println(Lang.RENDERING_THREAD_STARTED);
 		while (true) {
 			dt = System.currentTimeMillis() - frameTime;
 			repaint();
@@ -108,7 +107,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			try {
 				Thread.sleep(sleep);
 			} catch (InterruptedException e) {
-				System.out.println("Перарваны: " + e.getMessage());
+				System.out.println(Lang.INTERRUPTED_THREAD + ": " + e.getMessage());
 			}
 			frameTime = System.currentTimeMillis();
 		}
@@ -159,9 +158,11 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 				else
 					displayedTimeScale = String.format("%.3f", timeScale);
 			if (r > 100)
-				timeStepString = String.format("Запас dt > 100, маштаб часу " + displayedTimeScale, r);
+				timeStepString = String
+						.format(Lang.TIMESTEP_RESERVE + " > 100 " + Lang.TIME_SCALE + " " + displayedTimeScale, r);
 			else
-				timeStepString = String.format("Запас dt = %.1f, маштаб часу " + displayedTimeScale, r);
+				timeStepString = String
+						.format(Lang.TIMESTEP_RESERVE + " = %.1f " + Lang.TIME_SCALE + " " + displayedTimeScale, r);
 			MainWindow.getInstance().refreshGUIDisplays();
 			Simulation.timeStepController.clearStepsPerSecond();
 			fps = 0;
@@ -174,13 +175,14 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			int gridMinorStep = (int) gridStep;
 			if (gridStep >= 15 && gridStep < viewportWidth * 2) {
 				BufferedImage bi = new BufferedImage(gridMinorStep, gridMinorStep, BufferedImage.TYPE_INT_RGB);
-				Graphics2D big2d = bi.createGraphics();				
+				Graphics2D big2d = bi.createGraphics();
 				big2d.setColor(BACKGROUND);
 				big2d.fillRect(0, 0, gridMinorStep, gridMinorStep);
 				big2d.setColor(GRID);
 				big2d.drawLine(0, 0, gridMinorStep, 0);
 				big2d.drawLine(0, 0, 0, gridMinorStep);
-				TexturePaint tp = new TexturePaint(bi, new Rectangle2D.Double(toScreenX(0), toScreenY(0), gridStep, gridStep));
+				TexturePaint tp = new TexturePaint(bi,
+						new Rectangle2D.Double(toScreenX(0), toScreenY(0), gridStep, gridStep));
 				targetG2d.setPaint(tp);
 				targetG2d.setRenderingHints(rh);
 			} else {
@@ -189,11 +191,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		} else
 			targetG2d.setColor(BACKGROUND);
 		targetG2d.fillRect(0, 0, viewportWidth, viewportHeight);
-	}
-
-	private static void drawImage() {
-		globalCanvas.drawImage(backgroundFromFile, toScreenX(0), toScreenY(0) - backgroundFromFile.getHeight(null),
-				backgroundFromFile.getWidth(null), backgroundFromFile.getHeight(null), null);
 	}
 
 	void refreshStaticSizeConstants() {
@@ -215,7 +212,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		y = toScreenY(p.getY());
 		int r = (int) Math.ceil(scale * p.getRadius());
 		if (!drawGradientParticles)
-				targetG2d.setPaint(p.getColor());
+			targetG2d.setPaint(p.getColor());
 		else
 			targetG2d.setPaint(new GradientPaint(x, y - r, Color.WHITE, x + r, y + r, p.getColor(), false));
 		targetG2d.fillOval(x - r, y - r, r * 2, r * 2);
@@ -223,7 +220,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			int x0 = toScreenX(p.getLastX());
 			int y0 = toScreenY(p.getLastY());
 			tracksCanvas.setColor(p.getEigeneColor());
-			tracksCanvas.drawLine(x0, y0, x, y);			
+			tracksCanvas.drawLine(x0, y0, x, y);
 		}
 		if (drawParticleBorders) {
 			targetG2d.setColor(PARTICLE_BORDER);
@@ -263,11 +260,11 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 					x = (int) (toScreenX(p.getX()) + r * 0.707);
 					y = (int) (toScreenY(p.getY()) - r * 0.707);
 					y -= tagFont.getSize();
-					targetG2d.drawString(String.format("#%d: %.1e кг", i, p.getMass()), x, y);
+					targetG2d.drawString(String.format("#%d: %.1e kg", i, p.getMass()), x, y);
 					y += tagFont.getSize();
 					targetG2d.drawString(String.format("(%.3f; %.3f) м", p.getX(), p.getY(), p.defineVelocity()), x, y);
 					y += tagFont.getSize();
-					targetG2d.drawString(String.format("%.3f м/с", p.defineVelocity()), x, y);
+					targetG2d.drawString(String.format("%.3f m/s", p.defineVelocity()), x, y);
 				}
 			}
 		}
@@ -334,7 +331,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			alpha = evaluation.MyMath.normalizeAbsAngle(alpha);
 			targetG2d.translate(xc, yc);
 			targetG2d.rotate(alpha);
-			targetG2d.drawString(String.format("%.0f Гц", s.getResonantFrequency()), -20, -5);
+			targetG2d.drawString(String.format("%.0f Hz", s.getResonantFrequency()), -20, -5);
 			targetG2d.rotate(-alpha);
 			targetG2d.translate(-xc, -yc);
 		}
@@ -393,7 +390,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		int xc = viewportWidth - l / 2 - 20;
 		int yc = viewportHeight - 20;
 		targetG2d.drawLine(xc - l / 2, yc, xc + l / 2, yc);
-		targetG2d.drawString(String.format("%.1e м", fromScreen(l)), xc - 32, yc - 4);
+		targetG2d.drawString(String.format("%.1e m", fromScreen(l)), xc - 32, yc - 4);
 	}
 
 	private void drawArrowLine(Graphics2D g2d, int x1, int y1, Vector v, Color arrowColor) {
@@ -488,19 +485,18 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			size = 20 * cm;
 		gridSize = size;
 		MainWindow.getInstance().refreshGUIControls();
-		MainWindow.println(String.format("Перыяд сеткі %.2e м", gridSize));
+		MainWindow.println(String.format(Lang.GRID_SIZE + "%.2e m", gridSize));
 	}
 
 	public static boolean isDrawTracks() {
 		return drawTracks;
 	}
-	
+
 	public static void setDrawTracks(boolean b) {
 		drawTracks = b;
 		clearTracksImage();
-		MainWindow.println("Паказваць сляды часціц: " + b);
+		MainWindow.println(Lang.DRAW_TRACKS + ": " + b);
 	}
-	
 
 	public static boolean isDrawFields() {
 		return drawHeatMap;
@@ -544,17 +540,17 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public static void setMouseMode(MouseMode mouseMode) {
 		ViewportEvent.mouseMode = mouseMode;
 		Simulation.clearSelection();
-		MainWindow.println("Рэжым мышы: " + ViewportEvent.mouseMode);
+		MainWindow.println(Lang.MOUSE_MODE + ": " + ViewportEvent.mouseMode);
 	}
 
 	public void saveImageToFile() {
 		BufferedImage buffer = new BufferedImage(viewportWidth, viewportHeight, BufferedImage.TYPE_INT_RGB);
 		Graphics2D ig2 = buffer.createGraphics();
 		drawWholeFrameOn(ig2);
-		String fileName = String.format("Кадр_%.3fс.jpg", Simulation.getTime());
+		String fileName = String.format(Lang.SCREENSHOT_NAME + "_%.3fс.jpg", Simulation.getTime());
 		try {
 			if (javax.imageio.ImageIO.write(buffer, "JPEG", new java.io.File(fileName)))
-				MainWindow.println("Выява захавана ў файл " + fileName);
+				MainWindow.println(Lang.IMAGE_SAVED_TO + " " + fileName);
 		} catch (IOException e) {
 			MainWindow.imageWriteErrorMessage(fileName);
 		}
