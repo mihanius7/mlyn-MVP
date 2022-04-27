@@ -106,7 +106,7 @@ public class MainWindow extends JFrame {
 
 		addComponentListener(mwe);
 
-		startButton = new JButton(Lang.START_PAUSE_BUTTON);
+		startButton = new JButton(GUIStrings.START_PAUSE_BUTTON);
 
 		startButton.setBackground(UIManager.getColor("Button.background"));
 
@@ -128,7 +128,7 @@ public class MainWindow extends JFrame {
 		scrollArea.setViewportView(textArea1);
 		getContentPane().add(scrollArea);
 
-		lblDt = new JLabel(Lang.TIMESTEP_LABEL);
+		lblDt = new JLabel(GUIStrings.TIMESTEP_LABEL);
 		lblDt.setHorizontalAlignment(SwingConstants.TRAILING);
 
 		getContentPane().add(lblDt);
@@ -148,7 +148,7 @@ public class MainWindow extends JFrame {
 
 		getContentPane().add(dtRealScale);
 
-		dtFix = new JButton(Lang.TIMESTEP_FIXED);
+		dtFix = new JButton(GUIStrings.TIMESTEP_FIXED);
 		dtFix.setFont(new Font("Dialog", Font.BOLD, 11));
 		dtFix.addActionListener(mwe);
 
@@ -174,7 +174,7 @@ public class MainWindow extends JFrame {
 	private void initDialogs() {
 		openSceneChooser = new JFileChooser(new java.io.File("").getAbsolutePath());
 		saveSceneChooser = new JFileChooser(new java.io.File("").getAbsolutePath());
-		FileFilter filter = new FileNameExtensionFilter(Lang.FILETYPE_DESCRIPTION, "xml");
+		FileFilter filter = new FileNameExtensionFilter(GUIStrings.FILETYPE_DESCRIPTION, "xml");
 		openSceneChooser.setFileFilter(filter);
 		saveSceneChooser.setFileFilter(filter);
 	}
@@ -267,36 +267,36 @@ public class MainWindow extends JFrame {
 	}
 
 	public void showAboutWindow() {
-		JOptionPane.showMessageDialog(null, Lang.ABOUT, "Аб праграме " + Lang.APP_NAME, JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(null, GUIStrings.ABOUT, "Аб праграме " + GUIStrings.APP_NAME, JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	public static void NothingIsSelectedMessage() {
-		JOptionPane.showMessageDialog(null, Lang.NOTHING_SELECTED_MESSAGE, Lang.SELECT_PARTICLE_DIALOG,
+		JOptionPane.showMessageDialog(null, GUIStrings.NOTHING_SELECTED_MESSAGE, GUIStrings.SELECT_PARTICLE_DIALOG,
 				JOptionPane.WARNING_MESSAGE);
 	}
 
 	public static void VibratorIsEmptyMessage() {
-		JOptionPane.showMessageDialog(null, Lang.EMPTY_VIBRATOR_MESSAGE, Lang.VIBRATION_DIALOG, JOptionPane.WARNING_MESSAGE);
+		JOptionPane.showMessageDialog(null, GUIStrings.EMPTY_VIBRATOR_MESSAGE, GUIStrings.VIBRATION_DIALOG, JOptionPane.WARNING_MESSAGE);
 	}
 
 	public static void uncompatibleRecordingModeMessage() {
-		JOptionPane.showMessageDialog(null, Lang.NO_VIBRATOR_FOR_AFCH_MESSAGE, Lang.RECORDER_DIALOG, JOptionPane.WARNING_MESSAGE);
+		JOptionPane.showMessageDialog(null, GUIStrings.NO_VIBRATOR_FOR_AFCH_MESSAGE, GUIStrings.RECORDER_DIALOG, JOptionPane.WARNING_MESSAGE);
 	}
 
 	public static void fileWriteErrorMessage(String fileName) {
-		JOptionPane.showMessageDialog(null, Lang.CANT_WRITE_FILE_MESSAGE + " " + fileName, Lang.FILE_ACESS_DENIED,
+		JOptionPane.showMessageDialog(null, GUIStrings.CANT_WRITE_FILE_MESSAGE + " " + fileName, GUIStrings.FILE_ACESS_DENIED,
 				JOptionPane.ERROR_MESSAGE);
 	}
 
 	public static void imageWriteErrorMessage(String fileName) {
-		JOptionPane.showMessageDialog(null, Lang.FILE_WRITING_ERROR_MESSAGE + " " + fileName, Lang.IMAGE_SAVING_DIALOG,
+		JOptionPane.showMessageDialog(null, GUIStrings.FILE_WRITING_ERROR_MESSAGE + " " + fileName, GUIStrings.IMAGE_SAVING_DIALOG,
 				JOptionPane.ERROR_MESSAGE);
 	}
 
 	public void openSceneDialog() {
 		SAXelementParser parser = new SAXelementParser();
 		Simulation.stopSimulation();
-		int ret = openSceneChooser.showDialog(null, Lang.OPEN_SCENE_DIALOG);
+		int ret = openSceneChooser.showDialog(null, GUIStrings.OPEN_SCENE_DIALOG);
 		if (ret == JFileChooser.APPROVE_OPTION) {
 			Simulation.clearSimulation();
 			File selectedFile = openSceneChooser.getSelectedFile();
@@ -326,7 +326,7 @@ public class MainWindow extends JFrame {
 	}
 
 	public static void setCaption(String name) {
-		instance.setTitle(name + " - " + Lang.APP_NAME);
+		instance.setTitle(name + " - " + GUIStrings.APP_NAME);
 	}
 
 	public void saveImageToFile() {

@@ -97,7 +97,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public void run() {
 		refreshLabelsTimer.start();
 		long sleep;
-		MainWindow.println(Lang.RENDERING_THREAD_STARTED);
+		MainWindow.println(GUIStrings.RENDERING_THREAD_STARTED);
 		while (true) {
 			dt = System.currentTimeMillis() - frameTime;
 			repaint();
@@ -107,7 +107,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			try {
 				Thread.sleep(sleep);
 			} catch (InterruptedException e) {
-				System.out.println(Lang.INTERRUPTED_THREAD + ": " + e.getMessage());
+				System.out.println(GUIStrings.INTERRUPTED_THREAD + ": " + e.getMessage());
 			}
 			frameTime = System.currentTimeMillis();
 		}
@@ -159,10 +159,10 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 					displayedTimeScale = String.format("%.3f", timeScale);
 			if (r > 100)
 				timeStepString = String
-						.format(Lang.TIMESTEP_RESERVE + " > 100 " + Lang.TIME_SCALE + " " + displayedTimeScale, r);
+						.format(GUIStrings.TIMESTEP_RESERVE + " > 100 " + GUIStrings.TIME_SCALE + " " + displayedTimeScale, r);
 			else
 				timeStepString = String
-						.format(Lang.TIMESTEP_RESERVE + " = %.1f " + Lang.TIME_SCALE + " " + displayedTimeScale, r);
+						.format(GUIStrings.TIMESTEP_RESERVE + " = %.1f " + GUIStrings.TIME_SCALE + " " + displayedTimeScale, r);
 			MainWindow.getInstance().refreshGUIDisplays();
 			Simulation.timeStepController.clearStepsPerSecond();
 			fps = 0;
@@ -262,7 +262,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 					y -= tagFont.getSize();
 					targetG2d.drawString(String.format("#%d: %.1e kg", i, p.getMass()), x, y);
 					y += tagFont.getSize();
-					targetG2d.drawString(String.format("(%.3f; %.3f) ì", p.getX(), p.getY(), p.defineVelocity()), x, y);
+					targetG2d.drawString(String.format("(%.3f; %.3f) m", p.getX(), p.getY(), p.defineVelocity()), x, y);
 					y += tagFont.getSize();
 					targetG2d.drawString(String.format("%.3f m/s", p.defineVelocity()), x, y);
 				}
@@ -485,7 +485,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			size = 20 * cm;
 		gridSize = size;
 		MainWindow.getInstance().refreshGUIControls();
-		MainWindow.println(String.format(Lang.GRID_SIZE + "%.2e m", gridSize));
+		MainWindow.println(String.format(GUIStrings.GRID_SIZE + "%.2e m", gridSize));
 	}
 
 	public static boolean isDrawTracks() {
@@ -495,7 +495,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public static void setDrawTracks(boolean b) {
 		drawTracks = b;
 		clearTracksImage();
-		MainWindow.println(Lang.DRAW_TRACKS + ": " + b);
+		MainWindow.println(GUIStrings.DRAW_TRACKS + ": " + b);
 	}
 
 	public static boolean isDrawFields() {
@@ -540,17 +540,17 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public static void setMouseMode(MouseMode mouseMode) {
 		ViewportEvent.mouseMode = mouseMode;
 		Simulation.clearSelection();
-		MainWindow.println(Lang.MOUSE_MODE + ": " + ViewportEvent.mouseMode);
+		MainWindow.println(GUIStrings.MOUSE_MODE + ": " + ViewportEvent.mouseMode);
 	}
 
 	public void saveImageToFile() {
 		BufferedImage buffer = new BufferedImage(viewportWidth, viewportHeight, BufferedImage.TYPE_INT_RGB);
 		Graphics2D ig2 = buffer.createGraphics();
 		drawWholeFrameOn(ig2);
-		String fileName = String.format(Lang.SCREENSHOT_NAME + "_%.3fñ.jpg", Simulation.getTime());
+		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.3fñ.jpg", Simulation.getTime());
 		try {
 			if (javax.imageio.ImageIO.write(buffer, "JPEG", new java.io.File(fileName)))
-				MainWindow.println(Lang.IMAGE_SAVED_TO + " " + fileName);
+				MainWindow.println(GUIStrings.IMAGE_SAVED_TO + " " + fileName);
 		} catch (IOException e) {
 			MainWindow.imageWriteErrorMessage(fileName);
 		}

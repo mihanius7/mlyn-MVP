@@ -8,7 +8,7 @@ import static simulation.Simulation.getLastAddedParticle;
 import static simulation.Simulation.interactionProcessor;
 import static simulation.Simulation.timeStepController;
 
-import gui.Lang;
+import gui.GUIStrings;
 import gui.MainWindow;
 import gui.Viewport;
 import simulation.Simulation;
@@ -42,7 +42,7 @@ public class SampleScenes {
 		b.setUseUpper(false);
 		Viewport.scaleToBoundaries();
 		Simulation.perfomStep(10);
-		MainWindow.setCaption(Lang.NEW_PROJECT_NAME);
+		MainWindow.setCaption(GUIStrings.NEW_PROJECT_NAME);
 	}
 
 public static void initializeScene2() {

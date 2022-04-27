@@ -3,7 +3,7 @@ package simulation.components;
 import static simulation.Simulation.*;
 import static java.lang.Math.abs;
 
-import gui.Lang;
+import gui.GUIStrings;
 import gui.MainWindow;
 import static constants.PhysicalConstants.cm;
 
@@ -26,13 +26,13 @@ public class Boundaries implements Cloneable {
 
 	public void setBounds(double left, double right, double upper, double bottom) {
 		this.left = left;
-		MainWindow.println(Lang.LEFT_BOUNDARY + ", m: " + this.left);
+		MainWindow.println(GUIStrings.LEFT_BOUNDARY + ", m: " + this.left);
 		this.right = right;
-		MainWindow.println(Lang.RIGHT_BOUNDARY + ", m: " + this.right);
+		MainWindow.println(GUIStrings.RIGHT_BOUNDARY + ", m: " + this.right);
 		this.upper = upper;
-		MainWindow.println(Lang.UPPER_BOUNDARY + ", m: " + this.upper);
+		MainWindow.println(GUIStrings.UPPER_BOUNDARY + ", m: " + this.upper);
 		this.bottom = bottom;
-		MainWindow.println(Lang.BOTTOM_BOUNDARY + ", m: " + this.bottom);
+		MainWindow.println(GUIStrings.BOTTOM_BOUNDARY + ", m: " + this.bottom);
 	}
 
 	public double getLeft() {

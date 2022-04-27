@@ -12,7 +12,7 @@ import elements.groups.SpringGroup;
 import elements.point_mass.Particle;
 import evaluation.MyMath;
 import evaluation.interaction.InteractionProcessor;
-import gui.Lang;
+import gui.GUIStrings;
 import gui.MainWindow;
 import gui.Viewport;
 import main.SampleScenes;
@@ -71,7 +71,7 @@ public class Simulation implements Runnable {
 	@Override
 	public void run() {
 		isRunning = true;
-		MainWindow.println(Lang.SIMULATION_THREAD_STARTED);
+		MainWindow.println(GUIStrings.SIMULATION_THREAD_STARTED);
 		Simulation.interactionProcessor.recalculateNeighborsNeeded();
 		while (isRunning) {
 			long t0 = System.nanoTime();
@@ -80,7 +80,7 @@ public class Simulation implements Runnable {
 			perfomStep();
 			stepEvaluationTime = System.nanoTime() - t0;
 		}
-		MainWindow.println(Lang.SIMULATION_THREAD_ENDED);
+		MainWindow.println(GUIStrings.SIMULATION_THREAD_ENDED);
 	}
 
 	public boolean isActive() {
@@ -95,13 +95,13 @@ public class Simulation implements Runnable {
 
 	public static void perfomStep(int stepNumber) {
 		long t = System.nanoTime();
-		MainWindow.println(Lang.TIMESTEP + " " + timeStepController.getTimeStepSize() + " c");
+		MainWindow.println(GUIStrings.TIMESTEP + " " + timeStepController.getTimeStepSize() + " c");
 		for (int i = 1; i < stepNumber; i++)
 			perfomStep();
 		MainWindow.println("Done " + stepNumber + " steps");
 		MainWindow.println("	elapsed: " + (System.nanoTime() - t) / 1E6 + " ms");
 		MainWindow.println("	neighbor searches: " + interactionProcessor.getNeighborSearchsNumber());
-		MainWindow.println(Lang.TIMESTEP + " " + timeStepController.getTimeStepSize() + " s");
+		MainWindow.println(GUIStrings.TIMESTEP + " " + timeStepController.getTimeStepSize() + " s");
 	}
 
 	public static void perfomSimulation(double simulationTime) {
@@ -112,7 +112,7 @@ public class Simulation implements Runnable {
 		try {
 			Thread.sleep(200);
 		} catch (InterruptedException e) {
-			MainWindow.println(Lang.SIMULATION_THREAD_CANT_BE_CONTINUED);
+			MainWindow.println(GUIStrings.SIMULATION_THREAD_CANT_BE_CONTINUED);
 			e.printStackTrace();
 		}
 	}
@@ -157,7 +157,7 @@ public class Simulation implements Runnable {
 		} else
 			content.particles.addAll(pp);
 		interactionProcessor.recalculateNeighborsNeeded();
-		MainWindow.println(Lang.PARTICLES_ADDED);
+		MainWindow.println(GUIStrings.PARTICLES_ADDED);
 	}
 
 	public static void addToSimulation(SpringGroup ss) {
@@ -167,7 +167,7 @@ public class Simulation implements Runnable {
 		} else
 			content.springs.addAll(ss);
 		interactionProcessor.recalculateNeighborsNeeded();
-		MainWindow.println(Lang.SPRINGS_ADDED);
+		MainWindow.println(GUIStrings.SPRINGS_ADDED);
 	}
 
 	public static synchronized void addToSimulation(OneTimePerStepProcessable arg) {
@@ -177,7 +177,7 @@ public class Simulation implements Runnable {
 			wasActive = true;
 		}
 		oneTimePerStepProcessables.add((OneTimePerStepProcessable) arg);
-		MainWindow.println(Lang.TO_SIMULATION_ADDED +" " + arg.getClass().getSimpleName());
+		MainWindow.println(GUIStrings.TO_SIMULATION_ADDED +" " + arg.getClass().getSimpleName());
 		if (wasActive)
 			MainWindow.getInstance().startSimulationThread();
 	}
@@ -253,9 +253,9 @@ public class Simulation implements Runnable {
 
 	public static void clearSimulation() {
 		MainWindow.clearConsole();
-		MainWindow.print(Lang.FORCE_SIMULATION_STOP + " ");
+		MainWindow.print(GUIStrings.FORCE_SIMULATION_STOP + " ");
 		stopSimulationAndWait();
-		MainWindow.println(Lang.DONE);
+		MainWindow.println(GUIStrings.DONE);
 		reset();
 	}
 
@@ -368,16 +368,16 @@ public class Simulation implements Runnable {
 		Viewport.reset();
 		Viewport.setCrossX(0);
 		Viewport.setCrossY(0);
-		MainWindow.println(Lang.CLEARED);
+		MainWindow.println(GUIStrings.CLEARED);
 		interactionProcessor.reset();
-		MainWindow.println(Lang.INTERACTION_PROCESSOR_RESTARTED);
+		MainWindow.println(GUIStrings.INTERACTION_PROCESSOR_RESTARTED);
 		timeStepController.resetTimeStep();
-		MainWindow.println(Lang.TIMESTEP_CONTROLLER_RESTARTED);
-		MainWindow.println(Lang.EMPTY_SCENE_LOADING);
+		MainWindow.println(GUIStrings.TIMESTEP_CONTROLLER_RESTARTED);
+		MainWindow.println(GUIStrings.EMPTY_SCENE_LOADING);
 		SampleScenes.emptyScene();
-		MainWindow.println("	"+ Lang.DONE);
+		MainWindow.println("	"+ GUIStrings.DONE);
 		Viewport.scaleToBoundaries();
-		MainWindow.println(Lang.AUTOSCALE);
+		MainWindow.println(GUIStrings.AUTOSCALE);
 	}
 
 	private static void refreshContent() {

@@ -8,7 +8,7 @@ import java.util.Iterator;
 import elements.point_mass.Particle;
 import evaluation.MyMath;
 import evaluation.Vector;
-import gui.Lang;
+import gui.GUIStrings;
 import gui.MainWindow;
 import gui.Viewport;
 import simulation.Simulation;
@@ -61,7 +61,7 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 	public void setZeroVelocities() {
 		for (Particle p : this)
 			p.setVelocity(0, 0);
-		MainWindow.println(Lang.VELOCITIES_NULLIFIED);
+		MainWindow.println(GUIStrings.VELOCITIES_NULLIFIED);
 	}
 
 	public void colorizeByCharge() {
@@ -72,13 +72,13 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 				p.setColor(Color.BLUE);
 			else if (p.getCharge() == 0)
 				p.setColor(Viewport.PARTICLE_DEFAULT);
-		MainWindow.println(Lang.PARTICLE_COLOURS_CORRESPONDS_TO_CHARGE);
+		MainWindow.println(GUIStrings.PARTICLE_COLOURS_CORRESPONDS_TO_CHARGE);
 	}
 
 	public void setRandomVelocities(double range) {
 		for (Particle p : this)
 			p.setVelocity(random() * 2 * Math.PI, range * random());
-		MainWindow.println(Lang.PARTICLE_VELOCITIES_RANDOMIZED);
+		MainWindow.println(GUIStrings.PARTICLE_VELOCITIES_RANDOMIZED);
 	}
 
 	public Vector defineCenterOfMass() {
@@ -140,7 +140,7 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 			try {
 				clonedList.add(get(i).clone());
 			} catch (CloneNotSupportedException e) {
-				MainWindow.println(Lang.CANT_COPY_A_PARTICLE);
+				MainWindow.println(GUIStrings.CANT_COPY_A_PARTICLE);
 			}	
 		}
 		

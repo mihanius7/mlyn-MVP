@@ -115,8 +115,8 @@ public class MainWindowMenuEvent implements ActionListener {
 				MainWindow.NothingIsSelectedMessage();
 		} else if (src.equals(mainWindowMenu.menuItemScene2)) {
 			Simulation.clearSimulation();
-			JOptionPane.showMessageDialog(null, Lang.MENU_MUCH_TIME_NEEDED_PLEASE_WAIT,
-					Lang.APP_NAME, JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, GUIStrings.MENU_MUCH_TIME_NEEDED_PLEASE_WAIT,
+					GUIStrings.APP_NAME, JOptionPane.INFORMATION_MESSAGE);
 			mainWindow.refreshGUIControls();
 		} else if (src.equals(mainWindowMenu.menuItemScene3)) {
 			Simulation.clearSimulation();

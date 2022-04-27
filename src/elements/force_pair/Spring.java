@@ -15,7 +15,7 @@ import constants.PhysicalConstants;
 import elements.Interactable;
 import elements.Selectable;
 import elements.point_mass.Particle;
-import gui.Lang;
+import gui.GUIStrings;
 import gui.MainWindow;
 import gui.Viewport;
 import simulation.Simulation;
@@ -68,9 +68,9 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 		this.c = c;
 		distance = l;
 		lastDistance = distance;
-		MainWindow.println(Lang.SPRING_CREATED + ": ");
+		MainWindow.println(GUIStrings.SPRING_CREATED + ": ");
 		refreshResonantFrequency();
-		MainWindow.println(String.format("	" + Lang.SPRING_DAMPING_RATIO + " %.3f", defineDampingRatio()));
+		MainWindow.println(String.format("	" + GUIStrings.SPRING_DAMPING_RATIO + " %.3f", defineDampingRatio()));
 		checkOverCriticalDamping();
 	}
 
@@ -78,7 +78,7 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 		this.k = k;
 		this.c = c;
 		lastDistance = distance;
-		MainWindow.println(Lang.REFERENCE_SPRING_CREATED);
+		MainWindow.println(GUIStrings.REFERENCE_SPRING_CREATED);
 	}
 
 	public double getAbsoluteDeformation() {
@@ -127,7 +127,7 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 
 	public void setNominalLength(double length) {
 		this.l0 = length;
-		MainWindow.println(String.format(Lang.SPRING_NOMINAL_LENGTH + " %.6e", length));
+		MainWindow.println(String.format(GUIStrings.SPRING_NOMINAL_LENGTH + " %.6e", length));
 	}
 
 	public double getDeformatedLength() {
@@ -145,7 +145,7 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 	public void setStiffnes(double k) {
 		this.k = k;
 		refreshResonantFrequency();
-		MainWindow.println(String.format(Lang.SPRING_STIFFNES + "  %.3f", k));
+		MainWindow.println(String.format(GUIStrings.SPRING_STIFFNES + "  %.3f", k));
 	}
 
 	public double getHardening() {
@@ -154,7 +154,7 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 
 	public void setHardening(double u) {
 		this.uSquared = sqr(u);
-		MainWindow.println(Lang.SPRING_HARDENING_COEFFICIENT + " " + u);
+		MainWindow.println(GUIStrings.SPRING_HARDENING_COEFFICIENT + " " + u);
 	}
 
 	public double getMaxStress() {
@@ -182,9 +182,9 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 	public void setResonantFrequency(double f) {
 		if (f > 0)
 			k = 4 * sqr(Math.PI) * sqr(f) * defineReducedMass(p1, p2);
-		MainWindow.println(String.format(Lang.SPRING_STIFFNES + " %.3e Í/ì", k));
+		MainWindow.println(String.format(GUIStrings.SPRING_STIFFNES + " %.3e Í/ì", k));
 		refreshResonantFrequency();
-		MainWindow.println(String.format(Lang.SPRING_RESONANT_FREQUENCY + " %.1f Ãö", fn));
+		MainWindow.println(String.format(GUIStrings.SPRING_RESONANT_FREQUENCY + " %.1f Ãö", fn));
 	}
 
 	public double defineDampingRatio() {
@@ -210,13 +210,13 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 	public void setDampingRatio(double ksi) {
 		setDamping(ksi * defineCriticalDamping());
 		checkOverCriticalDamping();
-		MainWindow.println(String.format(Lang.SPRING_DAMPING_RATIO + " %.3f", defineDampingRatio())
-				+ String.format(", " + Lang.SPRING_DAMPING + " %.3e Í/(ì/ñ)", c));
+		MainWindow.println(String.format(GUIStrings.SPRING_DAMPING_RATIO + " %.3f", defineDampingRatio())
+				+ String.format(", " + GUIStrings.SPRING_DAMPING + " %.3e Í/(ì/ñ)", c));
 	}
 
 	public void setQualityFactor(double Q) {
 		if (Q > 0) {
-			MainWindow.println(String.format(Lang.SPRING_QUALITY_FACTOR + " %.1f...", Q));
+			MainWindow.println(String.format(GUIStrings.SPRING_QUALITY_FACTOR + " %.1f...", Q));
 			setDampingRatio(1f / 2 / Q);
 		}
 	}
@@ -243,7 +243,7 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 	private void checkOverCriticalDamping() {
 		if (defineDampingRatio() > 20) {
 			setDampingRatio(20);
-			MainWindow.println(Lang.HYPERCRITICAL_DAMPING_FIXED);
+			MainWindow.println(GUIStrings.HYPERCRITICAL_DAMPING_FIXED);
 		}
 	}
 
