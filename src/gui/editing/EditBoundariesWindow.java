@@ -1,5 +1,6 @@
 package gui.editing;
 
+import gui.GUIStrings;
 import gui.Viewport;
 import simulation.Simulation;
 import simulation.components.Boundaries;
@@ -35,9 +36,9 @@ public class EditBoundariesWindow extends AbstractEditWindow implements ActionLi
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setSize(380, 192);
-		setTitle("Рэдагаваць сценкі");
+		setTitle(EDIT_BOUNDARIES_DIALOG);
 
-		JLabel label1 = new JLabel("Левая мяжа, м");
+		JLabel label1 = new JLabel(GUIStrings.LEFT_BOUNDARY + ", m");
 		label1.setBounds(16, 8, 180, 20);
 		getContentPane().add(label1);
 
@@ -45,7 +46,7 @@ public class EditBoundariesWindow extends AbstractEditWindow implements ActionLi
 		field1.setBounds(205, 8, 50, label1.getHeight());
 		getContentPane().add(field1);
 
-		JLabel label2 = new JLabel("Правая мяжа, м");
+		JLabel label2 = new JLabel(GUIStrings.RIGHT_BOUNDARY + ", m");
 		label2.setBounds(16, label1.getY() + label1.getHeight() + 8, 180, 20);
 		getContentPane().add(label2);
 
@@ -53,7 +54,7 @@ public class EditBoundariesWindow extends AbstractEditWindow implements ActionLi
 		field2.setBounds(205, 36, 50, label2.getHeight());
 		getContentPane().add(field2);
 
-		JLabel label3 = new JLabel("Ніжняя мяжа, м");
+		JLabel label3 = new JLabel(GUIStrings.BOTTOM_BOUNDARY + ", m");
 		label3.setBounds(16, label2.getY() + label2.getHeight() + 8, 180, 20);
 		getContentPane().add(label3);
 
@@ -61,7 +62,7 @@ public class EditBoundariesWindow extends AbstractEditWindow implements ActionLi
 		field3.setBounds(205, 64, 50, label3.getHeight());
 		getContentPane().add(field3);
 
-		JLabel label4 = new JLabel("Верхняя мяжа, м");
+		JLabel label4 = new JLabel(GUIStrings.UPPER_BOUNDARY + ", m");
 		label4.setBounds(16, label3.getY() + label3.getHeight() + 8, 180, 20);
 		getContentPane().add(label4);
 
@@ -69,7 +70,7 @@ public class EditBoundariesWindow extends AbstractEditWindow implements ActionLi
 		field4.setBounds(205, 92, 50, label4.getHeight());
 		getContentPane().add(field4);
 
-		JButton button1 = new JButton("Ужыць");
+		JButton button1 = new JButton(APPLY_BUTTON);
 		button1.setBounds(250, 124, 116, 24);
 		button1.addActionListener(this);
 		getContentPane().add(button1);
@@ -77,22 +78,22 @@ public class EditBoundariesWindow extends AbstractEditWindow implements ActionLi
 		Container c = getContentPane();
 		c.setLayout(null);
 
-		checkBox1 = new JCheckBox("\u0423\u043A\u043B\u044E\u0447\u0430\u043D\u0430");
+		checkBox1 = new JCheckBox(BOUNDARY_ENABLED);
 		checkBox1.setHorizontalAlignment(SwingConstants.LEFT);
 		checkBox1.setBounds(263, 6, 103, 25);
 		getContentPane().add(checkBox1);
 
-		checkBox2 = new JCheckBox("\u0423\u043A\u043B\u044E\u0447\u0430\u043D\u0430");
+		checkBox2 = new JCheckBox(BOUNDARY_ENABLED);
 		checkBox2.setHorizontalAlignment(SwingConstants.LEFT);
 		checkBox2.setBounds(263, 34, 103, 25);
 		getContentPane().add(checkBox2);
 
-		checkBox3 = new JCheckBox("\u0423\u043A\u043B\u044E\u0447\u0430\u043D\u0430");
+		checkBox3 = new JCheckBox(BOUNDARY_ENABLED);
 		checkBox3.setHorizontalAlignment(SwingConstants.LEFT);
 		checkBox3.setBounds(263, 62, 103, 25);
 		getContentPane().add(checkBox3);
 
-		checkBox4 = new JCheckBox("\u0423\u043A\u043B\u044E\u0447\u0430\u043D\u0430");
+		checkBox4 = new JCheckBox(BOUNDARY_ENABLED);
 		checkBox4.setHorizontalAlignment(SwingConstants.LEFT);
 		checkBox4.setBounds(263, 90, 103, 25);
 		getContentPane().add(checkBox4);
