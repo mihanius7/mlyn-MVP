@@ -15,6 +15,7 @@ import constants.PhysicalConstants;
 import elements.Interactable;
 import elements.Selectable;
 import elements.point_mass.Particle;
+import gui.GUIStrings;
 import gui.MainWindow;
 import gui.Viewport;
 import simulation.Simulation;
@@ -67,9 +68,9 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 		this.c = c;
 		distance = l;
 		lastDistance = distance;
-		MainWindow.println("Створана пружына: ");
+		MainWindow.println(GUIStrings.SPRING_CREATED + ": ");
 		refreshResonantFrequency();
-		MainWindow.println(String.format("	каэф. дэмпф. %.3f", defineDampingRatio()));
+		MainWindow.println(String.format("	" + GUIStrings.SPRING_DAMPING_RATIO + " %.3f", defineDampingRatio()));
 		checkOverCriticalDamping();
 	}
 
@@ -77,7 +78,7 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 		this.k = k;
 		this.c = c;
 		lastDistance = distance;
-		MainWindow.println("Створана пружына-эталон.");
+		MainWindow.println(GUIStrings.REFERENCE_SPRING_CREATED);
 	}
 
 	public double getAbsoluteDeformation() {
@@ -126,7 +127,7 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 
 	public void setNominalLength(double length) {
 		this.l0 = length;
-		MainWindow.println(String.format("Усталявана пачатковая даўжыня %.6e", length));
+		MainWindow.println(String.format(GUIStrings.SPRING_NOMINAL_LENGTH + " %.6e", length));
 	}
 
 	public double getDeformatedLength() {
@@ -144,7 +145,7 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 	public void setStiffnes(double k) {
 		this.k = k;
 		refreshResonantFrequency();
-		MainWindow.println(String.format("Усталяваны каэф. пругкасці  %.3f", k));
+		MainWindow.println(String.format(GUIStrings.SPRING_STIFFNES + "  %.3f", k));
 	}
 
 	public double getHardening() {
@@ -153,7 +154,7 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 
 	public void setHardening(double u) {
 		this.uSquared = sqr(u);
-		MainWindow.println("Усталяваны каэф. нелінейнасці " + u);
+		MainWindow.println(GUIStrings.SPRING_HARDENING_COEFFICIENT + " " + u);
 	}
 
 	public double getMaxStress() {
@@ -179,12 +180,11 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 	}
 
 	public void setResonantFrequency(double f) {
-		MainWindow.println(String.format("Усталяванне рэзананснай частаты %.1f Гц...", f));
 		if (f > 0)
 			k = 4 * sqr(Math.PI) * sqr(f) * defineReducedMass(p1, p2);
-		MainWindow.println(String.format("Каэф. пругкасці ўсталяваны %.3e Н/м", k));
+		MainWindow.println(String.format(GUIStrings.SPRING_STIFFNES + " %.3e Н/м", k));
 		refreshResonantFrequency();
-		MainWindow.println(String.format("Усталявана рэзанансная частата %.1f Гц", fn));
+		MainWindow.println(String.format(GUIStrings.SPRING_RESONANT_FREQUENCY + " %.1f Гц", fn));
 	}
 
 	public double defineDampingRatio() {
@@ -192,8 +192,6 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 	}
 
 	public double defineCriticalDamping() {
-		// MainWindow.println("Прыведзеная маса " + defineReducedMass(p1, p2) +
-		// " кг");
 		return 2 * sqrt(k * defineReducedMass(p1, p2));
 	}
 
@@ -210,16 +208,15 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 	}
 
 	public void setDampingRatio(double ksi) {
-		MainWindow.println(String.format("Усталяванне каэф. дэмпфавання %.3f...", ksi));
 		setDamping(ksi * defineCriticalDamping());
 		checkOverCriticalDamping();
-		MainWindow.println(String.format("Усталяваны каэф. дэмпфавання: %.3f", defineDampingRatio())
-				+ String.format(", дэмпфаванне: %.3e Н/(м/с)", c));
+		MainWindow.println(String.format(GUIStrings.SPRING_DAMPING_RATIO + " %.3f", defineDampingRatio())
+				+ String.format(", " + GUIStrings.SPRING_DAMPING + " %.3e Н/(м/с)", c));
 	}
 
 	public void setQualityFactor(double Q) {
 		if (Q > 0) {
-			MainWindow.println(String.format("Усталяванне дабротнасці %.1f...", Q));
+			MainWindow.println(String.format(GUIStrings.SPRING_QUALITY_FACTOR + " %.1f...", Q));
 			setDampingRatio(1f / 2 / Q);
 		}
 	}
@@ -246,7 +243,7 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 	private void checkOverCriticalDamping() {
 		if (defineDampingRatio() > 20) {
 			setDampingRatio(20);
-			MainWindow.println("Выпраўлена звышкрытычнае дэмпфаванне!");
+			MainWindow.println(GUIStrings.HYPERCRITICAL_DAMPING_FIXED);
 		}
 	}
 

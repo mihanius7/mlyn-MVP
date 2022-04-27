@@ -112,13 +112,11 @@ public class PointMass implements Element, Cloneable {
 
 	public double measureAx() {
 		double dt = Simulation.timeStepController.getTimeStepSize();
-		// return (x - 2 * lastx + lastlastx) / dt / dt;
 		return (vel.X() - lastVel.X()) / dt;
 	}
 
 	public double measureAy() {
 		double dt = Simulation.timeStepController.getTimeStepSize();
-		// return (y - 2 * lasty + lastlasty) / dt / dt;
 		return (vel.Y() - lastVel.Y()) / dt;
 	}
 

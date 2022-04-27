@@ -10,12 +10,8 @@ public class MyMath {
 
 	private static Vector result;
 
-	// private static TabulatedFunction fastSqrt;
-
 	public MyMath() {
 		result = new Vector();
-		// fastSqrt = new TabulatedFunction(FunctionType.SQRT, 0, 3 * m, 0.1 * mm);
-		// fastSqrt.calculateTable();
 	}
 
 	public enum Axis {
