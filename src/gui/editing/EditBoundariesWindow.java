@@ -36,7 +36,7 @@ public class EditBoundariesWindow extends AbstractEditWindow implements ActionLi
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		setSize(380, 192);
-		setTitle(EDIT_BOUNDARIES_DIALOG);
+		setTitle(GUIStrings.EDIT_BOUNDARIES_DIALOG);
 
 		JLabel label1 = new JLabel(GUIStrings.LEFT_BOUNDARY + ", m");
 		label1.setBounds(16, 8, 180, 20);
@@ -70,7 +70,7 @@ public class EditBoundariesWindow extends AbstractEditWindow implements ActionLi
 		field4.setBounds(205, 92, 50, label4.getHeight());
 		getContentPane().add(field4);
 
-		JButton button1 = new JButton(APPLY_BUTTON);
+		JButton button1 = new JButton(GUIStrings.APPLY_BUTTON);
 		button1.setBounds(250, 124, 116, 24);
 		button1.addActionListener(this);
 		getContentPane().add(button1);
@@ -78,22 +78,22 @@ public class EditBoundariesWindow extends AbstractEditWindow implements ActionLi
 		Container c = getContentPane();
 		c.setLayout(null);
 
-		checkBox1 = new JCheckBox(BOUNDARY_ENABLED);
+		checkBox1 = new JCheckBox(GUIStrings.BOUNDARY_ENABLED);
 		checkBox1.setHorizontalAlignment(SwingConstants.LEFT);
 		checkBox1.setBounds(263, 6, 103, 25);
 		getContentPane().add(checkBox1);
 
-		checkBox2 = new JCheckBox(BOUNDARY_ENABLED);
+		checkBox2 = new JCheckBox(GUIStrings.BOUNDARY_ENABLED);
 		checkBox2.setHorizontalAlignment(SwingConstants.LEFT);
 		checkBox2.setBounds(263, 34, 103, 25);
 		getContentPane().add(checkBox2);
 
-		checkBox3 = new JCheckBox(BOUNDARY_ENABLED);
+		checkBox3 = new JCheckBox(GUIStrings.BOUNDARY_ENABLED);
 		checkBox3.setHorizontalAlignment(SwingConstants.LEFT);
 		checkBox3.setBounds(263, 62, 103, 25);
 		getContentPane().add(checkBox3);
 
-		checkBox4 = new JCheckBox(BOUNDARY_ENABLED);
+		checkBox4 = new JCheckBox(GUIStrings.BOUNDARY_ENABLED);
 		checkBox4.setHorizontalAlignment(SwingConstants.LEFT);
 		checkBox4.setBounds(263, 90, 103, 25);
 		getContentPane().add(checkBox4);
@@ -111,10 +111,10 @@ public class EditBoundariesWindow extends AbstractEditWindow implements ActionLi
 			boundaries.setUseUpper(checkBox4.isSelected());
 			Viewport.scaleToBoundaries();
 		} catch (NumberFormatException e1) {
-			JOptionPane.showMessageDialog(null, "”в€дз≥це л≥чбу прыв≥льна!", "јтрыманне л≥чбы...",
+			JOptionPane.showMessageDialog(null, GUIStrings.NUMBER_FORMAT_EXCEPTION, "јтрыманне л≥чбы...",
 					JOptionPane.WARNING_MESSAGE);
 		} catch (ParseException e2) {
-			JOptionPane.showMessageDialog(null, "ѕамылка падчас распазнанн€ л≥чбы!", "Ћакал≥зацы€ л≥чбы...",
+			JOptionPane.showMessageDialog(null, GUIStrings.NUMBER_PARSE_EXCEPTION, "Ћакал≥зацы€ л≥чбы...",
 					JOptionPane.WARNING_MESSAGE);
 		}
 		refreshContent();
