@@ -6,9 +6,12 @@ import gui.MainWindow;
 import static constants.PhysicalConstants.cm;
 
 public class Boundaries implements Cloneable {
+	private static final String BOTTOM_BOUNDARY = "Ніжняя мяжа";
+	private static final String UPPER_BOUNDARY = "Верхняя мяжа";
+	private static final String RIGHT_BOUNDARY = "Правая мяжа";
+	private static final String LEFT_BOUNDARY = "Левая мяжа";
 	private double left, right, upper, bottom;
-	private double leftEffective, rightEffective, upperEffective,
-			bottomEffective;
+	private double leftEffective, rightEffective, upperEffective, bottomEffective;
 	private double autosizeMargin = 10 * cm;
 	private boolean useLeft, useRight, useUpper, useBottom;
 
@@ -25,13 +28,13 @@ public class Boundaries implements Cloneable {
 
 	public void setBounds(double left, double right, double upper, double bottom) {
 		this.left = left;
-		MainWindow.println("Левая мяжа, м: " + this.left);
+		MainWindow.println(LEFT_BOUNDARY + ", m: " + this.left);
 		this.right = right;
-		MainWindow.println("Правая мяжа, м: " + this.right);
+		MainWindow.println(RIGHT_BOUNDARY + ", m: " + this.right);
 		this.upper = upper;
-		MainWindow.println("Верхняя мяжа, м: " + this.upper);
+		MainWindow.println(UPPER_BOUNDARY + "m: " + this.upper);
 		this.bottom = bottom;
-		MainWindow.println("Ніжняя мяжа, м: " + this.bottom);
+		MainWindow.println(BOTTOM_BOUNDARY + ", m: " + this.bottom);
 	}
 
 	public double getLeft() {
@@ -60,12 +63,10 @@ public class Boundaries implements Cloneable {
 
 	public void setHeight(double h) {
 		upper = bottom + h;
-		MainWindow.println("Вышыня межаў, м: " + getHeight());
 	}
 
 	public void setWidth(double w) {
 		right = left + w;
-		MainWindow.println("Шырыня межаў, м: " + getWidth());
 	}
 
 	public boolean isUseLeft() {
@@ -121,20 +122,16 @@ public class Boundaries implements Cloneable {
 		upperEffective = Double.MIN_VALUE;
 		for (int i = 0; i < getParticlesCount(); i++) {
 			if (getParticle(i).getX() - getParticle(i).getRadius() < leftEffective)
-				leftEffective = getParticle(i).getX()
-						- getParticle(i).getRadius();
+				leftEffective = getParticle(i).getX() - getParticle(i).getRadius();
 			if (getParticle(i).getX() + getParticle(i).getRadius() > rightEffective)
-				rightEffective = getParticle(i).getX()
-						+ getParticle(i).getRadius();
+				rightEffective = getParticle(i).getX() + getParticle(i).getRadius();
 			if (getParticle(i).getY() - getParticle(i).getRadius() < bottomEffective)
-				bottomEffective = getParticle(i).getY()
-						- getParticle(i).getRadius();
+				bottomEffective = getParticle(i).getY() - getParticle(i).getRadius();
 			if (getParticle(i).getY() + getParticle(i).getRadius() > upperEffective)
-				upperEffective = getParticle(i).getY()
-						+ getParticle(i).getRadius();
+				upperEffective = getParticle(i).getY() + getParticle(i).getRadius();
 		}
 	}
-	
+
 	public Object clone() throws CloneNotSupportedException {
 		Boundaries clone = (Boundaries) super.clone();
 		return clone;
@@ -142,8 +139,7 @@ public class Boundaries implements Cloneable {
 
 	public void autosize() {
 		refreshEffectiveBoundaries();
-		setBounds(leftEffective - autosizeMargin, rightEffective
-				+ autosizeMargin, upperEffective + autosizeMargin,
+		setBounds(leftEffective - autosizeMargin, rightEffective + autosizeMargin, upperEffective + autosizeMargin,
 				bottomEffective - autosizeMargin);
 	}
 
