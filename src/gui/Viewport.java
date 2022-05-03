@@ -73,7 +73,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private static long frameTime, dt;
 	private static String timeString = "N/A", timeStepString = "N/A";
 	private static Timer refreshLabelsTimer;
-	private static Image backgroundFromFile;
 	private static BufferedImage tracksImage;
 	private BasicStroke particleBorder = new BasicStroke(0.25f);
 	private BasicStroke crossStroke = new BasicStroke(3f);
@@ -145,8 +144,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		Object src = e.getSource();
 		if (src == refreshLabelsTimer) {
 			timeString = String.format("t = %.3f c, ", Simulation.getTime())
-					+ String.format("dt = %.4f", timeStepController.getTimeStepSize() * 1000) + " мс, "
-					+ String.format("Vmax = %.2f м/с", interactionProcessor.defineMaxParticleVelocity()) + ", fps = "
+					+ String.format("dt = %.4f", timeStepController.getTimeStepSize() * 1000) + " ms, "
+					+ String.format("Vmax = %.2f m/s", interactionProcessor.defineMaxParticleVelocity()) + ", fps = "
 					+ fps * 1000 / REFRESH_MESSAGES_INTERVAL;
 			double r = Simulation.interactionProcessor.getTimeStepReserveRatio();
 			Simulation.timeStepController.measureTimeScale();

@@ -267,7 +267,7 @@ public class MainWindow extends JFrame {
 	}
 
 	public void showAboutWindow() {
-		JOptionPane.showMessageDialog(null, GUIStrings.ABOUT, "Аб праграме " + GUIStrings.APP_NAME, JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(null, GUIStrings.ABOUT, "About " + GUIStrings.APP_NAME, JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	public static void NothingIsSelectedMessage() {

@@ -290,7 +290,7 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 
 	public void setBeta(double r1, double r2, double e, double u) {
 		this.beta = (2 * e * sqrt(r1 * r2 / (r1 + r2))) / (3 * (1 - u * u));
-		MainWindow.println(String.format("Сутыкненні па Герцу, beta = %.3e", beta));
+		MainWindow.println(String.format(GUIStrings.RECOIL_BY_HERTZ + ", beta = %.3e", beta));
 	}
 
 	public void setBeta(double r1, double r2, double e1, double e2, double u1, double u2) {
