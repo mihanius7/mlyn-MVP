@@ -35,7 +35,7 @@ public class EditBoundariesWindow extends AbstractEditWindow implements ActionLi
 	void buildGUI() {
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setSize(380, 192);
+		setSize(400, 192);
 		setTitle(GUIStrings.EDIT_BOUNDARIES_DIALOG);
 
 		JLabel label1 = new JLabel(GUIStrings.LEFT_BOUNDARY + ", m");
@@ -78,22 +78,22 @@ public class EditBoundariesWindow extends AbstractEditWindow implements ActionLi
 		Container c = getContentPane();
 		c.setLayout(null);
 
-		checkBox1 = new JCheckBox(GUIStrings.BOUNDARY_ENABLED);
+		checkBox1 = new JCheckBox(GUIStrings.BOUNDARY_USE);
 		checkBox1.setHorizontalAlignment(SwingConstants.LEFT);
 		checkBox1.setBounds(263, 6, 103, 25);
 		getContentPane().add(checkBox1);
 
-		checkBox2 = new JCheckBox(GUIStrings.BOUNDARY_ENABLED);
+		checkBox2 = new JCheckBox(GUIStrings.BOUNDARY_USE);
 		checkBox2.setHorizontalAlignment(SwingConstants.LEFT);
 		checkBox2.setBounds(263, 34, 103, 25);
 		getContentPane().add(checkBox2);
 
-		checkBox3 = new JCheckBox(GUIStrings.BOUNDARY_ENABLED);
+		checkBox3 = new JCheckBox(GUIStrings.BOUNDARY_USE);
 		checkBox3.setHorizontalAlignment(SwingConstants.LEFT);
 		checkBox3.setBounds(263, 62, 103, 25);
 		getContentPane().add(checkBox3);
 
-		checkBox4 = new JCheckBox(GUIStrings.BOUNDARY_ENABLED);
+		checkBox4 = new JCheckBox(GUIStrings.BOUNDARY_USE);
 		checkBox4.setHorizontalAlignment(SwingConstants.LEFT);
 		checkBox4.setBounds(263, 90, 103, 25);
 		getContentPane().add(checkBox4);
