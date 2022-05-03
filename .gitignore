@@ -1,4 +1,4 @@
-.idea
+﻿.idea
 .settings
 classes
 bin
@@ -6,4 +6,3 @@ bin
 .project
 МлынMVP.iml
 МлынMVP.rar
-GUIStrings.xlsx
