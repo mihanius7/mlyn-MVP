@@ -22,6 +22,9 @@ import elements.point_mass.Particle;
 import file.SAXelementParser;
 import gui.ViewportEvent.MouseMode;
 import gui.editing.EditBoundariesWindow;
+import gui.lang.GUIStrings;
+import gui.lang.International;
+import gui.lang.Language;
 import main.SampleScenes;
 import simulation.Simulation;
 
@@ -45,7 +48,7 @@ public class MainWindow extends JFrame {
 	private JLabel lblDt;
 	private JFileChooser openSceneChooser, saveSceneChooser;
 
-	public MainWindow() {
+	public MainWindow() {		
 		instance = this;
 		simulation = new Simulation();
 		viewport = new Viewport(viewportInitWidth, viewportInitHeight);
@@ -55,7 +58,9 @@ public class MainWindow extends JFrame {
 		ve = new ViewportEvent(viewport, this);
 		getContentPane().setLayout(null);
 		getContentPane().add(viewport);
-
+		
+		International.prepareStrings(Language.BELARUSSIAN);
+		
 		initMenu();
 		initButtonsAndOthers();
 		initDialogs();

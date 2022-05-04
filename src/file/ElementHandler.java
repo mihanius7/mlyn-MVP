@@ -9,9 +9,9 @@ import org.xml.sax.SAXException;
 
 import elements.force_pair.Spring;
 import elements.point_mass.Particle;
-import gui.GUIStrings;
 import gui.MainWindow;
 import gui.Viewport;
+import gui.lang.GUIStrings;
 import simulation.Simulation;
 import simulation.components.Boundaries;
 

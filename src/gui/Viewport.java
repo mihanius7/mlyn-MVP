@@ -32,6 +32,7 @@ import elements.groups.SpringGroup;
 import elements.point_mass.Particle;
 import evaluation.Vector;
 import gui.ViewportEvent.MouseMode;
+import gui.lang.GUIStrings;
 import simulation.Simulation;
 import simulation.components.Boundaries;
 

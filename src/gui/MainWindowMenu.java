@@ -13,6 +13,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 
 import gui.ViewportEvent.MouseMode;
+import gui.lang.GUIStrings;
 import simulation.Simulation;
 
 public class MainWindowMenu extends JMenuBar {
@@ -35,7 +36,7 @@ public class MainWindowMenu extends JMenuBar {
 		groupMouse = new ButtonGroup();
 		mwme = new MainWindowMenuEvent(this);
 
-		menu = new JMenu("Τΰιλ");
+		menu = new JMenu(GUIStrings.MENU_FILE);
 		menu.setMnemonic(KeyEvent.VK_F);
 		add(menu);
 

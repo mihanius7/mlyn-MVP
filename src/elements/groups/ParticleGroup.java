@@ -8,9 +8,9 @@ import java.util.Iterator;
 import elements.point_mass.Particle;
 import evaluation.MyMath;
 import evaluation.Vector;
-import gui.GUIStrings;
 import gui.MainWindow;
 import gui.Viewport;
+import gui.lang.GUIStrings;
 import simulation.Simulation;
 
 public class ParticleGroup extends ArrayList<Particle> implements Cloneable {

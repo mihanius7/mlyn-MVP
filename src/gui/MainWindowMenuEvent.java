@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 
 import gui.ViewportEvent.MouseMode;
+import gui.lang.GUIStrings;
 import simulation.Simulation;
 
 public class MainWindowMenuEvent implements ActionListener {

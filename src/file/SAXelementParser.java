@@ -9,8 +9,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import gui.GUIStrings;
 import gui.MainWindow;
+import gui.lang.GUIStrings;
 
 public class SAXelementParser {
 

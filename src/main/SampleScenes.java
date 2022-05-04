@@ -8,9 +8,9 @@ import static simulation.Simulation.getLastAddedParticle;
 import static simulation.Simulation.interactionProcessor;
 import static simulation.Simulation.timeStepController;
 
-import gui.GUIStrings;
 import gui.MainWindow;
 import gui.Viewport;
+import gui.lang.GUIStrings;
 import simulation.Simulation;
 import simulation.components.Boundaries;
 import simulation.components.TimeStepController.TimeStepMode;

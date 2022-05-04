@@ -15,9 +15,9 @@ import constants.PhysicalConstants;
 import elements.Interactable;
 import elements.Selectable;
 import elements.point_mass.Particle;
-import gui.GUIStrings;
 import gui.MainWindow;
 import gui.Viewport;
+import gui.lang.GUIStrings;
 import simulation.Simulation;
 
 public class Spring extends ForcePair implements Selectable, Interactable {
