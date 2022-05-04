@@ -26,11 +26,11 @@ import elements.force_pair.Spring;
 import elements.groups.ParticleGroup;
 import elements.groups.SpringGroup;
 import elements.point_mass.Particle;
-import gui.GUIStrings;
 import gui.MainWindow;
 import gui.Viewport;
 import gui.ViewportEvent;
 import gui.ViewportEvent.MouseMode;
+import gui.lang.GUIStrings;
 import simulation.SimulationContent;
 import simulation.components.OneTimePerStepProcessable;
 

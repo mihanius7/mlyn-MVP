@@ -13,6 +13,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 
 import gui.ViewportEvent.MouseMode;
+import gui.lang.GUIStrings;
 import simulation.Simulation;
 
 public class MainWindowMenu extends JMenuBar {

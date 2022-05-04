@@ -1,7 +1,7 @@
 package gui.editing;
 
-import gui.GUIStrings;
 import gui.Viewport;
+import gui.lang.GUIStrings;
 import simulation.Simulation;
 import simulation.components.Boundaries;
 

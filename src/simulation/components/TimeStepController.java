@@ -2,9 +2,9 @@ package simulation.components;
 
 import static simulation.Simulation.interactionProcessor;
 
-import gui.GUIStrings;
 import gui.MainWindow;
 import gui.Viewport;
+import gui.lang.GUIStrings;
 import simulation.Simulation;
 
 public class TimeStepController implements OneTimePerStepProcessable {

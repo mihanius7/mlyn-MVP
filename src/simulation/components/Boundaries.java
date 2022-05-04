@@ -3,8 +3,9 @@ package simulation.components;
 import static simulation.Simulation.*;
 import static java.lang.Math.abs;
 
-import gui.GUIStrings;
 import gui.MainWindow;
+import gui.lang.GUIStrings;
+
 import static constants.PhysicalConstants.cm;
 
 public class Boundaries implements Cloneable {
