@@ -6,6 +6,8 @@ import java.util.ResourceBundle;
 import static gui.lang.GUIStrings.*;
 
 public class International {
+	
+	public static final String LANG_FILENAME_BASE = "resources/gui_strings";
 
 	public static boolean prepareStrings(Language lang) {
 		Locale locale;
@@ -36,7 +38,7 @@ public class International {
 		}
 		ResourceBundle rb;
 		try {
-			rb = ResourceBundle.getBundle("gui/lang/gui_strings", locale);
+			rb = ResourceBundle.getBundle(LANG_FILENAME_BASE, locale);
 			changeStrings(rb);
 			return true;
 		} catch (MissingResourceException mre) {
