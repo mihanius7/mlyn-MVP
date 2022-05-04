@@ -59,7 +59,7 @@ public class MainWindow extends JFrame {
 		getContentPane().setLayout(null);
 		getContentPane().add(viewport);
 		
-		International.prepareStrings(Language.BELARUSSIAN);
+		International.prepareStrings(Language.ENGLISH);
 		
 		initMenu();
 		initButtonsAndOthers();
