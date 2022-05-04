@@ -1,6 +1,7 @@
 package gui.lang;
 
 public class GUIStrings {
+	public static String MENU_FILE = "File";
 	public static String OPEN_SCENE_DIALOG = "Open scene";
 	public static String IMAGE_SAVING_DIALOG = "Save Image";
 	public static String RECORDER_DIALOG = "Recorder";

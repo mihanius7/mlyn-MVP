@@ -12,18 +12,27 @@ public class International {
 		switch (lang) {
 		case ENGLISH: {
 			locale = new Locale("", "");
+			System.out.println("English");
+			break;
 		}
 		case BELARUSSIAN: {
 			locale = new Locale("by", "BY");
+			System.out.println("Belarussian");
+			break;
 		}
 		case RUSSIAN: {
 			locale = new Locale("ru", "RU");
+			System.out.println("Russian");
+			break;
 		}
 		case POLISH: {
 			locale = new Locale("pl", "PL");
+			System.out.println("Polish");
+			break;
 		}
 		default:
 			locale = new Locale("", "");
+			System.out.println("DEFAULT LANGUAGE");
 		}
 		ResourceBundle rb;
 		try {
@@ -37,6 +46,7 @@ public class International {
 	}
 
 	private static void changeStrings(ResourceBundle rb) {
+		MENU_FILE = rb.getString("MENU_FILE");
 		OPEN_SCENE_DIALOG = rb.getString("OPEN_SCENE_DIALOG");
 		IMAGE_SAVING_DIALOG = rb.getString("IMAGE_SAVING_DIALOG");
 		RECORDER_DIALOG = rb.getString("RECORDER_DIALOG");
@@ -157,6 +167,8 @@ public class International {
 		BOUNDARY_USE = rb.getString("BOUNDARY_USE");
 		APPLY_BUTTON = rb.getString("APPLY_BUTTON");
 		EDIT_BOUNDARIES_DIALOG = rb.getString("EDIT_BOUNDARIES_DIALOG");
+		
+		System.out.println("Last string sample: " + EDIT_BOUNDARIES_DIALOG);
 	}
 
 }

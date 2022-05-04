@@ -36,7 +36,7 @@ public class MainWindowMenu extends JMenuBar {
 		groupMouse = new ButtonGroup();
 		mwme = new MainWindowMenuEvent(this);
 
-		menu = new JMenu("Τΰιλ");
+		menu = new JMenu(GUIStrings.MENU_FILE);
 		menu.setMnemonic(KeyEvent.VK_F);
 		add(menu);
 
