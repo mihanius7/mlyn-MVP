@@ -371,7 +371,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.setFont(tagFont);
 		targetG2d.setColor(FONT_TAGS);
 		if (drawTag)
-			targetG2d.drawString(String.format("(%.1e", x) + String.format("; %.1e) ì", y), xc + 4, yc - 4);
+			targetG2d.drawString(String.format("(%.1e", x) + String.format("; %.1e) m", y), xc + 4, yc - 4);
 	}
 
 	private void drawAxisOn(Graphics2D targetG2d) {
