@@ -1,7 +1,5 @@
 package simulation;
 
-import static constants.PhysicalConstants.cm;
-
 import elements.groups.ParticleGroup;
 import elements.groups.SpringGroup;
 import simulation.components.Boundaries;
@@ -10,7 +8,7 @@ public class SimulationContent implements Cloneable {
 	
 	ParticleGroup particles = new ParticleGroup();
 	SpringGroup springs = new SpringGroup();
-	Boundaries boundaries = new Boundaries(0, 800 * cm, 480 * cm, 0 * cm);
+	Boundaries boundaries = new Boundaries(0, 9, 4.8, 0);
 
 	public ParticleGroup getParticles() {
 		return particles;

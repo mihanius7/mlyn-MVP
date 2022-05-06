@@ -59,7 +59,7 @@ public class MainWindow extends JFrame {
 		getContentPane().setLayout(null);
 		getContentPane().add(viewport);
 		
-		International.prepareStrings(Language.BELARUSSIAN);
+		International.prepareStrings(Language.POLISH);
 		
 		initMenu();
 		initButtonsAndOthers();
@@ -76,7 +76,7 @@ public class MainWindow extends JFrame {
 		setBounds(0, 0, 1024, 768);
 		setLocationRelativeTo(null);
 		setVisible(true);
-		setCaption("Новы");
+		setCaption(GUIStrings.NEW_PROJECT_NAME);
 
 		viewport.addKeyListener(ve);
 		viewport.addMouseListener(ve);
