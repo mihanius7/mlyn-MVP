@@ -28,7 +28,7 @@ public class MainWindowMenu extends JMenuBar {
 	JMenuItem itemOpen, itemSave, itemExit, menuItemScene1, menuItemScene2, menuItemScene3, menuItemScene4,
 			menuItemScene5, menuItemScene6, menuItemScene7, menuItemUndo, menuItemRedo;
 	JMenuItem itemStart, itemSteps, itemClear, menuItemFreeze, itemBoundaries;
-	JMenuItem itemAutoscale1, itemAutoscale2, itemSelectAll, itemAbout, menuItemMouseV, itemScreenshot;
+	JMenuItem itemAutoscale1, itemAutoscale2, itemSelectAll, itemAbout, menuItemMouseV, itemScreenshot, itemLanguage;
 	JMenuItem itemFix, menuItemConnect, itemFollow, itemCoM, itemDelete,
 			itemSnap, menuItemColorizeByCharge;
 	JCheckBoxMenuItem itemCollisions1, cbMenuItem1ss, cbMenuItem2, itemOuterForces, itemFriction, itemVelocities, itemForces,
@@ -41,8 +41,6 @@ public class MainWindowMenu extends JMenuBar {
 
 		menuFile = new JMenu();
 		menuFile.setMnemonic(KeyEvent.VK_F);
-
-		add(menuFile);
 		itemOpen = new JMenuItem();
 		itemOpen.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		itemOpen.addActionListener(listener);
@@ -61,9 +59,9 @@ public class MainWindowMenu extends JMenuBar {
 		itemExit = new JMenuItem();
 		menuFile.add(itemExit);
 		itemExit.addActionListener(listener);
+		add(menuFile);
 
 		menuEdit = new JMenu();
-		add(menuEdit);
 		itemMouseSelect2 = new JRadioButtonMenuItem();
 		itemMouseSelect2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.ALT_MASK));
 		itemMouseSelect2.setSelected(false);
@@ -97,9 +95,9 @@ public class MainWindowMenu extends JMenuBar {
 		itemSnap.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, ActionEvent.CTRL_MASK));
 		itemSnap.addActionListener(listener);
 		menuEdit.add(itemSnap);
+		add(menuEdit);
 
 		menuAdd = new JMenu();
-		add(menuAdd);
 		itemAdd1 = new JRadioButtonMenuItem();
 		itemAdd1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK));
 		itemAdd1.setSelected(false);
@@ -112,10 +110,10 @@ public class MainWindowMenu extends JMenuBar {
 		itemAdd2.addActionListener(listener);
 		menuAdd.add(itemAdd2);
 		buttonGroupMouse.add(itemAdd2);
+		add(menuAdd);
 
 		menuSimulation = new JMenu();
 		menuSimulation.setMnemonic(KeyEvent.VK_S);
-		add(menuSimulation);
 		itemStart = new JMenuItem();
 		itemStart.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_MASK));
 		itemStart.addActionListener(listener);
@@ -148,10 +146,10 @@ public class MainWindowMenu extends JMenuBar {
 		itemBoundaries = new JMenuItem();
 		itemBoundaries.addActionListener(listener);
 		menuSimulation.add(itemBoundaries);
+		add(menuSimulation);
 
 		menuShow = new JMenu();
 		menuShow.setMnemonic(KeyEvent.VK_V);
-		add(menuShow);
 		itemAutoscale1 = new JMenuItem();
 		itemAutoscale1
 				.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
@@ -194,10 +192,13 @@ public class MainWindowMenu extends JMenuBar {
 		itemScreenshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, ActionEvent.ALT_MASK));
 		itemScreenshot.addActionListener(listener);
 		menuShow.add(itemScreenshot);
+		itemLanguage = new JMenuItem();
+		itemLanguage.addActionListener(listener);
+		menuShow.add(itemLanguage);
+		add(menuShow);
 
 		menuControl = new JMenu();
 		menuControl.setMnemonic(KeyEvent.VK_S);
-		add(menuControl);
 		menuMouse = new JMenu();
 		menuControl.add(menuMouse);
 		itemByForce = new JRadioButtonMenuItem();
@@ -212,13 +213,14 @@ public class MainWindowMenu extends JMenuBar {
 		itemByPlace.addActionListener(listener);
 		menuMouse.add(itemByPlace);
 		buttonGroupMouse.add(itemByPlace);
+		add(menuControl);
 
 		menuHelp = new JMenu();
-		add(menuHelp);
 		itemAbout = new JMenuItem();
 		itemAbout.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, ActionEvent.CTRL_MASK));
 		menuHelp.add(itemAbout);
 		itemAbout.addActionListener(listener);
+		add(menuHelp);
 	}
 
 	public void applyLabels() {
@@ -251,6 +253,7 @@ public class MainWindowMenu extends JMenuBar {
 		itemFriction.setText(GUIStrings.MENU_FRICTION);
 
 		menuShow.setText(GUIStrings.MENU_SHOW);
+		itemLanguage.setText(GUIStrings.MENU_LANGUAGE);
 		itemBoundaries.setText(GUIStrings.MENU_SIMULATION_BOUNDS);
 		itemAutoscale1.setText(GUIStrings.MENU_ZOOM_TO_PARTICLES);
 		itemAutoscale2.setText(GUIStrings.MENU_ZOOM_TO_BOUNDARIES);

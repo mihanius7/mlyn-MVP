@@ -62,6 +62,7 @@ public class GUIStrings {
 	public static String MENU_SAVE = "Save";
 	public static String MENU_OPEN = "Open";
 	public static String MENU_MUCH_TIME_NEEDED_PLEASE_WAIT = "It will take some time to create the scene. Please, wait ... :)";
+	public static String MENU_LANGUAGE = "Language";
 
 	public static String IMAGE_SAVED_TO = "Image saved to";
 	public static String SCREENSHOT_NAME = "Frame";

@@ -128,6 +128,8 @@ public class MainWindowMenuEvent implements ActionListener {
 			mainWindow.showAboutWindow();
 		} else if (src.equals(mainWindowMenu.itemScreenshot)) {
 			mainWindow.saveImageToFile();
+		} else if (src.equals(mainWindowMenu.itemLanguage)) {
+			mainWindow.changeLanguage(mainWindow.askForLanguage());
 		} else
 			MainWindow.println("Another menu event");
 	}

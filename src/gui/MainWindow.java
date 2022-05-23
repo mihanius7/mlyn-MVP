@@ -159,14 +159,15 @@ public class MainWindow extends JFrame {
 		lblDt.setText(GUIStrings.TIMESTEP_LABEL);
 		dtFix.setText(GUIStrings.TIMESTEP_FIXED);
 	}
-	
-	private void changeLanguage(Language lang) {
+
+	public void changeLanguage(Language lang) {
 		International.prepareStrings(lang);
 		this.applyLabels();
 		menuBar.applyLabels();
+		MainWindow.println("Language changed to " + lang);
 	}
-	
-	private Language askForLanguage() {
+
+	public Language askForLanguage() {
 		String[] possibleStrings = Arrays.toString(Language.values()).replaceAll("^.|.$", "").split(", ");
 		String selectedString = (String) JOptionPane.showInputDialog(null,
 				"Select language / \u0410\u0431\u044F\u0440\u044B\u0446\u0435 \u043C\u043E\u0432\u0443", "Welcome!",
