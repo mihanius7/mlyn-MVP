@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.io.File;
+import java.util.Arrays;
+
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -49,7 +51,7 @@ public class MainWindow extends JFrame {
 	private JLabel lblDt;
 	private JFileChooser openSceneChooser, saveSceneChooser;
 
-	public MainWindow() {		
+	public MainWindow() {
 		instance = this;
 		simulation = new Simulation();
 		viewport = new Viewport(viewportInitWidth, viewportInitHeight);
@@ -58,17 +60,15 @@ public class MainWindow extends JFrame {
 		mwe = new MainWindowEvent(this);
 		ve = new ViewportEvent(viewport, this);
 		getContentPane().setLayout(null);
-		getContentPane().add(viewport);		
-		
+		getContentPane().add(viewport);
+
 		menuBar = new MainWindowMenu();
 		setJMenuBar(menuBar);
 		createButtons();
 		createDialogs();
 
-		International.prepareStrings(Language.BELARUSSIAN);
-		applyLabels();
-		menuBar.applyLabels();
-		
+		changeLanguage(askForLanguage());
+
 		setFocusTo(Simulation.getReferenceParticle());
 		Simulation.getReferenceSpring();
 
@@ -153,11 +153,25 @@ public class MainWindow extends JFrame {
 		getContentPane().add(dtFix);
 
 	}
-	
+
 	private void applyLabels() {
 		startButton.setText(GUIStrings.START_PAUSE_BUTTON);
 		lblDt.setText(GUIStrings.TIMESTEP_LABEL);
 		dtFix.setText(GUIStrings.TIMESTEP_FIXED);
+	}
+	
+	private void changeLanguage(Language lang) {
+		International.prepareStrings(lang);
+		this.applyLabels();
+		menuBar.applyLabels();
+	}
+	
+	private Language askForLanguage() {
+		String[] possibleStrings = Arrays.toString(Language.values()).replaceAll("^.|.$", "").split(", ");
+		String selectedString = (String) JOptionPane.showInputDialog(null,
+				"Select language / \u0410\u0431\u044F\u0440\u044B\u0446\u0435 \u043C\u043E\u0432\u0443", "Welcome!",
+				JOptionPane.INFORMATION_MESSAGE, null, possibleStrings, possibleStrings[1]);
+		return Language.valueOf(selectedString);
 	}
 
 	void resizeGUI() {
@@ -271,7 +285,8 @@ public class MainWindow extends JFrame {
 	}
 
 	public void showAboutWindow() {
-		JOptionPane.showMessageDialog(null, GUIStrings.ABOUT, "About " + GUIStrings.APP_NAME, JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(null, GUIStrings.ABOUT, "About " + GUIStrings.APP_NAME,
+				JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	public static void NothingIsSelectedMessage() {
@@ -280,21 +295,23 @@ public class MainWindow extends JFrame {
 	}
 
 	public static void VibratorIsEmptyMessage() {
-		JOptionPane.showMessageDialog(null, GUIStrings.EMPTY_VIBRATOR_MESSAGE, GUIStrings.VIBRATION_DIALOG, JOptionPane.WARNING_MESSAGE);
+		JOptionPane.showMessageDialog(null, GUIStrings.EMPTY_VIBRATOR_MESSAGE, GUIStrings.VIBRATION_DIALOG,
+				JOptionPane.WARNING_MESSAGE);
 	}
 
 	public static void uncompatibleRecordingModeMessage() {
-		JOptionPane.showMessageDialog(null, GUIStrings.NO_VIBRATOR_FOR_AFCH_MESSAGE, GUIStrings.RECORDER_DIALOG, JOptionPane.WARNING_MESSAGE);
+		JOptionPane.showMessageDialog(null, GUIStrings.NO_VIBRATOR_FOR_AFCH_MESSAGE, GUIStrings.RECORDER_DIALOG,
+				JOptionPane.WARNING_MESSAGE);
 	}
 
 	public static void fileWriteErrorMessage(String fileName) {
-		JOptionPane.showMessageDialog(null, GUIStrings.CANT_WRITE_FILE_MESSAGE + " " + fileName, GUIStrings.FILE_ACESS_DENIED,
-				JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null, GUIStrings.CANT_WRITE_FILE_MESSAGE + " " + fileName,
+				GUIStrings.FILE_ACESS_DENIED, JOptionPane.ERROR_MESSAGE);
 	}
 
 	public static void imageWriteErrorMessage(String fileName) {
-		JOptionPane.showMessageDialog(null, GUIStrings.FILE_WRITING_ERROR_MESSAGE + " " + fileName, GUIStrings.IMAGE_SAVING_DIALOG,
-				JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null, GUIStrings.FILE_WRITING_ERROR_MESSAGE + " " + fileName,
+				GUIStrings.IMAGE_SAVING_DIALOG, JOptionPane.ERROR_MESSAGE);
 	}
 
 	public void openSceneDialog() {
