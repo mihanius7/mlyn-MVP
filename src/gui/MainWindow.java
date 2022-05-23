@@ -25,6 +25,7 @@ import gui.editing.EditBoundariesWindow;
 import gui.lang.GUIStrings;
 import gui.lang.International;
 import gui.lang.Language;
+import gui.menu.MainWindowMenu;
 import main.SampleScenes;
 import simulation.Simulation;
 
@@ -57,14 +58,17 @@ public class MainWindow extends JFrame {
 		mwe = new MainWindowEvent(this);
 		ve = new ViewportEvent(viewport, this);
 		getContentPane().setLayout(null);
-		getContentPane().add(viewport);
+		getContentPane().add(viewport);		
 		
-		International.prepareStrings(Language.POLISH);
-		
-		initMenu();
-		initButtonsAndOthers();
-		initDialogs();
+		menuBar = new MainWindowMenu();
+		setJMenuBar(menuBar);
+		createButtons();
+		createDialogs();
 
+		International.prepareStrings(Language.BELARUSSIAN);
+		applyLabels();
+		menuBar.applyLabels();
+		
 		setFocusTo(Simulation.getReferenceParticle());
 		Simulation.getReferenceSpring();
 
@@ -102,26 +106,15 @@ public class MainWindow extends JFrame {
 		return instance;
 	}
 
-	private void initMenu() {
-		menuBar = new MainWindowMenu();
-		setJMenuBar(menuBar);
-	}
-
-	private void initButtonsAndOthers() {
+	private void createButtons() {
 
 		addComponentListener(mwe);
 
-		startButton = new JButton(GUIStrings.START_PAUSE_BUTTON);
-
-		startButton.setBackground(UIManager.getColor("Button.background"));
-
+		startButton = new JButton();
 		startButton.setFocusable(false);
 		startButton.setFocusCycleRoot(false);
 		startButton.addActionListener(mwe);
 		getContentPane().add(startButton);
-
-		new ButtonGroup();
-		new ButtonGroup();
 
 		textArea1 = new JTextArea();
 		textArea1.setLineWrap(true);
@@ -133,7 +126,7 @@ public class MainWindow extends JFrame {
 		scrollArea.setViewportView(textArea1);
 		getContentPane().add(scrollArea);
 
-		lblDt = new JLabel(GUIStrings.TIMESTEP_LABEL);
+		lblDt = new JLabel();
 		lblDt.setHorizontalAlignment(SwingConstants.TRAILING);
 
 		getContentPane().add(lblDt);
@@ -153,12 +146,18 @@ public class MainWindow extends JFrame {
 
 		getContentPane().add(dtRealScale);
 
-		dtFix = new JButton(GUIStrings.TIMESTEP_FIXED);
+		dtFix = new JButton();
 		dtFix.setFont(new Font("Dialog", Font.BOLD, 11));
 		dtFix.addActionListener(mwe);
 
 		getContentPane().add(dtFix);
 
+	}
+	
+	private void applyLabels() {
+		startButton.setText(GUIStrings.START_PAUSE_BUTTON);
+		lblDt.setText(GUIStrings.TIMESTEP_LABEL);
+		dtFix.setText(GUIStrings.TIMESTEP_FIXED);
 	}
 
 	void resizeGUI() {
@@ -176,7 +175,7 @@ public class MainWindow extends JFrame {
 		dtFix.setBounds(108, buttonsY, 108, 24);
 	}
 
-	private void initDialogs() {
+	private void createDialogs() {
 		openSceneChooser = new JFileChooser(new java.io.File("").getAbsolutePath());
 		saveSceneChooser = new JFileChooser(new java.io.File("").getAbsolutePath());
 		FileFilter filter = new FileNameExtensionFilter(GUIStrings.FILETYPE_DESCRIPTION, "xml");

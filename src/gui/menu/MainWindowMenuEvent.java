@@ -1,4 +1,4 @@
-package gui;
+package gui.menu;
 
 import static simulation.Simulation.addToSelectionAllParticles;
 import static simulation.Simulation.clearSelection;
@@ -12,6 +12,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
+import gui.MainWindow;
+import gui.Viewport;
 import gui.ViewportEvent.MouseMode;
 import gui.lang.GUIStrings;
 import simulation.Simulation;
@@ -29,86 +31,86 @@ public class MainWindowMenuEvent implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
-		if (src.equals(mainWindowMenu.menuItemOpen)) {
+		if (src.equals(mainWindowMenu.itemOpen)) {
 			mainWindow.openSceneDialog();
-		} else if (src.equals(mainWindowMenu.menuItemStart)) {
+		} else if (src.equals(mainWindowMenu.itemStart)) {
 			if (Simulation.getInstance().isActive())
 				mainWindow.stopSimulationThread();
 			else
 				mainWindow.startSimulationThread();
-		} else if (src.equals(mainWindowMenu.menuItemStep)) {
+		} else if (src.equals(mainWindowMenu.itemSteps)) {
 			Simulation.perfomStep(50);
-		} else if (src.equals(mainWindowMenu.menuItemAutoscale)) {
+		} else if (src.equals(mainWindowMenu.itemAutoscale1)) {
 			Viewport.scaleToAllParticles();
-		} else if (src.equals(mainWindowMenu.menuItemViewAll)) {
+		} else if (src.equals(mainWindowMenu.itemAutoscale2)) {
 			Viewport.scaleToBoundaries();
-		} else if (src.equals(mainWindowMenu.menuItemExit)) {
+		} else if (src.equals(mainWindowMenu.itemExit)) {
 			System.exit(0);
-		} else if (src.equals(mainWindowMenu.cbMenuItem1pp)) {
-			Simulation.interactionProcessor.setUsePPCollisions(mainWindowMenu.cbMenuItem1pp.getState());
-		} else if (src.equals(mainWindowMenu.cbMenuItem3)) {
-			Simulation.interactionProcessor.setUseExternalForces(mainWindowMenu.cbMenuItem3.getState());
-		} else if (src.equals(mainWindowMenu.cbMenuItem3fr)) {
-			Simulation.interactionProcessor.setUseFriction(mainWindowMenu.cbMenuItem3fr.getState());
+		} else if (src.equals(mainWindowMenu.itemCollisions1)) {
+			Simulation.interactionProcessor.setUsePPCollisions(mainWindowMenu.itemCollisions1.getState());
+		} else if (src.equals(mainWindowMenu.itemOuterForces)) {
+			Simulation.interactionProcessor.setUseExternalForces(mainWindowMenu.itemOuterForces.getState());
+		} else if (src.equals(mainWindowMenu.itemFriction)) {
+			Simulation.interactionProcessor.setUseFriction(mainWindowMenu.itemFriction.getState());
 		} else if (src.equals(mainWindowMenu.menuItemFreeze)) {
 			getParticles().setZeroVelocities();
-		} else if (src.equals(mainWindowMenu.menuItemBoundaries)) {
+		} else if (src.equals(mainWindowMenu.itemBoundaries)) {
 			MainWindow.showEditBoundariesWindow();
-		} else if (src.equals(mainWindowMenu.menuItemSelectAll)) {
+		} else if (src.equals(mainWindowMenu.itemSelectAll)) {
 			Viewport.setMouseMode(MouseMode.PARTICLE_SELECT);
 			setMaxSelectionNumber(Integer.MAX_VALUE);
-			mainWindowMenu.rbMenuItemMouse1p.setSelected(true);
+			mainWindowMenu.itemMouseSelect2.setSelected(true);
 			addToSelectionAllParticles();
 			mainWindow.setFocusTo(Simulation.getLastAddedParticle());
-		} else if (src.equals(mainWindowMenu.cbMenuItem4)) {
-			Viewport.drawVelocities = mainWindowMenu.cbMenuItem4.getState();
-		} else if (src.equals(mainWindowMenu.cbMenuItem5)) {
-			Viewport.drawForces = mainWindowMenu.cbMenuItem5.getState();
-		} else if (src.equals(mainWindowMenu.cbMenuItem7)) {
-			Viewport.drawGradientParticles = mainWindowMenu.cbMenuItem7.getState();
-		} else if (src.equals(mainWindowMenu.cbMenuItem8)) {
-			Viewport.drawTags = mainWindowMenu.cbMenuItem8.getState();
-		} else if (src.equals(mainWindowMenu.cbMenuItem9)) {
-			Viewport.useGrid = mainWindowMenu.cbMenuItem9.getState();
-		} else if (src.equals(mainWindowMenu.cbMenuItem10)) {
-			Viewport.setDrawTracks(mainWindowMenu.cbMenuItem10.getState());			
-		} else if (src.equals(mainWindowMenu.menuItemClear)) {
+		} else if (src.equals(mainWindowMenu.itemVelocities)) {
+			Viewport.drawVelocities = mainWindowMenu.itemVelocities.getState();
+		} else if (src.equals(mainWindowMenu.itemForces)) {
+			Viewport.drawForces = mainWindowMenu.itemForces.getState();
+		} else if (src.equals(mainWindowMenu.itemPretty)) {
+			Viewport.drawGradientParticles = mainWindowMenu.itemPretty.getState();
+		} else if (src.equals(mainWindowMenu.itemTags)) {
+			Viewport.drawTags = mainWindowMenu.itemTags.getState();
+		} else if (src.equals(mainWindowMenu.itemGrid)) {
+			Viewport.useGrid = mainWindowMenu.itemGrid.getState();
+		} else if (src.equals(mainWindowMenu.itemTracks)) {
+			Viewport.setDrawTracks(mainWindowMenu.itemTracks.getState());			
+		} else if (src.equals(mainWindowMenu.itemClear)) {
 			Simulation.clearSimulation();
-		} else if (src.equals(mainWindowMenu.rbMenuItemMouse1p)) {
+		} else if (src.equals(mainWindowMenu.itemMouseSelect2)) {
 			Viewport.setMouseMode(MouseMode.PARTICLE_SELECT);
 			setMaxSelectionNumber(Integer.MAX_VALUE);
-		} else if (src.equals(mainWindowMenu.rbMenuItemMouse1s)) {
+		} else if (src.equals(mainWindowMenu.itemMouseSelect1)) {
 			Viewport.setMouseMode(MouseMode.SPRING_SELECT);
 			setMaxSelectionNumber(Integer.MAX_VALUE);
-		} else if (src.equals(mainWindowMenu.rbMenuItemMouse2p)) {
+		} else if (src.equals(mainWindowMenu.itemAdd1)) {
 			clearSelection();
 			Viewport.setMouseMode(MouseMode.PARTICLE_ADD);
-		} else if (src.equals(mainWindowMenu.rbMenuItemMouse4p)) {
+		} else if (src.equals(mainWindowMenu.itemByPlace)) {
 			clearSelection();
 			Viewport.setMouseMode(MouseMode.PARTICLE_MANIPULATION_COORDINATE);
 			setMaxSelectionNumber(1);
-		} else if (src.equals(mainWindowMenu.rbMenuItemMouse3p)) {
+		} else if (src.equals(mainWindowMenu.itemByForce)) {
 			clearSelection();
 			Viewport.setMouseMode(MouseMode.PARTICLE_MANIPULATION_ACCELERATION);
 			setMaxSelectionNumber(1);
-		} else if (src.equals(mainWindowMenu.rbMenuItemMouse2s)) {
+		} else if (src.equals(mainWindowMenu.itemAdd2)) {
 			clearSelection();
 			Viewport.setMouseMode(MouseMode.SPRING_ADD);
 			setMaxSelectionNumber(1);
-		} else if (src.equals(mainWindowMenu.menuItemFixParticle)) {
+		} else if (src.equals(mainWindowMenu.itemFix)) {
 			getSelectedParticles().fix();
 		} else if (src.equals(mainWindowMenu.menuItemColorizeByCharge)) {
 			getParticles().colorizeByCharge();
-		} else if (src.equals(mainWindowMenu.menuItemCOM)) {
+		} else if (src.equals(mainWindowMenu.itemCoM)) {
 			getSelectedParticles().defineCenterOfMass();
 			clearSelection();
-		} else if (src.equals(mainWindowMenu.menuItemDelete)) {
+		} else if (src.equals(mainWindowMenu.itemDelete)) {
 			Simulation.removeSelectedParticles();
 			Simulation.removeSelectedSprings();
-		} else if (src.equals(mainWindowMenu.menuItemSnapToGrid)) {
+		} else if (src.equals(mainWindowMenu.itemSnap)) {
 			getSelectedParticles().snapToGrid();
 			Simulation.interactionProcessor.recalculateNeighborsNeeded();
-		} else if (src.equals(mainWindowMenu.menuItemFollowParticle)) {
+		} else if (src.equals(mainWindowMenu.itemFollow)) {
 			if (getSelectedParticles().size() > 0) {
 				Viewport.camera.setWatchParticle(getSelectedParticle(0));
 				clearSelection();
@@ -122,9 +124,9 @@ public class MainWindowMenuEvent implements ActionListener {
 		} else if (src.equals(mainWindowMenu.menuItemScene3)) {
 			Simulation.clearSimulation();
 			mainWindow.refreshGUIControls();
-		} else if (src.equals(mainWindowMenu.menuItemAbout)) {
+		} else if (src.equals(mainWindowMenu.itemAbout)) {
 			mainWindow.showAboutWindow();
-		} else if (src.equals(mainWindowMenu.menuItemSaveScrn)) {
+		} else if (src.equals(mainWindowMenu.itemScreenshot)) {
 			mainWindow.saveImageToFile();
 		} else
 			MainWindow.println("Another menu event");
