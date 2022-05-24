@@ -10,7 +10,6 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.TexturePaint;
 import java.awt.Toolkit;
@@ -22,7 +21,6 @@ import java.awt.image.BufferedImage;
 
 import java.io.IOException;
 
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -298,10 +296,9 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		int y1 = toScreenY(p1.getY());
 		int x2 = toScreenX(p2.getX());
 		int y2 = toScreenY(p2.getY());
+		targetG2d.setColor(s.getColor());
 		targetG2d.setStroke(
 				new BasicStroke((float) (scale * s.getVisibleWidth()), BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL));
-		if (s.isSelected())
-			targetG2d.setPaint(s.getColor());
 		if (s.isLine())
 			targetG2d.drawLine(x1, y1, x2, y2);
 		else {
@@ -334,7 +331,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			targetG2d.drawString(String.format("%.0f Hz", s.getResonantFrequency()), -20, -5);
 			targetG2d.rotate(-alpha);
 			targetG2d.translate(-xc, -yc);
-		}
+		} 
 	}
 
 	private void drawMessagesOn(Graphics2D targetG2d) {

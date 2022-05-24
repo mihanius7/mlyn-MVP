@@ -171,7 +171,7 @@ public class MainWindow extends JFrame {
 		String[] possibleStrings = Arrays.toString(Language.values()).replaceAll("^.|.$", "").split(", ");
 		String selectedString = (String) JOptionPane.showInputDialog(null,
 				"Select language / \u0410\u0431\u044F\u0440\u044B\u0446\u0435 \u043C\u043E\u0432\u0443", "Welcome!",
-				JOptionPane.INFORMATION_MESSAGE, null, possibleStrings, possibleStrings[1]);
+				JOptionPane.INFORMATION_MESSAGE, null, possibleStrings, possibleStrings[0]);
 		return Language.valueOf(selectedString);
 	}
 
