@@ -20,19 +20,53 @@ import simulation.Simulation;
 public class MainWindowMenu extends JMenuBar {
 
 	private static final long serialVersionUID = 1L;
-	private JMenu menuFile, menuEdit, menuAdd, menuSimulation, menuShow, menuControl, menuHelp, menuConsider, menuMouse;
 	private ButtonGroup buttonGroupMouse;
 	private MainWindowMenuEvent listener;
-	JRadioButtonMenuItem itemMouseSelect2, itemMouseSelect1, itemAdd1, itemByPlace, itemByForce,
-			itemAdd2;
-	JMenuItem itemOpen, itemSave, itemExit, menuItemScene1, menuItemScene2, menuItemScene3, menuItemScene4,
-			menuItemScene5, menuItemScene6, menuItemScene7, menuItemUndo, menuItemRedo;
-	JMenuItem itemStart, itemSteps, itemClear, menuItemFreeze, itemBoundaries;
-	JMenuItem itemAutoscale1, itemAutoscale2, itemSelectAll, itemAbout, menuItemMouseV, itemScreenshot, itemLanguage;
-	JMenuItem itemFix, menuItemConnect, itemFollow, itemCoM, itemDelete,
-			itemSnap, menuItemColorizeByCharge;
-	JCheckBoxMenuItem itemCollisions1, cbMenuItem1ss, cbMenuItem2, itemOuterForces, itemFriction, itemVelocities, itemForces,
-			cbMenuItem6, itemPretty, itemTags, itemGrid, itemTracks;
+	private JMenu menuFile;
+	private JMenu menuEdit;
+	private JMenu menuAdd;
+	private JMenu menuSimulation;
+	private JMenu menuShow;
+	private JMenu menuControl;
+	private JMenu menuHelp;
+	private JMenu menuConsider;
+	private JMenu menuMouse;
+	JRadioButtonMenuItem itemMouseSelect2;
+	JRadioButtonMenuItem itemMouseSelect1;
+	JRadioButtonMenuItem itemAdd1;
+	JRadioButtonMenuItem itemByPlace;
+	JRadioButtonMenuItem itemByForce;
+	JRadioButtonMenuItem itemAdd2;
+	JMenuItem itemOpen;
+	JMenuItem itemSave;
+	JMenuItem itemExit;
+	JMenuItem itemStart;
+	JMenuItem itemSteps;
+	JMenuItem itemClear;
+	JMenuItem itemFreeze;
+	JMenuItem itemBoundaries;
+	JMenuItem itemAutoscale1;
+	JMenuItem itemAutoscale2;
+	JMenuItem itemSelectAll;
+	JMenuItem itemAbout;
+	JMenuItem itemScreenshot;
+	JMenuItem itemLanguage;
+	JMenuItem itemFix;
+	JMenuItem itemConnect;
+	JMenuItem itemFollow;
+	JMenuItem itemCoM;
+	JMenuItem itemDelete;
+	JMenuItem itemSnap;
+	JMenuItem itemColorizeByCharge;
+	JCheckBoxMenuItem itemCollisions1;
+	JCheckBoxMenuItem itemOuterForces;
+	JCheckBoxMenuItem itemFriction;
+	JCheckBoxMenuItem itemVelocities;
+	JCheckBoxMenuItem itemForces;
+	JCheckBoxMenuItem itemPretty;
+	JCheckBoxMenuItem itemTags;
+	JCheckBoxMenuItem itemGrid;
+	JCheckBoxMenuItem itemTracks;
 
 	public MainWindowMenu() {
 
@@ -62,14 +96,15 @@ public class MainWindowMenu extends JMenuBar {
 		add(menuFile);
 
 		menuEdit = new JMenu();
+		menuEdit.setMnemonic(KeyEvent.VK_E);
 		itemMouseSelect2 = new JRadioButtonMenuItem();
-		itemMouseSelect2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.ALT_MASK));
+		itemMouseSelect2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.ALT_MASK));
 		itemMouseSelect2.setSelected(false);
 		itemMouseSelect2.addActionListener(listener);
 		menuEdit.add(itemMouseSelect2);
 		buttonGroupMouse.add(itemMouseSelect2);
 		itemMouseSelect1 = new JRadioButtonMenuItem();
-		itemMouseSelect1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.ALT_MASK));
+		itemMouseSelect1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, ActionEvent.ALT_MASK));
 		itemMouseSelect1.setSelected(false);
 		itemMouseSelect1.addActionListener(listener);
 		menuEdit.add(itemMouseSelect1);
@@ -88,7 +123,7 @@ public class MainWindowMenu extends JMenuBar {
 		itemFix.addActionListener(listener);
 		menuEdit.add(itemFix);
 		itemCoM = new JMenuItem();
-		itemCoM.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
+		itemCoM.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.CTRL_MASK | ActionEvent.ALT_MASK));
 		itemCoM.addActionListener(listener);
 		menuEdit.add(itemCoM);
 		itemSnap = new JMenuItem();
@@ -98,14 +133,15 @@ public class MainWindowMenu extends JMenuBar {
 		add(menuEdit);
 
 		menuAdd = new JMenu();
+		menuAdd.setMnemonic(KeyEvent.VK_A);
 		itemAdd1 = new JRadioButtonMenuItem();
-		itemAdd1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK));
+		itemAdd1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, ActionEvent.CTRL_MASK));
 		itemAdd1.setSelected(false);
 		itemAdd1.addActionListener(listener);
 		menuAdd.add(itemAdd1);
 		buttonGroupMouse.add(itemAdd1);
 		itemAdd2 = new JRadioButtonMenuItem();
-		itemAdd2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_MASK));
+		itemAdd2.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, ActionEvent.CTRL_MASK));
 		itemAdd2.setSelected(false);
 		itemAdd2.addActionListener(listener);
 		menuAdd.add(itemAdd2);
@@ -115,7 +151,7 @@ public class MainWindowMenu extends JMenuBar {
 		menuSimulation = new JMenu();
 		menuSimulation.setMnemonic(KeyEvent.VK_S);
 		itemStart = new JMenuItem();
-		itemStart.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_MASK));
+		itemStart.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, ActionEvent.CTRL_MASK));
 		itemStart.addActionListener(listener);
 		menuSimulation.add(itemStart);
 		itemSteps = new JMenuItem();
@@ -139,31 +175,30 @@ public class MainWindowMenu extends JMenuBar {
 		itemFriction.addActionListener(listener);
 		menuConsider.add(itemFriction);
 		menuSimulation.addSeparator();
-		menuItemFreeze = new JMenuItem();
-		menuItemFreeze.addActionListener(listener);
-		menuItemFreeze.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.ALT_MASK));
-		menuSimulation.add(menuItemFreeze);
+		itemFreeze = new JMenuItem();
+		itemFreeze.addActionListener(listener);
+		itemFreeze.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.ALT_MASK));
+		menuSimulation.add(itemFreeze);
 		itemBoundaries = new JMenuItem();
 		itemBoundaries.addActionListener(listener);
 		menuSimulation.add(itemBoundaries);
 		add(menuSimulation);
 
 		menuShow = new JMenu();
-		menuShow.setMnemonic(KeyEvent.VK_V);
+		menuShow.setMnemonic(KeyEvent.VK_W);
 		itemAutoscale1 = new JMenuItem();
 		itemAutoscale1
-				.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
+				.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK | ActionEvent.ALT_MASK));
 		itemAutoscale1.addActionListener(listener);
 		menuShow.add(itemAutoscale1);
 		itemAutoscale2 = new JMenuItem();
 		itemAutoscale2
-				.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
+				.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.CTRL_MASK | ActionEvent.ALT_MASK));
 		itemAutoscale2.addActionListener(listener);
 		menuShow.add(itemAutoscale2);
 		menuShow.addSeparator();
 		itemFollow = new JMenuItem();
-		itemFollow
-				.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
+		itemFollow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK | ActionEvent.ALT_MASK));
 		itemFollow.addActionListener(listener);
 		menuShow.add(itemFollow);
 		menuShow.addSeparator();
@@ -198,17 +233,17 @@ public class MainWindowMenu extends JMenuBar {
 		add(menuShow);
 
 		menuControl = new JMenu();
-		menuControl.setMnemonic(KeyEvent.VK_S);
+		menuControl.setMnemonic(KeyEvent.VK_C);
 		menuMouse = new JMenu();
 		menuControl.add(menuMouse);
 		itemByForce = new JRadioButtonMenuItem();
-		itemByForce.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.SHIFT_MASK));
+		itemByForce.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.SHIFT_MASK));
 		itemByForce.setSelected(true);
 		itemByForce.addActionListener(listener);
 		menuMouse.add(itemByForce);
 		buttonGroupMouse.add(itemByForce);
 		itemByPlace = new JRadioButtonMenuItem();
-		itemByPlace.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.SHIFT_MASK));
+		itemByPlace.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.SHIFT_MASK));
 		itemByPlace.setSelected(false);
 		itemByPlace.addActionListener(listener);
 		menuMouse.add(itemByPlace);
@@ -216,6 +251,7 @@ public class MainWindowMenu extends JMenuBar {
 		add(menuControl);
 
 		menuHelp = new JMenu();
+		menuHelp.setMnemonic(KeyEvent.VK_H);
 		itemAbout = new JMenuItem();
 		itemAbout.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F1, ActionEvent.CTRL_MASK));
 		menuHelp.add(itemAbout);
@@ -246,7 +282,7 @@ public class MainWindowMenu extends JMenuBar {
 		menuSimulation.setText(GUIStrings.MENU_SIMULATION);
 		itemStart.setText(GUIStrings.MENU_START_PAUSE);
 		itemSteps.setText(GUIStrings.MENU_FEW_STEPS);
-		menuItemFreeze.setText(GUIStrings.MENU_NULLIFY_VELOCITIES);
+		itemFreeze.setText(GUIStrings.MENU_NULLIFY_VELOCITIES);
 		menuConsider.setText(GUIStrings.MENU_CONSIDER);
 		itemCollisions1.setText(GUIStrings.MENU_PP_COLLISIONS);
 		itemOuterForces.setText(GUIStrings.MENU_OUTER_FORCES);

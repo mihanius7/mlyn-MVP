@@ -30,9 +30,12 @@ import gui.lang.Language;
 import gui.menu.MainWindowMenu;
 import main.SampleScenes;
 import simulation.Simulation;
+import simulation.components.TimeStepController;
+import simulation.components.TimeStepController.TimeStepMode;
 
 public class MainWindow extends JFrame {
 
+	public static final int RECORDER_MAX_ROWS = 8;
 	private static MainWindow instance;
 	private static final long serialVersionUID = 6398390928434245781L;
 	public static Simulation simulation;
@@ -43,13 +46,15 @@ public class MainWindow extends JFrame {
 	private static EditBoundariesWindow ebw;
 	public static Thread calc, paint;
 	public static int viewportInitWidth = 960, viewportInitHeight = 512;
-	public static final int RECORDER_MAX_ROWS = 8;
-
-	JButton startButton, dtDecrease, dtFix, dtIncrease, dtRealScale;
 	private static JTextArea textArea1;
 	private static JScrollPane scrollArea;
 	private JLabel lblDt;
 	private JFileChooser openSceneChooser, saveSceneChooser;
+	JButton startButton;
+	JButton dtDecrease;
+	JButton dtFix;
+	JButton dtIncrease;
+	JButton dtRealScale;
 
 	public MainWindow() {
 		instance = this;
@@ -73,7 +78,6 @@ public class MainWindow extends JFrame {
 		Simulation.getReferenceSpring();
 
 		setResizable(true);
-		setIconImage(Toolkit.getDefaultToolkit().getImage("Letter-m-icon.png"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		setFocusable(true);
@@ -157,7 +161,7 @@ public class MainWindow extends JFrame {
 	private void applyLabels() {
 		startButton.setText(GUIStrings.START_PAUSE_BUTTON);
 		lblDt.setText(GUIStrings.TIMESTEP_LABEL);
-		dtFix.setText(GUIStrings.TIMESTEP_FIXED);
+		dtFix.setText(Simulation.timeStepController.getMode()==TimeStepMode.FIXED ? GUIStrings.TIMESTEP_FIXED : GUIStrings.TIMESTEP_DYNAMIC);
 	}
 
 	public void changeLanguage(Language lang) {
@@ -171,8 +175,11 @@ public class MainWindow extends JFrame {
 		String[] possibleStrings = Arrays.toString(Language.values()).replaceAll("^.|.$", "").split(", ");
 		String selectedString = (String) JOptionPane.showInputDialog(null,
 				"Select language / \u0410\u0431\u044F\u0440\u044B\u0446\u0435 \u043C\u043E\u0432\u0443", "Welcome!",
-				JOptionPane.INFORMATION_MESSAGE, null, possibleStrings, possibleStrings[1]);
-		return Language.valueOf(selectedString);
+				JOptionPane.INFORMATION_MESSAGE, null, possibleStrings, possibleStrings[0]);
+		if (selectedString != null)
+			return Language.valueOf(selectedString);
+		else
+			return Language.ENGLISH;
 	}
 
 	void resizeGUI() {
@@ -243,7 +250,7 @@ public class MainWindow extends JFrame {
 
 	public void refreshGUIControls() {
 		menuBar.refreshItems();
-		dtFix.setText(Simulation.timeStepController.getMode().toString());
+		dtFix.setText(Simulation.timeStepController.getMode()==TimeStepMode.FIXED ? GUIStrings.TIMESTEP_FIXED : GUIStrings.TIMESTEP_DYNAMIC);
 		Double.toString(Viewport.getGridSize() / cm);
 	}
 

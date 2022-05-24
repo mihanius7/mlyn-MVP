@@ -6,9 +6,11 @@ import simulation.Simulation;
 
 public class PointMass implements Element, Cloneable {
 
-	protected double m = 1, x = 0, y = 0, lastx, lasty, oldVelocitySmoothed;
-	protected Vector vel = new Vector();
-	protected Vector lastVel = new Vector();
+	protected double m = 1;
+	protected double x = 0, y = 0, lastx, lasty;
+	protected double oldVelocitySmoothed;
+	protected Vector velocity = new Vector();
+	protected Vector lastVelocity = new Vector();
 	protected int movableX, movableY;
 
 	public PointMass() {
@@ -70,29 +72,29 @@ public class PointMass implements Element, Cloneable {
 	}
 
 	public double getVx() {
-		return vel.X();
+		return velocity.X();
 	}
 
 	public double getLastVx() {
-		return lastVel.X();
+		return lastVelocity.X();
 	}
 
 	public void setVx(double newvx) {
-		lastVel.setX(vel.X());
-		vel.setX(newvx);
+		lastVelocity.setX(velocity.X());
+		velocity.setX(newvx);
 	}
 
 	public double getVy() {
-		return vel.Y();
+		return velocity.Y();
 	}
 
 	public double getLastVy() {
-		return lastVel.Y();
+		return lastVelocity.Y();
 	}
 
 	public void setVy(double newvy) {
-		lastVel.setY(vel.Y());
-		vel.setY(newvy);
+		lastVelocity.setY(velocity.Y());
+		velocity.setY(newvy);
 	}
 
 	public void setVelocity(double angle, double magnitude) {
@@ -112,16 +114,16 @@ public class PointMass implements Element, Cloneable {
 
 	public double measureAx() {
 		double dt = Simulation.timeStepController.getTimeStepSize();
-		return (vel.X() - lastVel.X()) / dt;
+		return (velocity.X() - lastVelocity.X()) / dt;
 	}
 
 	public double measureAy() {
 		double dt = Simulation.timeStepController.getTimeStepSize();
-		return (vel.Y() - lastVel.Y()) / dt;
+		return (velocity.Y() - lastVelocity.Y()) / dt;
 	}
 
 	public double defineSquaredVelocity() {
-		return vel.normSquared();
+		return velocity.normSquared();
 	}
 
 	public double defineSquaredVelocitySmoothed() {
@@ -130,15 +132,15 @@ public class PointMass implements Element, Cloneable {
 	}
 
 	public double defineVelocity() {
-		return vel.norm();
+		return velocity.norm();
 	}
 
 	public double defineVelocityAngle() {
-		return vel.defineAngle();
+		return velocity.defineAngle();
 	}
 
 	public Vector getVelocityVector() {
-		return vel;
+		return velocity;
 	}
 
 	public void setVelocityVector(Vector v) {
@@ -161,6 +163,8 @@ public class PointMass implements Element, Cloneable {
 	public void setMovable(boolean b) {
 		setMovableX(b);
 		setMovableY(b);
+		if (!b)
+			velocity.setXY(0, 0);
 	}
 
 	public boolean isMovableX() {
@@ -199,7 +203,7 @@ public class PointMass implements Element, Cloneable {
 	}
 
 	public boolean isMoving() {
-		return vel.normSquared() > 1e-15;
+		return velocity.normSquared() > 1e-15;
 	}
 
 }

@@ -159,7 +159,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 			if (getSelectedParticle(0) != p) {
 				Spring s = new Spring(getSelectedParticle(0), p, 5E4, 0);
 				s.setDampingRatio(0.15d);
-				s.setResonantFrequency(85d);
+				s.setResonantFrequency(50d);
 				addToSimulation(s);
 			}
 			mainWindow.clearSelection();

@@ -182,9 +182,9 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 	public void setResonantFrequency(double f) {
 		if (f > 0)
 			k = 4 * sqr(Math.PI) * sqr(f) * defineReducedMass(p1, p2);
-		MainWindow.println(String.format(GUIStrings.SPRING_STIFFNES + " %.3e Í/ì", k));
+		MainWindow.println(String.format(GUIStrings.SPRING_STIFFNES + " %.3e N/m", k));
 		refreshResonantFrequency();
-		MainWindow.println(String.format(GUIStrings.SPRING_RESONANT_FREQUENCY + " %.1f Ãö", fn));
+		MainWindow.println(String.format(GUIStrings.SPRING_RESONANT_FREQUENCY + " %.1f Hz", fn));
 	}
 
 	public double defineDampingRatio() {
@@ -211,7 +211,7 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 		setDamping(ksi * defineCriticalDamping());
 		checkOverCriticalDamping();
 		MainWindow.println(String.format(GUIStrings.SPRING_DAMPING_RATIO + " %.3f", defineDampingRatio())
-				+ String.format(", " + GUIStrings.SPRING_DAMPING + " %.3e Í/(ì/ñ)", c));
+				+ String.format(", " + GUIStrings.SPRING_DAMPING + " %.3e N/(m/s)", c));
 	}
 
 	public void setQualityFactor(double Q) {

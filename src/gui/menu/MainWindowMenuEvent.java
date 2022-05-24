@@ -52,7 +52,7 @@ public class MainWindowMenuEvent implements ActionListener {
 			Simulation.interactionProcessor.setUseExternalForces(mainWindowMenu.itemOuterForces.getState());
 		} else if (src.equals(mainWindowMenu.itemFriction)) {
 			Simulation.interactionProcessor.setUseFriction(mainWindowMenu.itemFriction.getState());
-		} else if (src.equals(mainWindowMenu.menuItemFreeze)) {
+		} else if (src.equals(mainWindowMenu.itemFreeze)) {
 			getParticles().setZeroVelocities();
 		} else if (src.equals(mainWindowMenu.itemBoundaries)) {
 			MainWindow.showEditBoundariesWindow();
@@ -99,7 +99,7 @@ public class MainWindowMenuEvent implements ActionListener {
 			setMaxSelectionNumber(1);
 		} else if (src.equals(mainWindowMenu.itemFix)) {
 			getSelectedParticles().fix();
-		} else if (src.equals(mainWindowMenu.menuItemColorizeByCharge)) {
+		} else if (src.equals(mainWindowMenu.itemColorizeByCharge)) {
 			getParticles().colorizeByCharge();
 		} else if (src.equals(mainWindowMenu.itemCoM)) {
 			getSelectedParticles().defineCenterOfMass();
@@ -116,14 +116,6 @@ public class MainWindowMenuEvent implements ActionListener {
 				clearSelection();
 			} else
 				MainWindow.NothingIsSelectedMessage();
-		} else if (src.equals(mainWindowMenu.menuItemScene2)) {
-			Simulation.clearSimulation();
-			JOptionPane.showMessageDialog(null, GUIStrings.MENU_MUCH_TIME_NEEDED_PLEASE_WAIT,
-					GUIStrings.APP_NAME, JOptionPane.INFORMATION_MESSAGE);
-			mainWindow.refreshGUIControls();
-		} else if (src.equals(mainWindowMenu.menuItemScene3)) {
-			Simulation.clearSimulation();
-			mainWindow.refreshGUIControls();
 		} else if (src.equals(mainWindowMenu.itemAbout)) {
 			mainWindow.showAboutWindow();
 		} else if (src.equals(mainWindowMenu.itemScreenshot)) {
