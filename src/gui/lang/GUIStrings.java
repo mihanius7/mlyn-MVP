@@ -15,7 +15,8 @@ public class GUIStrings {
 	public static String NOTHING_SELECTED_MESSAGE = "Nothing selected";
 	public static String ABOUT = "Program for flat mechanical systems simulation in time-domain";
 	public static String FILETYPE_DESCRIPTION = "Scenes for Simulation";
-	public static String TIMESTEP_FIXED = "Fixed timestep";
+	public static String TIMESTEP_FIXED = "Fixed";
+	public static String TIMESTEP_DYNAMIC = "Dynamic";
 	public static String TIMESTEP_LABEL = "Time step:";
 	public static String START_PAUSE_BUTTON = "Start / Pause Simulation";
 	public static String APP_NAME = "Mlyn 2D (v.0.9)";

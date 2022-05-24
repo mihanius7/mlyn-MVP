@@ -30,6 +30,8 @@ import gui.lang.Language;
 import gui.menu.MainWindowMenu;
 import main.SampleScenes;
 import simulation.Simulation;
+import simulation.components.TimeStepController;
+import simulation.components.TimeStepController.TimeStepMode;
 
 public class MainWindow extends JFrame {
 
@@ -49,9 +51,9 @@ public class MainWindow extends JFrame {
 	private JLabel lblDt;
 	private JFileChooser openSceneChooser, saveSceneChooser;
 	JButton startButton;
-	JButton dtDecrease; 
-	JButton dtFix; 
-	JButton dtIncrease; 
+	JButton dtDecrease;
+	JButton dtFix;
+	JButton dtIncrease;
 	JButton dtRealScale;
 
 	public MainWindow() {
@@ -76,7 +78,6 @@ public class MainWindow extends JFrame {
 		Simulation.getReferenceSpring();
 
 		setResizable(true);
-		setIconImage(Toolkit.getDefaultToolkit().getImage("Letter-m-icon.png"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		setFocusable(true);
@@ -160,7 +161,7 @@ public class MainWindow extends JFrame {
 	private void applyLabels() {
 		startButton.setText(GUIStrings.START_PAUSE_BUTTON);
 		lblDt.setText(GUIStrings.TIMESTEP_LABEL);
-		dtFix.setText(GUIStrings.TIMESTEP_FIXED);
+		dtFix.setText(Simulation.timeStepController.getMode()==TimeStepMode.FIXED ? GUIStrings.TIMESTEP_FIXED : GUIStrings.TIMESTEP_DYNAMIC);
 	}
 
 	public void changeLanguage(Language lang) {
@@ -175,7 +176,10 @@ public class MainWindow extends JFrame {
 		String selectedString = (String) JOptionPane.showInputDialog(null,
 				"Select language / \u0410\u0431\u044F\u0440\u044B\u0446\u0435 \u043C\u043E\u0432\u0443", "Welcome!",
 				JOptionPane.INFORMATION_MESSAGE, null, possibleStrings, possibleStrings[0]);
-		return Language.valueOf(selectedString);
+		if (selectedString != null)
+			return Language.valueOf(selectedString);
+		else
+			return Language.ENGLISH;
 	}
 
 	void resizeGUI() {
@@ -246,7 +250,7 @@ public class MainWindow extends JFrame {
 
 	public void refreshGUIControls() {
 		menuBar.refreshItems();
-		dtFix.setText(Simulation.timeStepController.getMode().toString());
+		dtFix.setText(Simulation.timeStepController.getMode()==TimeStepMode.FIXED ? GUIStrings.TIMESTEP_FIXED : GUIStrings.TIMESTEP_DYNAMIC);
 		Double.toString(Viewport.getGridSize() / cm);
 	}
 

@@ -25,13 +25,13 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		this.y = y;
 		this.q = q;
 		this.m = m;
-		vel.setX(vx);
-		vel.setY(vy);
+		velocity.setX(vx);
+		velocity.setY(vy);
 		this.r = radius;
 		this.color = c;
 		lastx = x;
 		lasty = y;
-		lastVel.setXY(vel.X(), vel.Y());
+		lastVelocity.setXY(velocity.X(), velocity.Y());
 	}
 
 	public Particle(double x, double y, double m, double radius) {
@@ -50,20 +50,20 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		this.r = referenceParticle.getRadius();
 		this.q = referenceParticle.getCharge();
 		this.color = referenceParticle.getColor();
-		this.vel.setXY(referenceParticle.getVx(), referenceParticle.getVy());
+		this.velocity.setXY(referenceParticle.getVx(), referenceParticle.getVy());
 		this.movableX = (referenceParticle.isMovableX() == true) ? 1 : 0;
 		this.movableY = (referenceParticle.isMovableY() == true) ? 1 : 0;
 		this.elasticity = referenceParticle.getElasticity();
 		lastx = x;
 		lasty = y;
-		lastVel.setXY(vel.X(), vel.Y());
+		lastVelocity.setXY(velocity.X(), velocity.Y());
 	}
 
 	public Particle(double x, double y, double vx, double vy, Particle referenceParticle) {
 		this.x = x;
 		this.y = y;
-		vel.setX(vx);
-		vel.setY(vy);
+		velocity.setX(vx);
+		velocity.setY(vy);
 		this.m = referenceParticle.getMass();
 		this.r = referenceParticle.getRadius();
 		this.q = referenceParticle.getCharge();
@@ -73,24 +73,24 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		this.elasticity = referenceParticle.getElasticity();
 		lastx = x;
 		lasty = y;
-		lastVel.setXY(vel.X(), vel.Y());
+		lastVelocity.setXY(velocity.X(), velocity.Y());
 	}
 
 	public Particle(double x, double y, double vx, double vy, double m, double radius) {
 		this.x = x;
 		this.y = y;
 		this.m = m;
-		vel.setX(vx);
-		vel.setY(vy);
+		velocity.setX(vx);
+		velocity.setY(vy);
 		this.r = radius;
 		lastx = x;
 		lasty = y;
-		lastVel.setXY(vel.X(), vel.Y());
+		lastVelocity.setXY(velocity.X(), velocity.Y());
 	}
 
 	public void applyNewVelocity(double dt, boolean useFriction) {
-		lastVel.setX(vel.X());
-		lastVel.setY(vel.Y());
+		lastVelocity.setX(velocity.X());
+		lastVelocity.setY(velocity.Y());
 		if (Simulation.interactionProcessor.isUseExternalForces()) {
 			force.addToX(Simulation.interactionProcessor.getExternalAccelerationX() * m);
 			force.addToY(Simulation.interactionProcessor.getExternalAccelerationY() * m);
@@ -98,9 +98,9 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		if (isMoving()) {
 			if (useFriction) {
 				double airFriction = Simulation.interactionProcessor.getAirFrictionCoefficient();
-				force.addToXY(-vel.X() * airFriction, -vel.Y() * airFriction);
-				double ffx = -vel.defineCos() * frictionForce;
-				double ffy = -vel.defineSin() * frictionForce;
+				force.addToXY(-velocity.X() * airFriction, -velocity.Y() * airFriction);
+				double ffx = -velocity.defineCos() * frictionForce;
+				double ffy = -velocity.defineSin() * frictionForce;
 				force.addToXY(ffx, ffy);
 			}
 			velocityVerlet(dt);
@@ -113,15 +113,15 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 	}
 
 	private void velocityVerlet(double dt) {
-		vel.addToX(movableX * dt * (lastForce.X() + force.X()) / (2 * m));
-		vel.addToY(movableY * dt * (lastForce.Y() + force.Y()) / (2 * m));
+		velocity.addToX(movableX * (dt * (lastForce.X() + force.X()) / (2 * m)));
+		velocity.addToY(movableY * (dt * (lastForce.Y() + force.Y()) / (2 * m)));
 	}
 
 	public void move(double dt) {
 		lastx = x;
-		x += movableX * vel.X() * dt + movableX * (force.X() * dt * dt) / (2 * m);
+		x += movableX * velocity.X() * dt + movableX * (force.X() * dt * dt) / (2 * m);
 		lasty = y;
-		y += movableY * vel.Y() * dt + movableY * (force.Y() * dt * dt) / (2 * m);
+		y += movableY * velocity.Y() * dt + movableY * (force.Y() * dt * dt) / (2 * m);
 	}
 
 	public void clearForce() {
@@ -139,27 +139,27 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		Boundaries b = Simulation.getContent().getBoundaries();
 
 		if (b.isUseRight() && x + r > b.getRight()) {
-			vel.multiplyXby(-elasticity);
+			velocity.multiplyXby(-elasticity);
 			setX(b.getRight() - r);
-			vel.multiplyYby(0.95);
+			velocity.multiplyYby(0.95);
 		} else if (b.isUseLeft() && x - r < b.getLeft()) {
-			vel.multiplyXby(-elasticity);
+			velocity.multiplyXby(-elasticity);
 			setX(b.getLeft() + r);
-			vel.multiplyYby(0.95);
+			velocity.multiplyYby(0.95);
 		}
 
 		if (b.isUseBottom() && b.getBottom() > y - r) {
-			double newvy = -vel.Y() * elasticity;
-			if (vel.Y() < -1E-6)
+			double newvy = -velocity.Y() * elasticity;
+			if (velocity.Y() < -1E-6)
 				setVy(newvy);
 			else
 				setVy(0);
 			setY(b.getBottom() + r);
-			vel.multiplyXby(0.95);
+			velocity.multiplyXby(0.95);
 		} else if (b.isUseUpper() && y + r > b.getUpper()) {
-			vel.multiplyYby(-elasticity);
+			velocity.multiplyYby(-elasticity);
 			setY(b.getUpper() - r);
-			vel.multiplyXby(0.95);
+			velocity.multiplyXby(0.95);
 		}
 	}
 
@@ -215,13 +215,13 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 	}
 
 	public void addVx(double dvx) {
-		lastVel.setX(vel.X());
-		vel.addToX(dvx);
+		lastVelocity.setX(velocity.X());
+		velocity.addToX(dvx);
 	}
 
 	public void addVy(double dvy) {
-		lastVel.setY(vel.Y());
-		vel.addToY(dvy);
+		lastVelocity.setY(velocity.Y());
+		velocity.addToY(dvy);
 	}
 
 	public boolean isStictionReached() {
@@ -295,8 +295,8 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 
 	public Particle clone() throws CloneNotSupportedException {
 		Particle clone = (Particle) super.clone();
-		clone.vel = (vel.clone());
-		clone.lastVel = (lastVel.clone());
+		clone.velocity = (velocity.clone());
+		clone.lastVelocity = (lastVelocity.clone());
 		clone.force = (force.clone());
 		clone.lastForce = (lastForce.clone());
 		return (Particle) clone;

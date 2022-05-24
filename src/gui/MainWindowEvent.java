@@ -29,7 +29,7 @@ public class MainWindowEvent implements ActionListener, ChangeListener, Componen
 				mainWindow.startSimulationThread();
 		} else if (src.equals(mainWindow.dtFix)) {
 			Simulation.timeStepController.switchMode();
-			mainWindow.dtFix.setText(Simulation.timeStepController.getMode().toString());
+			mainWindow.refreshGUIControls();
 		} else if (src.equals(mainWindow.dtDecrease)) {
 			Simulation.timeStepController.decreaseTimeStepSize(TimeStepController.TIME_STEP_CHANGE_COEFFICIENT);
 		} else if (src.equals(mainWindow.dtIncrease)) {

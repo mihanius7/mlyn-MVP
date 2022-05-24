@@ -63,6 +63,7 @@ public class International {
 		ABOUT = rb.getString("ABOUT");
 		FILETYPE_DESCRIPTION = rb.getString("FILETYPE_DESCRIPTION");
 		TIMESTEP_FIXED = rb.getString("TIMESTEP_FIXED");
+		TIMESTEP_DYNAMIC = rb.getString("TIMESTEP_DYNAMIC");
 		TIMESTEP_LABEL = rb.getString("TIMESTEP_LABEL");
 		START_PAUSE_BUTTON = rb.getString("START_PAUSE_BUTTON");
 		APP_NAME = rb.getString("APP_NAME");
