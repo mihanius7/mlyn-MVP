@@ -20,19 +20,53 @@ import simulation.Simulation;
 public class MainWindowMenu extends JMenuBar {
 
 	private static final long serialVersionUID = 1L;
-	private JMenu menuFile, menuEdit, menuAdd, menuSimulation, menuShow, menuControl, menuHelp, menuConsider, menuMouse;
 	private ButtonGroup buttonGroupMouse;
 	private MainWindowMenuEvent listener;
-	JRadioButtonMenuItem itemMouseSelect2, itemMouseSelect1, itemAdd1, itemByPlace, itemByForce,
-			itemAdd2;
-	JMenuItem itemOpen, itemSave, itemExit, menuItemScene1, menuItemScene2, menuItemScene3, menuItemScene4,
-			menuItemScene5, menuItemScene6, menuItemScene7, menuItemUndo, menuItemRedo;
-	JMenuItem itemStart, itemSteps, itemClear, menuItemFreeze, itemBoundaries;
-	JMenuItem itemAutoscale1, itemAutoscale2, itemSelectAll, itemAbout, menuItemMouseV, itemScreenshot, itemLanguage;
-	JMenuItem itemFix, menuItemConnect, itemFollow, itemCoM, itemDelete,
-			itemSnap, menuItemColorizeByCharge;
-	JCheckBoxMenuItem itemCollisions1, cbMenuItem1ss, cbMenuItem2, itemOuterForces, itemFriction, itemVelocities, itemForces,
-			cbMenuItem6, itemPretty, itemTags, itemGrid, itemTracks;
+	private JMenu menuFile;
+	private JMenu menuEdit;
+	private JMenu menuAdd;
+	private JMenu menuSimulation;
+	private JMenu menuShow;
+	private JMenu menuControl;
+	private JMenu menuHelp;
+	private JMenu menuConsider;
+	private JMenu menuMouse;
+	JRadioButtonMenuItem itemMouseSelect2;
+	JRadioButtonMenuItem itemMouseSelect1;
+	JRadioButtonMenuItem itemAdd1;
+	JRadioButtonMenuItem itemByPlace;
+	JRadioButtonMenuItem itemByForce;
+	JRadioButtonMenuItem itemAdd2;
+	JMenuItem itemOpen;
+	JMenuItem itemSave;
+	JMenuItem itemExit;
+	JMenuItem itemStart;
+	JMenuItem itemSteps;
+	JMenuItem itemClear;
+	JMenuItem itemFreeze;
+	JMenuItem itemBoundaries;
+	JMenuItem itemAutoscale1;
+	JMenuItem itemAutoscale2;
+	JMenuItem itemSelectAll;
+	JMenuItem itemAbout;
+	JMenuItem itemScreenshot;
+	JMenuItem itemLanguage;
+	JMenuItem itemFix;
+	JMenuItem itemConnect;
+	JMenuItem itemFollow;
+	JMenuItem itemCoM;
+	JMenuItem itemDelete;
+	JMenuItem itemSnap;
+	JMenuItem itemColorizeByCharge;
+	JCheckBoxMenuItem itemCollisions1;
+	JCheckBoxMenuItem itemOuterForces;
+	JCheckBoxMenuItem itemFriction;
+	JCheckBoxMenuItem itemVelocities;
+	JCheckBoxMenuItem itemForces;
+	JCheckBoxMenuItem itemPretty;
+	JCheckBoxMenuItem itemTags;
+	JCheckBoxMenuItem itemGrid;
+	JCheckBoxMenuItem itemTracks;
 
 	public MainWindowMenu() {
 
@@ -139,10 +173,10 @@ public class MainWindowMenu extends JMenuBar {
 		itemFriction.addActionListener(listener);
 		menuConsider.add(itemFriction);
 		menuSimulation.addSeparator();
-		menuItemFreeze = new JMenuItem();
-		menuItemFreeze.addActionListener(listener);
-		menuItemFreeze.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.ALT_MASK));
-		menuSimulation.add(menuItemFreeze);
+		itemFreeze = new JMenuItem();
+		itemFreeze.addActionListener(listener);
+		itemFreeze.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.ALT_MASK));
+		menuSimulation.add(itemFreeze);
 		itemBoundaries = new JMenuItem();
 		itemBoundaries.addActionListener(listener);
 		menuSimulation.add(itemBoundaries);
@@ -162,8 +196,7 @@ public class MainWindowMenu extends JMenuBar {
 		menuShow.add(itemAutoscale2);
 		menuShow.addSeparator();
 		itemFollow = new JMenuItem();
-		itemFollow
-				.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
+		itemFollow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
 		itemFollow.addActionListener(listener);
 		menuShow.add(itemFollow);
 		menuShow.addSeparator();
@@ -246,7 +279,7 @@ public class MainWindowMenu extends JMenuBar {
 		menuSimulation.setText(GUIStrings.MENU_SIMULATION);
 		itemStart.setText(GUIStrings.MENU_START_PAUSE);
 		itemSteps.setText(GUIStrings.MENU_FEW_STEPS);
-		menuItemFreeze.setText(GUIStrings.MENU_NULLIFY_VELOCITIES);
+		itemFreeze.setText(GUIStrings.MENU_NULLIFY_VELOCITIES);
 		menuConsider.setText(GUIStrings.MENU_CONSIDER);
 		itemCollisions1.setText(GUIStrings.MENU_PP_COLLISIONS);
 		itemOuterForces.setText(GUIStrings.MENU_OUTER_FORCES);

@@ -33,6 +33,7 @@ import simulation.Simulation;
 
 public class MainWindow extends JFrame {
 
+	public static final int RECORDER_MAX_ROWS = 8;
 	private static MainWindow instance;
 	private static final long serialVersionUID = 6398390928434245781L;
 	public static Simulation simulation;
@@ -43,13 +44,15 @@ public class MainWindow extends JFrame {
 	private static EditBoundariesWindow ebw;
 	public static Thread calc, paint;
 	public static int viewportInitWidth = 960, viewportInitHeight = 512;
-	public static final int RECORDER_MAX_ROWS = 8;
-
-	JButton startButton, dtDecrease, dtFix, dtIncrease, dtRealScale;
 	private static JTextArea textArea1;
 	private static JScrollPane scrollArea;
 	private JLabel lblDt;
 	private JFileChooser openSceneChooser, saveSceneChooser;
+	JButton startButton;
+	JButton dtDecrease; 
+	JButton dtFix; 
+	JButton dtIncrease; 
+	JButton dtRealScale;
 
 	public MainWindow() {
 		instance = this;
