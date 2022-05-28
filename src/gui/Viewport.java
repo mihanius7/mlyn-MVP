@@ -55,11 +55,17 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public static final Color FONT_TAGS = Color.BLACK;
 	public static final float SPRING_ZIGZAG_AMPLITUDE = 0.06f;
 	public static final int REFRESH_MESSAGES_INTERVAL = 400;
-	public static final int FRAME_PAINT_DELAY = 18;
-	public static final int AUTOSCALE_MARGIN = 75;
+	static final int FRAME_PAINT_DELAY = 18;
+	static final int AUTOSCALE_MARGIN = 75;
 	public static final double DEFAULT_GRID_SIZE = 20 * cm;
-	public static boolean drawTags = false, drawMessages = true, drawVelocities = false, drawForces = false,
-			drawParticleBorders = true, drawNeighbourRadius = false, useGrid = true, drawGradientParticles = false;
+	public static boolean drawTags = false;
+	private static boolean drawMessages = true;
+	public static boolean drawVelocities = false;
+	public static boolean drawForces = false;
+	private static boolean drawParticleBorders = true;
+	public static boolean drawNeighbourRadius = false;
+	public static boolean useGrid = true;
+	public static boolean drawGradientParticles = false;
 	private static boolean drawTracks = false, drawHeatMap = false;
 	private ParticleGroup particles;
 	private SpringGroup springs;
@@ -132,7 +138,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		drawCrossOn(graphics, crossX, crossY, true);
 		drawAxisOn(graphics);
 		drawScaleLineOn(graphics);
-		drawMessagesOn(graphics);
+		if (drawMessages)
+			drawMessagesOn(graphics);
 		Toolkit.getDefaultToolkit().sync();
 		graphics.dispose();
 		fps++;
@@ -156,11 +163,11 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 				else
 					displayedTimeScale = String.format("%.3f", timeScale);
 			if (r > 100)
-				timeStepString = String
-						.format(GUIStrings.TIMESTEP_RESERVE + " > 100 " + GUIStrings.TIME_SCALE + " " + displayedTimeScale, r);
+				timeStepString = String.format(
+						GUIStrings.TIMESTEP_RESERVE + " > 100 " + GUIStrings.TIME_SCALE + " " + displayedTimeScale, r);
 			else
-				timeStepString = String
-						.format(GUIStrings.TIMESTEP_RESERVE + " = %.1f " + GUIStrings.TIME_SCALE + " " + displayedTimeScale, r);
+				timeStepString = String.format(
+						GUIStrings.TIMESTEP_RESERVE + " = %.1f " + GUIStrings.TIME_SCALE + " " + displayedTimeScale, r);
 			MainWindow.getInstance().refreshGUIDisplays();
 			Simulation.timeStepController.clearStepsPerSecond();
 			fps = 0;
@@ -331,7 +338,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			targetG2d.drawString(String.format("%.0f Hz", s.getResonantFrequency()), -20, -5);
 			targetG2d.rotate(-alpha);
 			targetG2d.translate(-xc, -yc);
-		} 
+		}
 	}
 
 	private void drawMessagesOn(Graphics2D targetG2d) {

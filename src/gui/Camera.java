@@ -7,8 +7,8 @@ public class Camera {
 	public static final int CAMERA_WATCH_SMOOTH = 8;
 	public static final int CAMERA_KEYBOARD_SPEED = 15;
 	public static final float CAMERA_ZOOM_INCREMENT = 1.25f;
-
-	double x, y, vx = 0, vy = 0;
+	double x, y; 
+	double vx = 0, vy = 0;
 	Particle watchParticle;
 
 	public double getX() {

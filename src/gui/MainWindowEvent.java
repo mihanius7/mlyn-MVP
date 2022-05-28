@@ -22,19 +22,19 @@ public class MainWindowEvent implements ActionListener, ChangeListener, Componen
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
-		if (src.equals(mainWindow.startButton)) {
+		if (src.equals(mainWindow.buttonStart)) {
 			if (Simulation.getInstance().isActive())
 				mainWindow.stopSimulationThread();
 			else
 				mainWindow.startSimulationThread();
-		} else if (src.equals(mainWindow.dtFix)) {
+		} else if (src.equals(mainWindow.buttonTimeStepMode)) {
 			Simulation.timeStepController.switchMode();
 			mainWindow.refreshGUIControls();
-		} else if (src.equals(mainWindow.dtDecrease)) {
+		} else if (src.equals(mainWindow.buttonDecrease)) {
 			Simulation.timeStepController.decreaseTimeStepSize(TimeStepController.TIME_STEP_CHANGE_COEFFICIENT);
-		} else if (src.equals(mainWindow.dtIncrease)) {
+		} else if (src.equals(mainWindow.buttonIncrease)) {
 			Simulation.timeStepController.increaseTimeStepSize(TimeStepController.TIME_STEP_CHANGE_COEFFICIENT);
-		} else if (src.equals(mainWindow.dtRealScale)) {
+		} else if (src.equals(mainWindow.buttonRealScale)) {
 			Simulation.timeStepController.setTimeScale(1);
 		} 
 	}

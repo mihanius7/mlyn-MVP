@@ -41,20 +41,20 @@ public class MainWindow extends JFrame {
 	public static Simulation simulation;
 	public static Viewport viewport;
 	private static MainWindowMenu menuBar;
-	private static MainWindowEvent mwe;
-	private static ViewportEvent ve;
+	private static MainWindowEvent listener;
+	private static ViewportEvent viewportListener;
 	private static EditBoundariesWindow ebw;
-	public static Thread calc, paint;
+	public static Thread simulationThread, renderingThread;
 	public static int viewportInitWidth = 960, viewportInitHeight = 512;
-	private static JTextArea textArea1;
+	private static JTextArea outputTextArea;
 	private static JScrollPane scrollArea;
-	private JLabel lblDt;
+	private JLabel labelTimeStep;
 	private JFileChooser openSceneChooser, saveSceneChooser;
-	JButton startButton;
-	JButton dtDecrease;
-	JButton dtFix;
-	JButton dtIncrease;
-	JButton dtRealScale;
+	JButton buttonStart;
+	JButton buttonDecrease;
+	JButton buttonTimeStepMode;
+	JButton buttonIncrease;
+	JButton buttonRealScale;
 
 	public MainWindow() {
 		instance = this;
@@ -62,8 +62,8 @@ public class MainWindow extends JFrame {
 		viewport = new Viewport(viewportInitWidth, viewportInitHeight);
 		viewport.setBackground(UIManager.getColor("Button.light"));
 		viewport.setBorder(null);
-		mwe = new MainWindowEvent(this);
-		ve = new ViewportEvent(viewport, this);
+		listener = new MainWindowEvent(this);
+		viewportListener = new ViewportEvent(viewport, this);
 		getContentPane().setLayout(null);
 		getContentPane().add(viewport);
 
@@ -86,13 +86,13 @@ public class MainWindow extends JFrame {
 		setVisible(true);
 		setCaption(GUIStrings.NEW_PROJECT_NAME);
 
-		viewport.addKeyListener(ve);
-		viewport.addMouseListener(ve);
-		viewport.addMouseMotionListener(ve);
-		viewport.addMouseWheelListener(ve);
+		viewport.addKeyListener(viewportListener);
+		viewport.addMouseListener(viewportListener);
+		viewport.addMouseMotionListener(viewportListener);
+		viewport.addMouseWheelListener(viewportListener);
 		viewport.grabFocus();
 
-		new SampleScenes().initializeFirstScene();
+		new SampleScenes().initializeScene();
 		refreshGUIControls();
 
 		startViewportRepaintThread();
@@ -112,61 +112,61 @@ public class MainWindow extends JFrame {
 
 	private void createButtons() {
 
-		addComponentListener(mwe);
+		addComponentListener(listener);
 
-		startButton = new JButton();
-		startButton.setFocusable(false);
-		startButton.setFocusCycleRoot(false);
-		startButton.addActionListener(mwe);
-		getContentPane().add(startButton);
+		buttonStart = new JButton();
+		buttonStart.setFocusable(false);
+		buttonStart.setFocusCycleRoot(false);
+		buttonStart.addActionListener(listener);
+		getContentPane().add(buttonStart);
 
-		textArea1 = new JTextArea();
-		textArea1.setLineWrap(true);
-		textArea1.setFont(new Font("Monospaced", Font.BOLD, 12));
-		textArea1.setFocusable(false);
-		textArea1.setBackground(new Color(204, 204, 204));
+		outputTextArea = new JTextArea();
+		outputTextArea.setLineWrap(true);
+		outputTextArea.setFont(new Font("Monospaced", Font.BOLD, 12));
+		outputTextArea.setFocusable(false);
+		outputTextArea.setBackground(new Color(204, 204, 204));
 
 		scrollArea = new JScrollPane();
-		scrollArea.setViewportView(textArea1);
+		scrollArea.setViewportView(outputTextArea);
 		getContentPane().add(scrollArea);
 
-		lblDt = new JLabel();
-		lblDt.setHorizontalAlignment(SwingConstants.TRAILING);
+		labelTimeStep = new JLabel();
+		labelTimeStep.setHorizontalAlignment(SwingConstants.TRAILING);
 
-		getContentPane().add(lblDt);
+		getContentPane().add(labelTimeStep);
 
-		dtDecrease = new JButton("<<");
-		dtDecrease.addActionListener(mwe);
+		buttonDecrease = new JButton("<<");
+		buttonDecrease.addActionListener(listener);
 
-		getContentPane().add(dtDecrease);
+		getContentPane().add(buttonDecrease);
 
-		dtIncrease = new JButton(">>");
-		dtIncrease.addActionListener(mwe);
+		buttonIncrease = new JButton(">>");
+		buttonIncrease.addActionListener(listener);
 
-		getContentPane().add(dtIncrease);
+		getContentPane().add(buttonIncrease);
 
-		dtRealScale = new JButton("1:1");
-		dtRealScale.addActionListener(mwe);
+		buttonRealScale = new JButton("1:1");
+		buttonRealScale.addActionListener(listener);
 
-		getContentPane().add(dtRealScale);
+		getContentPane().add(buttonRealScale);
 
-		dtFix = new JButton();
-		dtFix.setFont(new Font("Dialog", Font.BOLD, 11));
-		dtFix.addActionListener(mwe);
+		buttonTimeStepMode = new JButton();
+		buttonTimeStepMode.setFont(new Font("Dialog", Font.BOLD, 11));
+		buttonTimeStepMode.addActionListener(listener);
 
-		getContentPane().add(dtFix);
+		getContentPane().add(buttonTimeStepMode);
 
 	}
 
 	private void applyLabels() {
-		startButton.setText(GUIStrings.START_PAUSE_BUTTON);
-		lblDt.setText(GUIStrings.TIMESTEP_LABEL);
-		dtFix.setText(Simulation.timeStepController.getMode()==TimeStepMode.FIXED ? GUIStrings.TIMESTEP_FIXED : GUIStrings.TIMESTEP_DYNAMIC);
+		labelTimeStep.setText(GUIStrings.TIMESTEP_LABEL);
+		buttonStart.setText(GUIStrings.START_PAUSE_BUTTON);
+		buttonTimeStepMode.setText(Simulation.timeStepController.getMode()==TimeStepMode.FIXED ? GUIStrings.TIMESTEP_FIXED : GUIStrings.TIMESTEP_DYNAMIC);
 	}
 
 	public void changeLanguage(Language lang) {
 		International.prepareStrings(lang);
-		this.applyLabels();
+		applyLabels();
 		menuBar.applyLabels();
 		MainWindow.println("Language changed to " + lang);
 	}
@@ -183,18 +183,18 @@ public class MainWindow extends JFrame {
 	}
 
 	void resizeGUI() {
-		textArea1.setBounds(4, getHeight() - 130 - 67, getWidth(), 128);
-		scrollArea.setBounds(textArea1.getBounds());
-		int buttonsY = getHeight() - scrollArea.getHeight() - 97;
-		startButton.setBounds(getWidth() - 216, buttonsY, 192, 24);
-		viewport.setBounds(0, 0, getWidth() - 14, getHeight() - textArea1.getHeight() - 76 - startButton.getHeight());
+		viewport.setBounds(0, 0, getWidth() - 14, getHeight() - outputTextArea.getHeight() - 76 - buttonStart.getHeight());
 		viewport.refreshStaticSizeConstants();
 		viewport.initTracksImage();
-		lblDt.setBounds(1, buttonsY + 4, 89, 16);
-		dtDecrease.setBounds(228, buttonsY, 48, 24);
-		dtIncrease.setBounds(288, buttonsY, 48, 24);
-		dtRealScale.setBounds(348, buttonsY, 56, 24);
-		dtFix.setBounds(108, buttonsY, 108, 24);
+		outputTextArea.setBounds(4, getHeight() - 130 - 67, getWidth() - 26, 128);
+		scrollArea.setBounds(outputTextArea.getBounds());
+		int buttonsY = getHeight() - scrollArea.getHeight() - 97;
+		buttonStart.setBounds(getWidth() - 215, buttonsY, 192, 24);
+		labelTimeStep.setBounds(1, buttonsY + 4, 89, 16);
+		buttonDecrease.setBounds(228, buttonsY, 48, 24);
+		buttonIncrease.setBounds(288, buttonsY, 48, 24);
+		buttonRealScale.setBounds(148, buttonsY, 56, 24);
+		buttonTimeStepMode.setBounds(108, buttonsY, 108, 24);
 	}
 
 	private void createDialogs() {
@@ -206,11 +206,11 @@ public class MainWindow extends JFrame {
 	}
 
 	public void startSimulationThread() {
-		if (calc == null || !calc.isAlive()) {
+		if (simulationThread == null || !simulationThread.isAlive()) {
 			Simulation.interactionProcessor.recalculateNeighborsNeeded();
-			calc = new Thread(simulation);
-			calc.setPriority(3);
-			calc.start();
+			simulationThread = new Thread(simulation);
+			simulationThread.setPriority(3);
+			simulationThread.start();
 		}
 	}
 
@@ -219,9 +219,9 @@ public class MainWindow extends JFrame {
 	}
 
 	public void startViewportRepaintThread() {
-		paint = new Thread(viewport);
-		paint.setPriority(5);
-		paint.start();
+		renderingThread = new Thread(viewport);
+		renderingThread.setPriority(5);
+		renderingThread.start();
 	}
 
 	public void setFocusTo(Particle p) {
@@ -250,7 +250,7 @@ public class MainWindow extends JFrame {
 
 	public void refreshGUIControls() {
 		menuBar.refreshItems();
-		dtFix.setText(Simulation.timeStepController.getMode()==TimeStepMode.FIXED ? GUIStrings.TIMESTEP_FIXED : GUIStrings.TIMESTEP_DYNAMIC);
+		buttonTimeStepMode.setText(Simulation.timeStepController.getMode()==TimeStepMode.FIXED ? GUIStrings.TIMESTEP_FIXED : GUIStrings.TIMESTEP_DYNAMIC);
 		Double.toString(Viewport.getGridSize() / cm);
 	}
 
@@ -267,21 +267,21 @@ public class MainWindow extends JFrame {
 	}
 
 	public static void print(String s) {
-		if (textArea1 != null) {
-			textArea1.append(s);
+		if (outputTextArea != null) {
+			outputTextArea.append(s);
 		}
 	}
 
 	public static void println(String s) {
-		if (textArea1 != null) {
-			textArea1.append(textArea1.getLineCount() + ": " + s + "\n");
-			textArea1.scrollRectToVisible(new java.awt.Rectangle(0, textArea1.getHeight(), 1, 1));
+		if (outputTextArea != null) {
+			outputTextArea.append(outputTextArea.getLineCount() + ": " + s + "\n");
+			outputTextArea.scrollRectToVisible(new java.awt.Rectangle(0, outputTextArea.getHeight(), 1, 1));
 		}
 	}
 
 	public static void clearConsole() {
-		if (textArea1 != null) {
-			textArea1.setText("");
+		if (outputTextArea != null) {
+			outputTextArea.setText("");
 		}
 	}
 
