@@ -183,17 +183,17 @@ public class MainWindow extends JFrame {
 	}
 
 	void resizeGUI() {
+		outputTextArea.setBounds(4, getHeight() - 130 - 67, getWidth() - 26, 128);
+		scrollArea.setBounds(outputTextArea.getBounds());
 		viewport.setBounds(0, 0, getWidth() - 14, getHeight() - outputTextArea.getHeight() - 76 - buttonStart.getHeight());
 		viewport.refreshStaticSizeConstants();
 		viewport.initTracksImage();
-		outputTextArea.setBounds(4, getHeight() - 130 - 67, getWidth() - 26, 128);
-		scrollArea.setBounds(outputTextArea.getBounds());
 		int buttonsY = getHeight() - scrollArea.getHeight() - 97;
 		buttonStart.setBounds(getWidth() - 215, buttonsY, 192, 24);
 		labelTimeStep.setBounds(1, buttonsY + 4, 89, 16);
 		buttonDecrease.setBounds(228, buttonsY, 48, 24);
 		buttonIncrease.setBounds(288, buttonsY, 48, 24);
-		buttonRealScale.setBounds(148, buttonsY, 56, 24);
+		buttonRealScale.setBounds(348, buttonsY, 56, 24);
 		buttonTimeStepMode.setBounds(108, buttonsY, 108, 24);
 	}
 
