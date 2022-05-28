@@ -17,8 +17,8 @@ import simulation.components.TimeStepController.TimeStepMode;
 
 public class SampleScenes {
 
-	public void initializeFirstScene() {
-		initializeScene2();
+	public void initializeScene() {
+		scenePreset();
 	}
 
 	public static void emptyScene() {
@@ -44,7 +44,7 @@ public class SampleScenes {
 		Viewport.scaleToBoundaries();
 	}
 
-public static void initializeScene2() {
+public static void scenePreset() {
 		timeStepController.setModeAndReset(TimeStepMode.DYNAMIC);
 		timeStepController.setTimeScale(0.25d);
 		interactionProcessor.setUsePPCollisions(true);
