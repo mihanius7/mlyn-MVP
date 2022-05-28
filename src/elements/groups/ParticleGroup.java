@@ -142,8 +142,7 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 			} catch (CloneNotSupportedException e) {
 				MainWindow.println(GUIStrings.CANT_COPY_A_PARTICLE);
 			}	
-		}
-		
+		}		
 		return clonedList;		
 	}
 
