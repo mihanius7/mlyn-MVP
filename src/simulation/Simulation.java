@@ -182,14 +182,6 @@ public class Simulation implements Runnable {
 			MainWindow.getInstance().startSimulationThread();
 	}
 
-	public static void addParticleQuickly(double x, double y, double m, double r) {
-		addToSimulation(new Particle(x, y, m, r));
-	}
-
-	public static void addParticleQuickly(double x, double y, double m, double r, double vx, double vy) {
-		addToSimulation(new Particle(x, y, vx, vy, m, r));
-	}
-
 	public static void removeParticleSafety(Particle p) {
 		if (!content.springs.isEmpty())
 			removeSpringsSafety(findAttachedSprings(p));

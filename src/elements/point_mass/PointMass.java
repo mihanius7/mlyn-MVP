@@ -4,7 +4,7 @@ import elements.Element;
 import evaluation.Vector;
 import simulation.Simulation;
 
-public class PointMass implements Element, Cloneable {
+public class PointMass implements Element, Cloneable  {
 
 	protected double m = 1;
 	protected double x = 0, y = 0, lastx, lasty;

@@ -15,6 +15,7 @@ import javax.swing.KeyStroke;
 import gui.Viewport;
 import gui.ViewportEvent.MouseMode;
 import gui.lang.GUIStrings;
+import gui.shapes.ParticleShape;
 import simulation.Simulation;
 
 public class MainWindowMenu extends JMenuBar {
@@ -317,7 +318,7 @@ public class MainWindowMenu extends JMenuBar {
 		itemFriction.setSelected(Simulation.interactionProcessor.isUseFriction());
 		itemVelocities.setSelected(Viewport.drawVelocities);
 		itemForces.setSelected(Viewport.drawForces);
-		itemPretty.setSelected(Viewport.drawGradientParticles);
+		itemPretty.setSelected(ParticleShape.drawGradientParticles);
 		itemTags.setSelected(Viewport.drawTags);
 		itemGrid.setSelected(Viewport.useGrid);
 		itemTracks.setSelected(Viewport.isDrawTracks());

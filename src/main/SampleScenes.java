@@ -3,14 +3,15 @@ package main;
 import static constants.PhysicalConstants.cm;
 import static constants.PhysicalConstants.kg;
 import static constants.PhysicalConstants.m;
-import static simulation.Simulation.addParticleQuickly;
 import static simulation.Simulation.getLastAddedParticle;
 import static simulation.Simulation.interactionProcessor;
 import static simulation.Simulation.timeStepController;
 
+import elements.point_mass.Particle;
 import gui.MainWindow;
 import gui.Viewport;
 import gui.lang.GUIStrings;
+import gui.shapes.ParticleShape;
 import simulation.Simulation;
 import simulation.components.Boundaries;
 import simulation.components.TimeStepController.TimeStepMode;
@@ -31,7 +32,7 @@ public class SampleScenes {
 		Viewport.drawForces = false;
 		Viewport.drawTags = false;
 		Viewport.drawVelocities = false;
-		Viewport.drawGradientParticles = false;
+		ParticleShape.drawGradientParticles = false;
 		Viewport.useGrid = true;
 		Viewport.setGridSize(Viewport.DEFAULT_GRID_SIZE);
 		Viewport.setDrawTracks(false);
@@ -52,10 +53,10 @@ public static void scenePreset() {
 		interactionProcessor.setBeta(10 * m, 5 * cm, 1E7, 0.28);		
 		Boundaries b = Simulation.getContent().getBoundaries();
 		b.setBounds(0, 9, 4.8, 0);
-		addParticleQuickly(301 * cm, 90 * cm, 1 * kg, 5 * cm);
-		addParticleQuickly(299 * cm, 30 * cm, 1 * kg, 5 * cm);
-		addParticleQuickly(300 * cm, 120 * cm, 1 * kg, 5 * cm);
-		addParticleQuickly(300 * cm, 10 * cm, 1000 * kg, 5 * cm);
+		Simulation.addToSimulation(new Particle(301 * cm, 90 * cm, 1 * kg, 5 * cm));
+		Simulation.addToSimulation(new Particle(299 * cm, 30 * cm, 1 * kg, 5 * cm));
+		Simulation.addToSimulation(new Particle(300 * cm, 120 * cm, 1 * kg, 5 * cm));
+		Simulation.addToSimulation(new Particle(300 * cm, 10 * cm, 1000 * kg, 5 * cm));
 		getLastAddedParticle().setMovable(false);
 		Viewport.scaleToBoundaries();
 	}
