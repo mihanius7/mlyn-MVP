@@ -28,10 +28,10 @@ public class SampleScenes {
 		interactionProcessor.setUseExternalForces(true);
 		interactionProcessor.setUsePPCollisions(true);
 		interactionProcessor.setBeta(10 * cm, 10 * cm, 1E7, 0.28);
-		Viewport.drawNeighbourRadius = false;
-		Viewport.drawForces = false;
-		Viewport.drawTags = false;
-		Viewport.drawVelocities = false;
+		ParticleShape.drawNeighbourRadius = false;
+		ParticleShape.drawForces = false;
+		ParticleShape.drawTags = false;
+		ParticleShape.drawVelocities = false;
 		ParticleShape.drawGradientParticles = false;
 		Viewport.useGrid = true;
 		Viewport.setGridSize(Viewport.DEFAULT_GRID_SIZE);

@@ -20,6 +20,7 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 	protected double frictionForce = 0, stictionForce = 0;
 	protected double elasticity = 0.995;
 	protected Color oldColor, color;
+	
 	protected ParticleShape shape;
 
 	public Particle(double x, double y, double m, double q, double vx, double vy, double radius, Color c) {
@@ -38,11 +39,11 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 	}
 	
 	public Particle(double x, double y, double vx, double vy, double m, double radius) {
-		this(x, y, m, vx, vy, 0, radius, Viewport.PARTICLE_DEFAULT);
+		this(x, y, m, vx, vy, 0, radius, ParticleShape.PARTICLE_DEFAULT);
 	}
 
 	public Particle(double x, double y, double m, double radius) {
-		this(x, y, m, 0, 0, 0, radius, Viewport.PARTICLE_DEFAULT);
+		this(x, y, m, 0, 0, 0, radius, ParticleShape.PARTICLE_DEFAULT);
 	}
 
 	public Particle(double x, double y, Particle referenceParticle) {

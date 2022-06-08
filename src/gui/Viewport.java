@@ -7,7 +7,6 @@ import static simulation.Simulation.timeStepController;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -43,10 +42,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public static final Color BOUNDARIES = new Color(200, 50, 50);
 	public static final Color CROSS = Color.MAGENTA;
 	public static final Color SELECTED = Color.YELLOW;
-	public static final Color PARTICLE_DEFAULT = new Color(100, 100, 100);
-	public static final Color PARTICLE_FIXED = Color.BLACK;
-	public static final Color PARTICLE_WATCH = Color.ORANGE;
-	public static final Color PARTICLE_CROSS = Color.ORANGE;
 	public static final Color SPRING_DEFAULT = new Color(80, 80, 80);
 	public static final Color SPRING_OFF = new Color(230, 200, 200);
 	public static final Color ARROW_VELOCITY = Color.BLUE;
@@ -58,11 +53,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	static final int FRAME_PAINT_DELAY = 18;
 	static final int AUTOSCALE_MARGIN = 75;
 	public static final double DEFAULT_GRID_SIZE = 20 * cm;
-	public static boolean drawTags = false;
 	private static boolean drawMessages = true;
-	public static boolean drawVelocities = false;
-	public static boolean drawForces = false;
-	public static boolean drawNeighbourRadius = false;
 	public static boolean useGrid = true;
 	private static boolean drawTracks = false; 
 	private static boolean drawHeatMap = false;
@@ -71,7 +62,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private static Graphics2D globalCanvas;
 	public static Graphics2D tracksCanvas;
 	private static RenderingHints rh;
-	private static Font tagFont, mainFont;
+	public static Font tagFont;
+	private static Font mainFont;
 	public static final Camera camera = new Camera();
 	private static int x, y, viewportHeight, viewportWidth, fps = 0, maxArrowLength_px = 100;
 	public static double scale = 100;
@@ -83,8 +75,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private static String timeString = "N/A", timeStepString = "N/A";
 	private static Timer refreshLabelsTimer;
 	private static BufferedImage tracksImage;
-	private BasicStroke crossStroke = new BasicStroke(3f);
-	private BasicStroke arrowStroke = new BasicStroke(2f);
+	private static BasicStroke arrowStroke = new BasicStroke(2f);
 
 	public Viewport(int initW, int initH) {
 		particles = Simulation.getParticles();
@@ -215,58 +206,22 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	}
 
-	private void drawCircleOn(Particle p, Graphics2D targetG2d) {
-		p.getShape().paintShape(targetG2d);
-	}
-
 	private void drawCirclesOn(Graphics2D targetG2d) {
 		Particle p;
 		for (int i = 0; i < particles.size(); i++) {
 			p = particles.get(i);
-			drawCircleOn(p, targetG2d);
 			if (p.isVisible()) {
-				int r = (int) Math.ceil(scale * p.getRadius());
-				drawCircleOn(p, targetG2d);
-				if (!p.isMovableX()) {
-					targetG2d.setColor(PARTICLE_CROSS);
-					targetG2d.setStroke(crossStroke);
-					targetG2d.drawLine(x, y + r + 3, x, y - r - 3);
-				}
-				if (!p.isMovableY()) {
-					targetG2d.setColor(PARTICLE_CROSS);
-					targetG2d.setStroke(crossStroke);
-					targetG2d.drawLine(x - r - 3, y, x + r + 3, y);
-				}
-				if (drawNeighbourRadius) {
-					int nradius = (int) (0.5 * scale * (interactionProcessor.getNeighborRangeExtra()));
-					targetG2d.drawOval(x - nradius, y - nradius, nradius * 2, nradius * 2);
-				}
-				if (drawForces)
-					drawArrowLine(targetG2d, x, y, p.getLastForceVector(), ARROW_FORCE);
-				if (drawVelocities || p.isSelected())
-					drawArrowLine(targetG2d, x, y, p.getVelocityVector(), ARROW_VELOCITY);
-				if (drawTags || p.isSelected()) {
-					targetG2d.setFont(tagFont);
-					targetG2d.setColor(FONT_TAGS);
-					x = (int) (toScreenX(p.getX()) + r * 0.707);
-					y = (int) (toScreenY(p.getY()) - r * 0.707);
-					y -= tagFont.getSize();
-					targetG2d.drawString(String.format("#%d: %.1e kg", i, p.getMass()), x, y);
-					y += tagFont.getSize();
-					targetG2d.drawString(String.format("(%.3f; %.3f) m", p.getX(), p.getY(), p.defineVelocity()), x, y);
-					y += tagFont.getSize();
-					targetG2d.drawString(String.format("%.3f m/s", p.defineVelocity()), x, y);
-				}
+				p.getShape().paintShape(targetG2d);
 			}
 		}
 		if (Simulation.getReferenceParticle().isVisible())
-			drawCircleOn(Simulation.getReferenceParticle(), targetG2d);
+			Simulation.getReferenceParticle().getShape().paintShape(targetG2d);
 		if (camera.getWatchParticle() != null) {
 			Particle wp = camera.getWatchParticle();
 			x = toScreenX(wp.getX());
 			y = toScreenY(wp.getY());
 			int r = (int) Math.ceil(scale * wp.getRadius());
-			targetG2d.setColor(PARTICLE_WATCH);
+			targetG2d.setColor(ParticleShape.PARTICLE_WATCH);
 			targetG2d.setStroke(new BasicStroke(2f));
 			targetG2d.drawOval(x - r, y - r, r * 2, r * 2);
 		}
@@ -383,7 +338,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.drawString(String.format("%.1e m", fromScreen(l)), xc - 32, yc - 4);
 	}
 
-	private void drawArrowLine(Graphics2D g2d, int x1, int y1, Vector v, Color arrowColor) {
+	public static void drawArrowLine(Graphics2D g2d, int x1, int y1, Vector v, Color arrowColor) {
 		int dx = toScreen(v.X() / 3);
 		int dy = toScreen(v.Y() / 3);
 		int l = (int) Math.sqrt(dx * dx + dy * dy);
@@ -398,7 +353,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		}
 	}
 
-	private void drawArrowLine(Graphics g, int x1, int y1, int x2, int y2, int d, int h) {
+	private static void drawArrowLine(Graphics g, int x1, int y1, int x2, int y2, int d, int h) {
 		int dx = x2 - x1, dy = y2 - y1;
 		double D = Math.sqrt(dx * dx + dy * dy);
 		double xm = D - d, xn = xm, ym = h, yn = -h, x;

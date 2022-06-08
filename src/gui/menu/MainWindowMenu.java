@@ -316,10 +316,10 @@ public class MainWindowMenu extends JMenuBar {
 		itemCollisions1.setSelected(Simulation.interactionProcessor.isUsePPCollisions());
 		itemOuterForces.setSelected(Simulation.interactionProcessor.isUseExternalForces());
 		itemFriction.setSelected(Simulation.interactionProcessor.isUseFriction());
-		itemVelocities.setSelected(Viewport.drawVelocities);
-		itemForces.setSelected(Viewport.drawForces);
+		itemVelocities.setSelected(ParticleShape.drawVelocities);
+		itemForces.setSelected(ParticleShape.drawForces);
 		itemPretty.setSelected(ParticleShape.drawGradientParticles);
-		itemTags.setSelected(Viewport.drawTags);
+		itemTags.setSelected(ParticleShape.drawTags);
 		itemGrid.setSelected(Viewport.useGrid);
 		itemTracks.setSelected(Viewport.isDrawTracks());
 		if (Viewport.getMouseMode() == MouseMode.PARTICLE_SELECT)
