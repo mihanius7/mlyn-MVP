@@ -16,6 +16,7 @@ import gui.MainWindow;
 import gui.Viewport;
 import gui.ViewportEvent.MouseMode;
 import gui.lang.GUIStrings;
+import gui.shapes.ParticleShape;
 import simulation.Simulation;
 
 public class MainWindowMenuEvent implements ActionListener {
@@ -67,7 +68,7 @@ public class MainWindowMenuEvent implements ActionListener {
 		} else if (src.equals(mainWindowMenu.itemForces)) {
 			Viewport.drawForces = mainWindowMenu.itemForces.getState();
 		} else if (src.equals(mainWindowMenu.itemPretty)) {
-			Viewport.drawGradientParticles = mainWindowMenu.itemPretty.getState();
+			ParticleShape.drawGradientParticles = mainWindowMenu.itemPretty.getState();
 		} else if (src.equals(mainWindowMenu.itemTags)) {
 			Viewport.drawTags = mainWindowMenu.itemTags.getState();
 		} else if (src.equals(mainWindowMenu.itemGrid)) {

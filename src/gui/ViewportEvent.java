@@ -140,7 +140,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 			dx = x0 - x1;
 			dy = y0 - y1;
 			Particle refP = Simulation.getReferenceParticle();
-			Particle newP = new Particle(refP.getX(), refP.getY(), refP.getVx(), refP.getVy(), refP);
+			Particle newP = new Particle(refP.getX(), refP.getY(), refP);
 			addToSimulation(newP);
 			addToSelection(newP);
 			mainWindow.setFocusTo(newP);

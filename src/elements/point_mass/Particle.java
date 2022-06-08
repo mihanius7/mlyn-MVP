@@ -9,16 +9,18 @@ import elements.Selectable;
 import evaluation.MyMath;
 import evaluation.Vector;
 import gui.Viewport;
+import gui.shapes.ParticleShape;
 
 public class Particle extends PointMass implements Cloneable, Selectable, Interactable {
 
-	protected double r = 0.1, q = 0;
+	protected double r, q;
 	protected Vector force = new Vector();
 	protected Vector lastForce = new Vector();
 	protected boolean visible = true, canCollide = true, isSelected = false;
 	protected double frictionForce = 0, stictionForce = 0;
 	protected double elasticity = 0.995;
-	protected Color oldColor, color = Viewport.PARTICLE_DEFAULT;
+	protected Color oldColor, color;
+	protected ParticleShape shape;
 
 	public Particle(double x, double y, double m, double q, double vx, double vy, double radius, Color c) {
 		this.x = x;
@@ -32,60 +34,23 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		lastx = x;
 		lasty = y;
 		lastVelocity.setXY(velocity.X(), velocity.Y());
+		shape = new ParticleShape(this);
+	}
+	
+	public Particle(double x, double y, double vx, double vy, double m, double radius) {
+		this(x, y, m, vx, vy, 0, radius, Viewport.PARTICLE_DEFAULT);
 	}
 
 	public Particle(double x, double y, double m, double radius) {
-		this.x = x;
-		this.y = y;
-		this.m = m;
-		this.r = radius;
-		lastx = x;
-		lasty = y;
+		this(x, y, m, 0, 0, 0, radius, Viewport.PARTICLE_DEFAULT);
 	}
 
 	public Particle(double x, double y, Particle referenceParticle) {
-		this.x = x;
-		this.y = y;
-		this.m = referenceParticle.getMass();
-		this.r = referenceParticle.getRadius();
-		this.q = referenceParticle.getCharge();
-		this.color = referenceParticle.getColor();
-		this.velocity.setXY(referenceParticle.getVx(), referenceParticle.getVy());
+		this(x, y, referenceParticle.getMass(), referenceParticle.getCharge(), referenceParticle.getVx(),
+				referenceParticle.getVy(), referenceParticle.getRadius(), referenceParticle.getColor());
 		this.movableX = (referenceParticle.isMovableX() == true) ? 1 : 0;
 		this.movableY = (referenceParticle.isMovableY() == true) ? 1 : 0;
 		this.elasticity = referenceParticle.getElasticity();
-		lastx = x;
-		lasty = y;
-		lastVelocity.setXY(velocity.X(), velocity.Y());
-	}
-
-	public Particle(double x, double y, double vx, double vy, Particle referenceParticle) {
-		this.x = x;
-		this.y = y;
-		velocity.setX(vx);
-		velocity.setY(vy);
-		this.m = referenceParticle.getMass();
-		this.r = referenceParticle.getRadius();
-		this.q = referenceParticle.getCharge();
-		this.color = referenceParticle.getColor();
-		this.movableX = (referenceParticle.isMovableX() == true) ? 1 : 0;
-		this.movableY = (referenceParticle.isMovableY() == true) ? 1 : 0;
-		this.elasticity = referenceParticle.getElasticity();
-		lastx = x;
-		lasty = y;
-		lastVelocity.setXY(velocity.X(), velocity.Y());
-	}
-
-	public Particle(double x, double y, double vx, double vy, double m, double radius) {
-		this.x = x;
-		this.y = y;
-		this.m = m;
-		velocity.setX(vx);
-		velocity.setY(vy);
-		this.r = radius;
-		lastx = x;
-		lasty = y;
-		lastVelocity.setXY(velocity.X(), velocity.Y());
 	}
 
 	public void applyNewVelocity(double dt, boolean useFriction) {
@@ -301,7 +266,7 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		clone.lastForce = (lastForce.clone());
 		return (Particle) clone;
 	}
-	
+
 	@Override
 	public void select() {
 		isSelected = true;
@@ -315,13 +280,17 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 	public boolean isSelected() {
 		return isSelected;
 	}
-	
+
 	public boolean isCanCollide() {
 		return canCollide;
 	}
 
 	public void setCanCollide(boolean canCollide) {
 		this.canCollide = canCollide;
+	}
+	
+	public ParticleShape getShape() {
+		return shape;
 	}
 
 }

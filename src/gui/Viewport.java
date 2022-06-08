@@ -31,6 +31,7 @@ import elements.point_mass.Particle;
 import evaluation.Vector;
 import gui.ViewportEvent.MouseMode;
 import gui.lang.GUIStrings;
+import gui.shapes.ParticleShape;
 import simulation.Simulation;
 import simulation.components.Boundaries;
 
@@ -44,7 +45,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public static final Color SELECTED = Color.YELLOW;
 	public static final Color PARTICLE_DEFAULT = new Color(100, 100, 100);
 	public static final Color PARTICLE_FIXED = Color.BLACK;
-	public static final Color PARTICLE_BORDER = Color.DARK_GRAY;
 	public static final Color PARTICLE_WATCH = Color.ORANGE;
 	public static final Color PARTICLE_CROSS = Color.ORANGE;
 	public static final Color SPRING_DEFAULT = new Color(80, 80, 80);
@@ -62,24 +62,27 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private static boolean drawMessages = true;
 	public static boolean drawVelocities = false;
 	public static boolean drawForces = false;
-	private static boolean drawParticleBorders = true;
 	public static boolean drawNeighbourRadius = false;
 	public static boolean useGrid = true;
-	public static boolean drawGradientParticles = false;
-	private static boolean drawTracks = false, drawHeatMap = false;
+	private static boolean drawTracks = false; 
+	private static boolean drawHeatMap = false;
 	private ParticleGroup particles;
 	private SpringGroup springs;
-	private static Graphics2D globalCanvas, tracksCanvas;
+	private static Graphics2D globalCanvas;
+	public static Graphics2D tracksCanvas;
 	private static RenderingHints rh;
 	private static Font tagFont, mainFont;
 	public static final Camera camera = new Camera();
 	private static int x, y, viewportHeight, viewportWidth, fps = 0, maxArrowLength_px = 100;
-	private static double scale = 100, targetScale = 10, gridSize = DEFAULT_GRID_SIZE, crossX = 0, crossY = 0;
+	public static double scale = 100;
+	private static double targetScale = 10;
+	private static double gridSize = DEFAULT_GRID_SIZE;
+	private static double crossX = 0;
+	private static double crossY = 0;
 	private static long frameTime, dt;
 	private static String timeString = "N/A", timeStepString = "N/A";
 	private static Timer refreshLabelsTimer;
 	private static BufferedImage tracksImage;
-	private BasicStroke particleBorder = new BasicStroke(0.25f);
 	private BasicStroke crossStroke = new BasicStroke(3f);
 	private BasicStroke arrowStroke = new BasicStroke(2f);
 
@@ -213,31 +216,14 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	private void drawCircleOn(Particle p, Graphics2D targetG2d) {
-		x = toScreenX(p.getX());
-		y = toScreenY(p.getY());
-		int r = (int) Math.ceil(scale * p.getRadius());
-		if (!drawGradientParticles)
-			targetG2d.setPaint(p.getColor());
-		else
-			targetG2d.setPaint(new GradientPaint(x, y - r, Color.WHITE, x + r, y + r, p.getColor(), false));
-		targetG2d.fillOval(x - r, y - r, r * 2, r * 2);
-		if (drawTracks) {
-			int x0 = toScreenX(p.getLastX());
-			int y0 = toScreenY(p.getLastY());
-			tracksCanvas.setColor(p.getEigeneColor());
-			tracksCanvas.drawLine(x0, y0, x, y);
-		}
-		if (drawParticleBorders) {
-			targetG2d.setColor(PARTICLE_BORDER);
-			targetG2d.setStroke(particleBorder);
-			targetG2d.drawOval(x - r, y - r, r * 2, r * 2);
-		}
+		p.getShape().paintShape(targetG2d);
 	}
 
 	private void drawCirclesOn(Graphics2D targetG2d) {
 		Particle p;
 		for (int i = 0; i < particles.size(); i++) {
 			p = particles.get(i);
+			drawCircleOn(p, targetG2d);
 			if (p.isVisible()) {
 				int r = (int) Math.ceil(scale * p.getRadius());
 				drawCircleOn(p, targetG2d);
