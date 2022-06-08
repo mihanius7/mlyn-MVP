@@ -11,6 +11,7 @@ import evaluation.Vector;
 import gui.MainWindow;
 import gui.Viewport;
 import gui.lang.GUIStrings;
+import gui.shapes.ParticleShape;
 import simulation.Simulation;
 
 public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
@@ -71,7 +72,7 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 			else if (p.getCharge() < 0)
 				p.setColor(Color.BLUE);
 			else if (p.getCharge() == 0)
-				p.setColor(Viewport.PARTICLE_DEFAULT);
+				p.setColor(ParticleShape.PARTICLE_DEFAULT);
 		MainWindow.println(GUIStrings.PARTICLE_COLOURS_CORRESPONDS_TO_CHARGE);
 	}
 

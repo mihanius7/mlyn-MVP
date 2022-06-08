@@ -12,6 +12,7 @@ import elements.point_mass.Particle;
 import gui.MainWindow;
 import gui.Viewport;
 import gui.lang.GUIStrings;
+import gui.shapes.ParticleShape;
 import simulation.Simulation;
 import simulation.components.Boundaries;
 
@@ -48,7 +49,7 @@ public class ElementHandler implements ContentHandler {
 				stict = Double.parseDouble(attrs.getValue("stict"));
 			else
 				stict = 0;
-			p = new Particle(x, y, m, q, vx, vy, r, Viewport.PARTICLE_DEFAULT);
+			p = new Particle(x, y, m, q, vx, vy, r, ParticleShape.PARTICLE_DEFAULT);
 			movableX = Boolean.parseBoolean(attrs.getValue("movableX"));
 			movableY = Boolean.parseBoolean(attrs.getValue("movableY"));
 			collidableP = Boolean.parseBoolean(attrs.getValue("collidable"));

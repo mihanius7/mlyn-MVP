@@ -64,13 +64,13 @@ public class MainWindowMenuEvent implements ActionListener {
 			addToSelectionAllParticles();
 			mainWindow.setFocusTo(Simulation.getLastAddedParticle());
 		} else if (src.equals(mainWindowMenu.itemVelocities)) {
-			Viewport.drawVelocities = mainWindowMenu.itemVelocities.getState();
+			ParticleShape.drawVelocities = mainWindowMenu.itemVelocities.getState();
 		} else if (src.equals(mainWindowMenu.itemForces)) {
-			Viewport.drawForces = mainWindowMenu.itemForces.getState();
+			ParticleShape.drawForces = mainWindowMenu.itemForces.getState();
 		} else if (src.equals(mainWindowMenu.itemPretty)) {
 			ParticleShape.drawGradientParticles = mainWindowMenu.itemPretty.getState();
 		} else if (src.equals(mainWindowMenu.itemTags)) {
-			Viewport.drawTags = mainWindowMenu.itemTags.getState();
+			ParticleShape.drawTags = mainWindowMenu.itemTags.getState();
 		} else if (src.equals(mainWindowMenu.itemGrid)) {
 			Viewport.useGrid = mainWindowMenu.itemGrid.getState();
 		} else if (src.equals(mainWindowMenu.itemTracks)) {
