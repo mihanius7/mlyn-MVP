@@ -7,4 +7,4 @@ classes
 МлынMVP.rar
 GUIStrings.xlsx
 *.jpg
-!*.properties
+**/*.class
