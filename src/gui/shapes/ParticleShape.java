@@ -10,21 +10,19 @@ import elements.point_mass.Particle;
 import gui.Viewport;
 
 public class ParticleShape extends AbstractShape {
-	
-	private Particle p;
-	private BasicStroke particleBorder = new BasicStroke(0.25f);
-	private static boolean drawParticleBorders = true;
-	public static final Color PARTICLE_BORDER = Color.DARK_GRAY;
+	private Particle p;	
 	public static final Color PARTICLE_DEFAULT = new Color(100, 100, 100);
+	public static final Color PARTICLE_BORDER = Color.DARK_GRAY;
 	public static final Color PARTICLE_FIXED = Color.BLACK;
 	public static final Color PARTICLE_WATCH = Color.ORANGE;
-	public static final Color PARTICLE_CROSS = Color.ORANGE;
+	public static final Color PARTICLE_CROSS = Color.ORANGE;	
+	public static boolean drawParticleBorders = true;
 	public static boolean drawGradientParticles = false;
 	public static boolean drawVelocities = false;
 	public static boolean drawForces = false;
 	public static boolean drawNeighbourRadius = false;
-	public static boolean drawTags = false;
-	public static BasicStroke crossStroke = new BasicStroke(3f);
+	public static boolean drawTags = false;	
+	public static BasicStroke particleBorder = new BasicStroke(0.5f);
 	
 	public ParticleShape(Particle p) {
 		super();
@@ -54,12 +52,12 @@ public class ParticleShape extends AbstractShape {
 		}
 		if (!p.isMovableX()) {
 			targetG2d.setColor(PARTICLE_CROSS);
-			targetG2d.setStroke(crossStroke);
+			targetG2d.setStroke(Viewport.crossStroke);
 			targetG2d.drawLine(x, y + r + 3, x, y - r - 3);
 		}
 		if (!p.isMovableY()) {
 			targetG2d.setColor(PARTICLE_CROSS);
-			targetG2d.setStroke(crossStroke);
+			targetG2d.setStroke(Viewport.crossStroke);
 			targetG2d.drawLine(x - r - 3, y, x + r + 3, y);
 		}
 		if (drawNeighbourRadius) {

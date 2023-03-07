@@ -76,6 +76,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private static Timer refreshLabelsTimer;
 	private static BufferedImage tracksImage;
 	private static BasicStroke arrowStroke = new BasicStroke(2f);
+	public static BasicStroke crossStroke = new BasicStroke(3f);
 
 	public Viewport(int initW, int initH) {
 		particles = Simulation.getParticles();
