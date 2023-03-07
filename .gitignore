@@ -1,10 +1,10 @@
 ﻿.idea
 .settings
 classes
-bin
 .classpath
 .project
 МлынMVP.iml
 МлынMVP.rar
 GUIStrings.xlsx
 *.jpg
+!*.properties
