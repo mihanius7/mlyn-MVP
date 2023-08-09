@@ -149,11 +149,11 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 			if (p == null) {
 				Particle p2 = new Particle(Viewport.fromScreenX(x1), fromScreenY(y1), 0, 0,
 						Simulation.getReferenceParticle().getMass(), Simulation.getReferenceParticle().getRadius());
+				addToSimulation(p2);
 				p2.setX(fromScreenX(x1));
 				p2.setY(fromScreenY(y1));
 				if (Viewport.useGrid)
 					p2.snapToGrid();
-				addToSimulation(p2);
 				p = p2;
 			}
 			if (getSelectedParticle(0) != p) {
@@ -179,8 +179,8 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 			Viewport.setScale(scale / wh);
 		} else {
 			Viewport.setScale(-scale * wh);
-			Viewport.camera.addXWithRollingMean(fromScreenX(arg0.getX()));
-			Viewport.camera.addYWithRollingMean(fromScreenY(arg0.getY()));
+			Viewport.getCamera().addXWithRollingMean(fromScreenX(arg0.getX()));
+			Viewport.getCamera().addYWithRollingMean(fromScreenY(arg0.getY()));
 		}
 	}
 

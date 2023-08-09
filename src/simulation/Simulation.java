@@ -15,6 +15,7 @@ import evaluation.interaction.InteractionProcessor;
 import gui.MainWindow;
 import gui.Viewport;
 import gui.lang.GUIStrings;
+import gui.shapes.SpringShape;
 import main.SampleScenes;
 import simulation.components.OneTimePerStepProcessable;
 import simulation.components.TimeStepController;
@@ -338,7 +339,7 @@ public class Simulation implements Runnable {
 			if (s.isLine())
 				margin = maxDistance;
 			else
-				margin = Viewport.SPRING_ZIGZAG_AMPLITUDE + s.getVisibleWidth() / 2;
+				margin = SpringShape.SPRING_ZIGZAG_AMPLITUDE + s.getVisibleWidth() / 2;
 			dist = MyMath.defineDistanceToLineSegment(s, x, y);
 			if (dist < Math.max(s.getVisibleWidth() / 2, margin)) {
 				nearest = s;

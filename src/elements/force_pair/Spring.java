@@ -18,11 +18,13 @@ import elements.point_mass.Particle;
 import gui.MainWindow;
 import gui.Viewport;
 import gui.lang.GUIStrings;
+import gui.shapes.AbstractShape;
+import gui.shapes.ParticleShape;
+import gui.shapes.SpringShape;
 import simulation.Simulation;
 
 public class Spring extends ForcePair implements Selectable, Interactable {
 
-	protected Color color = Viewport.SPRING_DEFAULT;
 	public static double DEFAULT_VISIBLE_WIDTH = 2 * cm;
 	protected double l0 = 0, k = 0, c = 0, uSquared = 0, dx = 0;
 	protected double visibleWidth = DEFAULT_VISIBLE_WIDTH;
@@ -30,6 +32,7 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 	protected double maxStress = Double.MAX_VALUE;
 	protected boolean visible = true, isSelected = false, isLine = true, canCollide = false;
 	protected GapType gapType = GapType.NONE;
+	protected AbstractShape shape; 
 
 	public enum GapType {
 		NONE, ONE_SIDED, TWO_SIDED
@@ -62,12 +65,13 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 		initSpring(k, c);
 	}
 
-	private void initSpring(double k, double l, double c) {
+	private void initSpring(double k, double l0, double c) {
 		this.k = k;
-		this.l0 = l;
+		this.l0 = l0;
 		this.c = c;
-		distance = l;
+		distance = l0;
 		lastDistance = distance;
+		shape = new SpringShape(this);
 		MainWindow.println(GUIStrings.SPRING_CREATED + ": ");
 		refreshResonantFrequency();
 		MainWindow.println(String.format("	" + GUIStrings.SPRING_DAMPING_RATIO + " %.3f", defineDampingRatio()));
@@ -227,17 +231,17 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 
 	public Color getColor() {
 		if (!isSelected)
-			return color;
+			return shape.getColor();
 		else
 			return Viewport.SELECTED;
 	}
 
 	public Color getEigeneColor() {
-		return color;
+		return shape.getColor();
 	}
 
 	public void setColor(Color color) {
-		this.color = color;
+		//this.color = color;
 	}
 
 	private void checkOverCriticalDamping() {
@@ -281,5 +285,9 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 			visibleWidth = 5 * cm;
 		else
 			visibleWidth = DEFAULT_VISIBLE_WIDTH;
+	}
+	
+	public AbstractShape getShape() {
+		return shape;
 	}
 }

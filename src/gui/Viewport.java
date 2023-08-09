@@ -42,13 +42,10 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public static final Color BOUNDARIES = new Color(200, 50, 50);
 	public static final Color CROSS = Color.MAGENTA;
 	public static final Color SELECTED = Color.YELLOW;
-	public static final Color SPRING_DEFAULT = new Color(80, 80, 80);
-	public static final Color SPRING_OFF = new Color(230, 200, 200);
 	public static final Color ARROW_VELOCITY = Color.BLUE;
 	public static final Color ARROW_FORCE = Color.ORANGE;
 	public static final Color FONT_MAIN = Color.BLACK;
 	public static final Color FONT_TAGS = Color.BLACK;
-	public static final float SPRING_ZIGZAG_AMPLITUDE = 0.06f;
 	public static final int REFRESH_MESSAGES_INTERVAL = 400;
 	static final int FRAME_PAINT_DELAY = 18;
 	static final int AUTOSCALE_MARGIN = 75;
@@ -64,9 +61,9 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private static RenderingHints rh;
 	public static Font tagFont;
 	private static Font mainFont;
-	public static final Camera camera = new Camera();
+	private static final Camera camera = new Camera();
 	private static int x, y, viewportHeight, viewportWidth, fps = 0, maxArrowLength_px = 100;
-	public static double scale = 100;
+	private static double scale = 100;
 	private static double targetScale = 10;
 	private static double gridSize = DEFAULT_GRID_SIZE;
 	private static double crossX = 0;
@@ -233,54 +230,9 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		for (int i = 0; i < springs.size(); i++) {
 			s = springs.get(i);
 			if (s.isVisible())
-				drawSpringOn(s, targetG2d);
+				s.getShape().paintShape(targetG2d);
 		}
 		targetG2d.setStroke(new BasicStroke(1f));
-	}
-
-	private void drawSpringOn(Spring s, Graphics2D targetG2d) {
-		Particle p1 = s.getFirstParticle();
-		Particle p2 = s.getSecondParticle();
-		int x1 = toScreenX(p1.getX());
-		int y1 = toScreenY(p1.getY());
-		int x2 = toScreenX(p2.getX());
-		int y2 = toScreenY(p2.getY());
-		targetG2d.setColor(s.getColor());
-		targetG2d.setStroke(
-				new BasicStroke((float) (scale * s.getVisibleWidth()), BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL));
-		if (s.isLine())
-			targetG2d.drawLine(x1, y1, x2, y2);
-		else {
-			double alpha = s.defineAngle();
-			double beta = alpha + Math.PI / 2;
-			double n = s.getNominalLength() / (4 * cm);
-			double step = toScreen(s.getDeformatedLength()) / n;
-			double width = toScreen(SPRING_ZIGZAG_AMPLITUDE);
-			targetG2d.translate(x1, y1);
-			targetG2d.rotate(beta);
-			int b = 1;
-			targetG2d.draw(new Line2D.Double(0, 0, step, width));
-			for (int i = 1; i < n - 2; i++) {
-				targetG2d.draw(new Line2D.Double(i * step, b * width, (i + 1) * step, -b * width));
-				b *= -1;
-			}
-			targetG2d.draw(new Line2D.Double((n - 1) * step - step / 1.75, b * width, n * step, 0));
-			targetG2d.rotate(-beta);
-			targetG2d.translate(-x1, -y1);
-		}
-		if (s.isSelected()) {
-			double alpha = s.defineAngle() + Math.PI / 2;
-			targetG2d.setFont(tagFont);
-			targetG2d.setColor(FONT_TAGS);
-			int xc = Math.min(x1, x2) + (Math.max(x1, x2) - Math.min(x1, x2)) / 2;
-			int yc = Math.min(y1, y2) + (Math.max(y1, y2) - Math.min(y1, y2)) / 2;
-			alpha = evaluation.MyMath.normalizeAbsAngle(alpha);
-			targetG2d.translate(xc, yc);
-			targetG2d.rotate(alpha);
-			targetG2d.drawString(String.format("%.0f Hz", s.getResonantFrequency()), -20, -5);
-			targetG2d.rotate(-alpha);
-			targetG2d.translate(-xc, -yc);
-		}
 	}
 
 	private void drawMessagesOn(Graphics2D targetG2d) {

@@ -26,6 +26,7 @@ public class ParticleShape extends AbstractShape {
 	
 	public ParticleShape(Particle p) {
 		super();
+		color = PARTICLE_DEFAULT;
 		this.p = p;
 	}
 
@@ -33,7 +34,7 @@ public class ParticleShape extends AbstractShape {
 	public void paintShape(Graphics2D targetG2d) {
 		int x = Viewport.toScreenX(p.getX());
 		int y = Viewport.toScreenY(p.getY());
-		int r = (int) Math.ceil(Viewport.scale * p.getRadius());
+		int r = (int) Math.ceil(Viewport.getScale() * p.getRadius());
 		if (!drawGradientParticles)
 			targetG2d.setPaint(p.getColor());
 		else
@@ -61,7 +62,7 @@ public class ParticleShape extends AbstractShape {
 			targetG2d.drawLine(x - r - 3, y, x + r + 3, y);
 		}
 		if (drawNeighbourRadius) {
-			int nradius = (int) (0.5 * Viewport.scale * (interactionProcessor.getNeighborRangeExtra()));
+			int nradius = (int) (0.5 * Viewport.getScale() * (interactionProcessor.getNeighborRangeExtra()));
 			targetG2d.drawOval(x - nradius, y - nradius, nradius * 2, nradius * 2);
 		}
 		if (drawForces)

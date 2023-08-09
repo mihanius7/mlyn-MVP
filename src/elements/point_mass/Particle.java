@@ -9,6 +9,7 @@ import elements.Selectable;
 import evaluation.MyMath;
 import evaluation.Vector;
 import gui.Viewport;
+import gui.shapes.AbstractShape;
 import gui.shapes.ParticleShape;
 
 public class Particle extends PointMass implements Cloneable, Selectable, Interactable {
@@ -19,9 +20,9 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 	protected boolean visible = true, canCollide = true, isSelected = false;
 	protected double frictionForce = 0, stictionForce = 0;
 	protected double elasticity = 0.995;
-	protected Color oldColor, color;
+
 	
-	protected ParticleShape shape;
+	protected AbstractShape shape;
 
 	public Particle(double x, double y, double m, double q, double vx, double vy, double radius, Color c) {
 		this.x = x;
@@ -31,11 +32,11 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		velocity.setX(vx);
 		velocity.setY(vy);
 		this.r = radius;
-		this.color = c;
 		lastx = x;
 		lasty = y;
 		lastVelocity.setXY(velocity.X(), velocity.Y());
 		shape = new ParticleShape(this);
+		shape.setColor(c);
 	}
 	
 	public Particle(double x, double y, double vx, double vy, double m, double radius) {
@@ -196,22 +197,22 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 
 	public Color getColor() {
 		if (!isSelected)
-			return color;
+			return shape.getColor();
 		else
 			return Viewport.SELECTED;
 	}
 
 	public Color getEigeneColor() {
-		return color;
+		return shape.getColor();
 	}
 
 	public void setColor(Color newColor) {
-		oldColor = color;
-		color = newColor;
+		//oldColor = color;
+		shape.setColor(newColor);
 	}
 
 	public void setOldColor() {
-		color = oldColor;
+		//color = oldColor;
 	}
 
 	public void snapToGrid() {
@@ -290,7 +291,7 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		this.canCollide = canCollide;
 	}
 	
-	public ParticleShape getShape() {
+	public AbstractShape getShape() {
 		return shape;
 	}
 
