@@ -1,7 +1,6 @@
 package gui.menu;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ButtonGroup;
@@ -12,8 +11,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 
+import gui.MouseMode;
 import gui.Viewport;
-import gui.ViewportEvent.MouseMode;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;

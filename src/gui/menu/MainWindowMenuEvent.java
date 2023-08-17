@@ -10,12 +10,9 @@ import static simulation.Simulation.setMaxSelectionNumber;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JOptionPane;
-
 import gui.MainWindow;
+import gui.MouseMode;
 import gui.Viewport;
-import gui.ViewportEvent.MouseMode;
-import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;
 

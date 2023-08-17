@@ -57,9 +57,9 @@ public interface PhysicalConstants {
 	double H = 1;
 	double kH = 1E3;
 	double MH = 1E6;
-	double kgf = kg * gn;
-	double tf = t * gn;
-	double lbf = lb * gn;
+	double kgf = kg * 10.0;
+	double tf = t * 10.0;
+	double lbf = lb * 10.0;
 
 	double dj = 1;
 	double ev = 1.6E-19;

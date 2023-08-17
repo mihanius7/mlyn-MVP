@@ -7,12 +7,15 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 
+import constants.PhysicalConstants;
 import elements.force_pair.Spring;
 import elements.point_mass.Particle;
 import gui.Viewport;
 
 public class SpringShape extends AbstractShape {
 	private Spring s;
+	private boolean drawTag;
+	private float fontSize = 14;
 	public static final Color SPRING_DEFAULT = new Color(80, 80, 80);
 	public static final Color SPRING_OFF = new Color(230, 200, 200);
 	public static final float SPRING_ZIGZAG_AMPLITUDE = 0.06f;
@@ -32,8 +35,8 @@ public class SpringShape extends AbstractShape {
 		int x2 = Viewport.toScreenX(p2.getX());
 		int y2 = Viewport.toScreenY(p2.getY());
 		targetG2d.setColor(s.getColor());
-		targetG2d.setStroke(
-				new BasicStroke((float) (Viewport.getScale() * s.getVisibleWidth()), BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL));
+		targetG2d.setStroke(new BasicStroke((float) (Viewport.getScale() * s.getVisibleWidth()), BasicStroke.CAP_ROUND,
+				BasicStroke.JOIN_BEVEL));
 		if (s.isLine())
 			targetG2d.drawLine(x1, y1, x2, y2);
 		else {
@@ -54,19 +57,32 @@ public class SpringShape extends AbstractShape {
 			targetG2d.rotate(-beta);
 			targetG2d.translate(-x1, -y1);
 		}
-		if (s.isSelected()) {
-			double alpha = s.defineAngle() + Math.PI / 2;
-			targetG2d.setFont(Viewport.tagFont);
-			targetG2d.setColor(Viewport.FONT_TAGS);
-			int xc = Math.min(x1, x2) + (Math.max(x1, x2) - Math.min(x1, x2)) / 2;
-			int yc = Math.min(y1, y2) + (Math.max(y1, y2) - Math.min(y1, y2)) / 2;
-			alpha = evaluation.MyMath.normalizeAbsAngle(alpha);
-			targetG2d.translate(xc, yc);
-			targetG2d.rotate(alpha);
-			targetG2d.drawString(String.format("%.0f Hz", s.getResonantFrequency()), -20, -5);
-			targetG2d.rotate(-alpha);
-			targetG2d.translate(-xc, -yc);
+		if (drawTag || s.isSelected()) {
+			drawTag(targetG2d, x1, y1, x2, y2);
 		}
+	}
+
+	private void drawTag(Graphics2D targetG2d, int x1, int y1, int x2, int y2) {
+		double alpha = s.defineAngle() + Math.PI / 2;
+		double scale = Viewport.getScale();
+		targetG2d.setFont(Viewport.tagFont.deriveFont((float) (scale * fontSize / 128.0)));
+		targetG2d.setColor(Viewport.FONT_TAGS);
+		int xc = Math.min(x1, x2) + (Math.max(x1, x2) - Math.min(x1, x2)) / 2;
+		int yc = Math.min(y1, y2) + (Math.max(y1, y2) - Math.min(y1, y2)) / 2;
+		alpha = evaluation.MyMath.normalizeAbsAngle(alpha);
+		targetG2d.translate(xc, yc);
+		targetG2d.rotate(alpha);
+		targetG2d.drawString(String.format("%.3f kg", s.getForceSmoothed() / PhysicalConstants.kgf), (int) -(scale * fontSize / 50.0), (int) -(scale * fontSize / 256.0));
+		targetG2d.rotate(-alpha);
+		targetG2d.translate(-xc, -yc);
+	}
+
+	public boolean isDrawTag() {
+		return drawTag;
+	}
+
+	public void setDrawTag(boolean drawTag) {
+		this.drawTag = drawTag;
 	}
 
 }

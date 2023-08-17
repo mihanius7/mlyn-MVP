@@ -20,6 +20,7 @@ import java.awt.event.MouseWheelListener;
 import simulation.Simulation;
 import simulation.components.TimeStepController;
 import elements.force_pair.Spring;
+import elements.groups.SpringGroup;
 import elements.point_mass.Particle;
 
 public class ViewportEvent implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
@@ -28,11 +29,6 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 	static MouseMode mouseMode = MouseMode.PARTICLE_MANIPULATION_ACCELERATION;
 	private Viewport viewport;
 	private MainWindow mainWindow;
-
-	public enum MouseMode {
-		NONE, PARTICLE_ADD, PARTICLE_SELECT, PARTICLE_MANIPULATION_ACCELERATION, PARTICLE_MANIPULATION_COORDINATE,
-		SPRING_ADD, SPRING_SELECT
-	}
 
 	public ViewportEvent(Viewport v, MainWindow w) {
 		viewport = v;
@@ -64,6 +60,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 		y1 = y0;
 		Particle p = null;
 		Spring s = null;
+		deselectAttachedSprings();
 		if (Viewport.getMouseMode() == MouseMode.PARTICLE_ADD) {
 			p = Simulation.findNearestParticle(fromScreenX(x0), fromScreenY(y0), fromScreen(10));
 			if (p == null) {
@@ -83,6 +80,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				if (!p.isSelected()) {
 					addToSelection(p);
 					mainWindow.setFocusTo(p);
+					selectAttachedSprings(p);
 				} else
 					removeFromSelection(p);
 			} else {
@@ -110,7 +108,21 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				mainWindow.setFocusTo(p);
 				dx = Viewport.toScreenX(p.getX()) - x0;
 				dy = Viewport.toScreenY(p.getY()) - y0;
+				selectAttachedSprings(p);
 			}
+		}
+	}
+
+	private void selectAttachedSprings(Particle p) {
+		SpringGroup springGroup = Simulation.findAttachedSprings(p);
+		for (Spring s1 : springGroup) {
+			s1.getShape().setDrawTag(true);
+		}
+	}
+
+	private void deselectAttachedSprings() {
+		for (Spring s1 : Simulation.getSprings()) {
+			s1.getShape().setDrawTag(false);
 		}
 	}
 

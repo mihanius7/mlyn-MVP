@@ -32,7 +32,7 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 	protected double maxStress = Double.MAX_VALUE;
 	protected boolean visible = true, isSelected = false, isLine = true, canCollide = false;
 	protected GapType gapType = GapType.NONE;
-	protected AbstractShape shape; 
+	protected SpringShape shape; 
 
 	public enum GapType {
 		NONE, ONE_SIDED, TWO_SIDED
@@ -287,7 +287,7 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 			visibleWidth = DEFAULT_VISIBLE_WIDTH;
 	}
 	
-	public AbstractShape getShape() {
+	public SpringShape getShape() {
 		return shape;
 	}
 }

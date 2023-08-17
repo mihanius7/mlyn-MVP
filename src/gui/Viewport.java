@@ -14,10 +14,8 @@ import java.awt.TexturePaint;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-
 import java.io.IOException;
 
 import javax.swing.JPanel;
@@ -28,7 +26,6 @@ import elements.groups.ParticleGroup;
 import elements.groups.SpringGroup;
 import elements.point_mass.Particle;
 import evaluation.Vector;
-import gui.ViewportEvent.MouseMode;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;

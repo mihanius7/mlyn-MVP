@@ -20,9 +20,8 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 	protected boolean visible = true, canCollide = true, isSelected = false;
 	protected double frictionForce = 0, stictionForce = 0;
 	protected double elasticity = 0.995;
-
 	
-	protected AbstractShape shape;
+	protected ParticleShape shape;
 
 	public Particle(double x, double y, double m, double q, double vx, double vy, double radius, Color c) {
 		this.x = x;
@@ -291,7 +290,7 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		this.canCollide = canCollide;
 	}
 	
-	public AbstractShape getShape() {
+	public ParticleShape getShape() {
 		return shape;
 	}
 

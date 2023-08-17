@@ -10,20 +10,21 @@ import elements.point_mass.Particle;
 import gui.Viewport;
 
 public class ParticleShape extends AbstractShape {
-	private Particle p;	
+	private Particle p;
 	public static final Color PARTICLE_DEFAULT = new Color(100, 100, 100);
 	public static final Color PARTICLE_BORDER = Color.DARK_GRAY;
 	public static final Color PARTICLE_FIXED = Color.BLACK;
 	public static final Color PARTICLE_WATCH = Color.ORANGE;
-	public static final Color PARTICLE_CROSS = Color.ORANGE;	
+	public static final Color PARTICLE_CROSS = Color.ORANGE;
 	public static boolean drawParticleBorders = true;
 	public static boolean drawGradientParticles = false;
 	public static boolean drawVelocities = false;
 	public static boolean drawForces = false;
 	public static boolean drawNeighbourRadius = false;
-	public static boolean drawTags = false;	
+	public static boolean drawTags = false;
 	public static BasicStroke particleBorder = new BasicStroke(0.5f);
-	
+	private float fontSize = 14;
+
 	public ParticleShape(Particle p) {
 		super();
 		color = PARTICLE_DEFAULT;
@@ -70,16 +71,18 @@ public class ParticleShape extends AbstractShape {
 		if (drawVelocities || p.isSelected())
 			Viewport.drawArrowLine(targetG2d, x, y, p.getVelocityVector(), Viewport.ARROW_VELOCITY);
 		if (drawTags || p.isSelected()) {
-			targetG2d.setFont(Viewport.tagFont);
+			float fontSizeCoefficient = (float) (Viewport.getScale() * fontSize / 128.0);
+			float stringsInterval = (float) (0.1 * fontSizeCoefficient);
+			targetG2d.setFont(Viewport.tagFont.deriveFont(fontSizeCoefficient));
 			targetG2d.setColor(Viewport.FONT_TAGS);
-			x = (int) (Viewport.toScreenX(p.getX()) + r * 0.707);
-			y = (int) (Viewport.toScreenY(p.getY()) - r * 0.707);
-			y -= Viewport.tagFont.getSize();
+			x = (int) (Viewport.toScreenX(p.getX()) + r * 1);
+			y = (int) (Viewport.toScreenY(p.getY()) - r * 2);
+			y -= Viewport.tagFont.getSize() * stringsInterval;
 			targetG2d.drawString(String.format("%.1e kg", p.getMass()), x, y);
-			y += Viewport.tagFont.getSize();
-			targetG2d.drawString(String.format("(%.3f; %.3f) m", p.getX(), p.getY(), p.defineVelocity()), x, y);
-			y += Viewport.tagFont.getSize();
-			targetG2d.drawString(String.format("%.3f m/s", p.defineVelocity()), x, y);
+			y += Viewport.tagFont.getSize() * stringsInterval;
+			targetG2d.drawString(String.format("(%.2f; %.2f) m", p.getX(), p.getY(), p.defineVelocity()), x, y);
+			y += Viewport.tagFont.getSize() * stringsInterval;
+			targetG2d.drawString(String.format("%.2f m/s", p.defineVelocity()), x, y);
 		}
 	}
 

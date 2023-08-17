@@ -1,13 +1,12 @@
 package gui;
 
 import static constants.PhysicalConstants.cm;
+
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.io.File;
 import java.util.Arrays;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -19,10 +18,10 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
 import elements.force_pair.Spring;
 import elements.point_mass.Particle;
 import file.SAXelementParser;
-import gui.ViewportEvent.MouseMode;
 import gui.editing.EditBoundariesWindow;
 import gui.lang.GUIStrings;
 import gui.lang.International;
@@ -30,7 +29,6 @@ import gui.lang.Language;
 import gui.menu.MainWindowMenu;
 import main.SampleScenes;
 import simulation.Simulation;
-import simulation.components.TimeStepController;
 import simulation.components.TimeStepController.TimeStepMode;
 
 public class MainWindow extends JFrame {
