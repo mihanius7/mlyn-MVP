@@ -116,13 +116,13 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 	private void selectAttachedSprings(Particle p) {
 		SpringGroup springGroup = Simulation.findAttachedSprings(p);
 		for (Spring s1 : springGroup) {
-			s1.getShape().setDrawTag(true);
+			s1.getShape().setDrawLabel(true);
 		}
 	}
 
 	private void deselectAttachedSprings() {
 		for (Spring s1 : Simulation.getSprings()) {
-			s1.getShape().setDrawTag(false);
+			s1.getShape().setDrawLabel(false);
 		}
 	}
 

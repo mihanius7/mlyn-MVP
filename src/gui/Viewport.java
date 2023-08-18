@@ -28,6 +28,7 @@ import elements.point_mass.Particle;
 import evaluation.Vector;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
+import gui.shapes.SpringShape;
 import simulation.Simulation;
 import simulation.components.Boundaries;
 
@@ -41,6 +42,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public static final Color SELECTED = Color.YELLOW;
 	public static final Color ARROW_VELOCITY = Color.BLUE;
 	public static final Color ARROW_FORCE = Color.ORANGE;
+	private static final int ARROW_DRAWING_MIN_THRESHOLD = 8;
 	public static final Color FONT_MAIN = Color.BLACK;
 	public static final Color FONT_TAGS = Color.BLACK;
 	public static final int REFRESH_MESSAGES_INTERVAL = 400;
@@ -49,7 +51,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public static final double DEFAULT_GRID_SIZE = 20 * cm;
 	private static boolean drawMessages = true;
 	public static boolean useGrid = true;
-	private static boolean drawTracks = false; 
+	private static boolean drawTracks = false;
 	private static boolean drawHeatMap = false;
 	private ParticleGroup particles;
 	private SpringGroup springs;
@@ -76,7 +78,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		particles = Simulation.getParticles();
 		springs = Simulation.getSprings();
 		rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
 		setBounds(0, 0, initW, initH);
 		setDoubleBuffered(true);
 		refreshStaticSizeConstants();
@@ -239,6 +241,21 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.drawString(timeStepString, 2, 28);
 	}
 
+	public static void drawStringTilted(String string, int x1, int y1, int x2, int y2) {
+		double alpha = Math.atan2(x2 - x1, y1 - y2) + Math.PI / 2;
+		globalCanvas.setFont(tagFont.deriveFont((float) (scale * SpringShape.fontSize / 128.0)));
+		globalCanvas.setColor(FONT_TAGS);
+		int xc = Math.min(x1, x2) + (Math.max(x1, x2) - Math.min(x1, x2)) / 2;
+		int yc = Math.min(y1, y2) + (Math.max(y1, y2) - Math.min(y1, y2)) / 2;
+		alpha = evaluation.MyMath.fitAbsAngleRad(alpha);
+		globalCanvas.translate(xc, yc);
+		globalCanvas.rotate(alpha);
+		globalCanvas.drawString(string, (int) -(scale * SpringShape.fontSize / 50.0),
+				(int) -(scale * SpringShape.fontSize / 256.0));
+		globalCanvas.rotate(-alpha);
+		globalCanvas.translate(-xc, -yc);
+	}
+
 	private void drawBoundariesOn(Graphics2D targetG2d) {
 		targetG2d.setColor(BOUNDARIES);
 		targetG2d.setStroke(arrowStroke);
@@ -274,8 +291,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		int y0 = viewportHeight - 20;
 		int x1 = x0 + 50;
 		int y1 = y0 - 50;
-		drawArrowLine(targetG2d, x0, y0, x1, y0, 10, 4);
-		drawArrowLine(targetG2d, x0, y0, x0, y1, 10, 4);
+		drawArrowLine(x0, y0, x1, y0, 10, 4);
+		drawArrowLine(x0, y0, x0, y1, 10, 4);
 		targetG2d.drawString("X", x1, y0 - 4);
 		targetG2d.drawString("Y", x0 + 2, y1);
 	}
@@ -288,22 +305,21 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.drawString(String.format("%.1e m", fromScreen(l)), xc - 32, yc - 4);
 	}
 
-	public static void drawArrowLine(Graphics2D g2d, int x1, int y1, Vector v, Color arrowColor) {
-		int dx = toScreen(v.X() / 3);
-		int dy = toScreen(v.Y() / 3);
-		int l = (int) Math.sqrt(dx * dx + dy * dy);
-		if (l > 7) {
-			if (l > maxArrowLength_px) {
-				dx = (int) (maxArrowLength_px * v.defineCos());
-				dy = (int) (maxArrowLength_px * v.defineSin());
+	public static void drawArrowLine(int x1, int y1, Vector v, Color arrowColor, String label) {
+		double length = Math.log10(v.norm() + 1) / 2;
+		int dx = toScreen(length * v.defineCos());
+		int dy = toScreen(length * v.defineSin());
+		if (length > fromScreen(ARROW_DRAWING_MIN_THRESHOLD)) {
+			globalCanvas.setColor(arrowColor);
+			globalCanvas.setStroke(arrowStroke);
+			drawArrowLine(x1, y1, x1 + dx, y1 - dy, 11, 4);
+			if (!label.isEmpty()) {
+				drawStringTilted(String.format("%.2f " + label, v.norm()), x1, y1, x1 + dx, y1 - dy);
 			}
-			g2d.setColor(arrowColor);
-			g2d.setStroke(arrowStroke);
-			drawArrowLine(g2d, x1, y1, x1 + dx, y1 - dy, 11, 4);
 		}
 	}
 
-	private static void drawArrowLine(Graphics g, int x1, int y1, int x2, int y2, int d, int h) {
+	private static void drawArrowLine(int x1, int y1, int x2, int y2, int d, int h) {
 		int dx = x2 - x1, dy = y2 - y1;
 		double D = Math.sqrt(dx * dx + dy * dy);
 		double xm = D - d, xn = xm, ym = h, yn = -h, x;
@@ -320,8 +336,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		int[] xpoints = { x2, (int) xm, (int) xn };
 		int[] ypoints = { y2, (int) ym, (int) yn };
 
-		g.drawLine(x1, y1, x2, y2);
-		g.fillPolygon(xpoints, ypoints, 3);
+		globalCanvas.drawLine(x1, y1, x2, y2);
+		globalCanvas.fillPolygon(xpoints, ypoints, 3);
 	}
 
 	public static void clearTracksImage() {

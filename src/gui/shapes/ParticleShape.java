@@ -66,10 +66,10 @@ public class ParticleShape extends AbstractShape {
 			int nradius = (int) (0.5 * Viewport.getScale() * (interactionProcessor.getNeighborRangeExtra()));
 			targetG2d.drawOval(x - nradius, y - nradius, nradius * 2, nradius * 2);
 		}
-		if (drawForces)
-			Viewport.drawArrowLine(targetG2d, x, y, p.getLastForceVector(), Viewport.ARROW_FORCE);
-		if (drawVelocities || p.isSelected())
-			Viewport.drawArrowLine(targetG2d, x, y, p.getVelocityVector(), Viewport.ARROW_VELOCITY);
+		if (drawForces || p.isSelected())
+			Viewport.drawArrowLine(x, y, p.getLastForceVector(), Viewport.ARROW_FORCE, "N");
+		if (drawVelocities)
+			Viewport.drawArrowLine(x, y, p.getVelocityVector(), Viewport.ARROW_VELOCITY, "m/s");
 		if (drawTags || p.isSelected()) {
 			float fontSizeCoefficient = (float) (Viewport.getScale() * fontSize / 128.0);
 			float stringsInterval = (float) (0.1 * fontSizeCoefficient);

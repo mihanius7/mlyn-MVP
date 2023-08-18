@@ -105,13 +105,13 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		Boundaries b = Simulation.getContent().getBoundaries();
 
 		if (b.isUseRight() && x + r > b.getRight()) {
-			velocity.multiplyXby(-elasticity);
+			velocity.multiplyX(-elasticity);
 			setX(b.getRight() - r);
-			velocity.multiplyYby(0.95);
+			velocity.multiplyY(0.95);
 		} else if (b.isUseLeft() && x - r < b.getLeft()) {
-			velocity.multiplyXby(-elasticity);
+			velocity.multiplyX(-elasticity);
 			setX(b.getLeft() + r);
-			velocity.multiplyYby(0.95);
+			velocity.multiplyY(0.95);
 		}
 
 		if (b.isUseBottom() && b.getBottom() > y - r) {
@@ -121,11 +121,11 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 			else
 				setVy(0);
 			setY(b.getBottom() + r);
-			velocity.multiplyXby(0.95);
+			velocity.multiplyX(0.95);
 		} else if (b.isUseUpper() && y + r > b.getUpper()) {
-			velocity.multiplyYby(-elasticity);
+			velocity.multiplyY(-elasticity);
 			setY(b.getUpper() - r);
-			velocity.multiplyXby(0.95);
+			velocity.multiplyX(0.95);
 		}
 	}
 

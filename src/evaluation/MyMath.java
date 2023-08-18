@@ -159,7 +159,7 @@ public class MyMath {
 		return result;
 	}
 
-	public static double normalizeAngle(double a) {
+	public static double fitAngleRad(double a) {
 		if (a > Math.PI)
 			a = a - 2 * Math.PI;
 		else if (a < -Math.PI)
@@ -167,7 +167,7 @@ public class MyMath {
 		return a;
 	}
 
-	public static double normalizeAngleDeg(double a) {
+	public static double fitAngleDeg(double a) {
 		if (a > 180)
 			a = a - 360;
 		else if (a < -180)
@@ -175,7 +175,7 @@ public class MyMath {
 		return a;
 	}
 
-	public static double normalizeAbsAngle(double a) {
+	public static double fitAbsAngleRad(double a) {
 		if (Math.abs(a) > Math.PI / 2)
 			a = a + Math.PI;
 		return a;

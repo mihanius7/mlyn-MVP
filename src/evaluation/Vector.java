@@ -54,11 +54,16 @@ public class Vector implements Cloneable {
 		y += dy;
 	}
 
-	public void multiplyXby(double d) {
+	public void multiply(double d) {
+		multiplyX(d);
+		multiplyY(d);
+	}
+
+	public void multiplyX(double d) {
 		x *= d;
 	}
 
-	public void multiplyYby(double d) {
+	public void multiplyY(double d) {
 		y *= d;
 	}
 
@@ -93,7 +98,7 @@ public class Vector implements Cloneable {
 	public double defineSin() {
 		return y / norm();
 	}
-	
+
 	public Vector clone() throws CloneNotSupportedException {
 		return (Vector) super.clone();
 	}
