@@ -1,10 +1,7 @@
-﻿.idea
-.settings
-classes
-.classpath
-.project
-МлынMVP.iml
-МлынMVP.rar
-GUIStrings.xlsx
-*.jpg
-**/*.class
+/constants/
+/elements/
+/evaluation/
+/file/
+/gui/
+/main/
+/simulation/
