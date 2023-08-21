@@ -14,4 +14,5 @@ public class NeighborPair extends ForcePair {
 		super.applyForce();
 		force = interactionProcessor.applyPairInteraction(p1, p2, distance);
 	}
+
 }

@@ -1,15 +1,15 @@
 package gui;
 
-import elements.point_mass.Particle;
+import elements.Element;
 
 public class Camera {
 
-	public static final int CAMERA_WATCH_SMOOTH = 8;
+	public static final int CAMERA_WATCH_SMOOTH = 12;
 	public static final int CAMERA_KEYBOARD_SPEED = 15;
 	public static final float CAMERA_ZOOM_INCREMENT = 1.25f;
 	double x, y; 
 	double vx = 0, vy = 0;
-	Particle watchParticle;
+	Element following;
 
 	public double getX() {
 		return x;
@@ -27,20 +27,12 @@ public class Camera {
 		y = cameraY;
 	}
 
-	public Particle getWatchParticle() {
-		return watchParticle;
+	public Element getFollowong() {
+		return following;
 	}
 
-	public void setWatchParticle(Particle watchParticle) {
-		this.watchParticle = watchParticle;
-	}
-
-	public void addX(double dx) {
-		x += dx;
-	}
-
-	public void addY(double dy) {
-		y += dy;
+	public void setFollowing(Element element) {
+		this.following = element;
 	}
 
 	public void addXWithRollingMean(double dx) {
@@ -69,10 +61,10 @@ public class Camera {
 		Viewport.clearTracksImage();
 	}
 
-	public void watch() {
-		if (watchParticle != null) {
-			double xp = watchParticle.getX() + 0.05 * watchParticle.getVx();
-			double yp = watchParticle.getY() + 0.05 * watchParticle.getVy();
+	public void follow() {
+		if (following != null) {
+			double xp = following.getCenterPoint().x;
+			double yp = following.getCenterPoint().y;
 			x -= (x - xp) / CAMERA_WATCH_SMOOTH;
 			y -= (y - yp) / CAMERA_WATCH_SMOOTH;
 		} else {

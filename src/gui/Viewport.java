@@ -21,6 +21,7 @@ import java.io.IOException;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import elements.Element;
 import elements.force_pair.Spring;
 import elements.groups.ParticleGroup;
 import elements.groups.SpringGroup;
@@ -61,7 +62,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public static Font tagFont;
 	private static Font mainFont;
 	private static final Camera camera = new Camera();
-	private static int x, y, viewportHeight, viewportWidth, fps = 0, maxArrowLength_px = 100;
+	private static int viewportHeight, viewportWidth, fps = 0;
 	private static double scale = 100;
 	private static double targetScale = 10;
 	private static double gridSize = DEFAULT_GRID_SIZE;
@@ -117,7 +118,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	private void drawWholeFrameOn(Graphics2D graphics) {
 		graphics.setRenderingHints(rh);
-		camera.watch();
+		camera.follow();
 		drawBackgroundOn(graphics);
 		if (drawTracks)
 			graphics.drawImage(tracksImage, 0, 0, null);
@@ -213,14 +214,10 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		}
 		if (Simulation.getReferenceParticle().isVisible())
 			Simulation.getReferenceParticle().getShape().paintShape(targetG2d);
-		if (camera.getWatchParticle() != null) {
-			Particle wp = camera.getWatchParticle();
-			x = toScreenX(wp.getX());
-			y = toScreenY(wp.getY());
-			int r = (int) Math.ceil(scale * wp.getRadius());
-			targetG2d.setColor(ParticleShape.PARTICLE_WATCH);
-			targetG2d.setStroke(new BasicStroke(2f));
-			targetG2d.drawOval(x - r, y - r, r * 2, r * 2);
+		if (camera.getFollowong() != null) {
+			Element following = camera.getFollowong();
+			drawCrossOn(targetG2d, following.getCenterPoint().x, following.getCenterPoint().y,
+					true);
 		}
 	}
 
@@ -422,7 +419,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			setScale(Math.min((viewportHeight - AUTOSCALE_MARGIN) / h, (viewportWidth - AUTOSCALE_MARGIN) / w));
 			System.out.println("viewportH " + viewportHeight);
 			System.out.println("viewportW " + viewportWidth);
-			camera.watchParticle = null;
+			camera.following = null;
 			camera.setX(b.getEffectiveCenterX());
 			camera.setY(b.getEffectiveCenterY());
 		} else
@@ -437,7 +434,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			double h = b.getHeight();
 			double w = b.getWidth();
 			setScale(Math.min((viewportHeight - 4) / h, (viewportWidth - 2) / w));
-			camera.watchParticle = null;
+			camera.following = null;
 			camera.setX(b.getLeft() + b.getWidth() / 2);
 			camera.setY(b.getBottom() + b.getHeight() / 2);
 			clearTracksImage();

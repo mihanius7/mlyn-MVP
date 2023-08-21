@@ -10,8 +10,10 @@ import static java.lang.Math.sqrt;
 import static simulation.Simulation.interactionProcessor;
 
 import java.awt.Color;
+import java.awt.geom.Point2D;
 
 import constants.PhysicalConstants;
+import elements.Element;
 import elements.Interactable;
 import elements.Selectable;
 import elements.point_mass.Particle;
@@ -23,7 +25,7 @@ import gui.shapes.ParticleShape;
 import gui.shapes.SpringShape;
 import simulation.Simulation;
 
-public class Spring extends ForcePair implements Selectable, Interactable {
+public class Spring extends ForcePair implements Element, Selectable, Interactable {
 
 	public static double DEFAULT_VISIBLE_WIDTH = 2 * cm;
 	protected double l0 = 0, k = 0, c = 0, uSquared = 0, dx = 0;
@@ -32,7 +34,7 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 	protected double maxStress = Double.MAX_VALUE;
 	protected boolean visible = true, isSelected = false, isLine = true, canCollide = false;
 	protected GapType gapType = GapType.NONE;
-	protected SpringShape shape; 
+	protected SpringShape shape;
 
 	public enum GapType {
 		NONE, ONE_SIDED, TWO_SIDED
@@ -241,7 +243,7 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 	}
 
 	public void setColor(Color color) {
-		//this.color = color;
+		// this.color = color;
 	}
 
 	private void checkOverCriticalDamping() {
@@ -286,8 +288,13 @@ public class Spring extends ForcePair implements Selectable, Interactable {
 		else
 			visibleWidth = DEFAULT_VISIBLE_WIDTH;
 	}
-	
+
 	public SpringShape getShape() {
 		return shape;
+	}
+
+	@Override
+	public java.awt.geom.Point2D.Double getCenterPoint() {
+		return new Point2D.Double(0.5 * p1.getX() + 0.5 * p2.getX(), 0.5 * p1.getY() + 0.5 * p2.getY());
 	}
 }

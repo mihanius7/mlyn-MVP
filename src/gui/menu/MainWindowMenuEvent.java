@@ -110,7 +110,7 @@ public class MainWindowMenuEvent implements ActionListener {
 			Simulation.interactionProcessor.recalculateNeighborsNeeded();
 		} else if (src.equals(mainWindowMenu.itemFollow)) {
 			if (getSelectedParticles().size() > 0) {
-				Viewport.getCamera().setWatchParticle(getSelectedParticle(0));
+				Viewport.getCamera().setFollowing(getSelectedParticle(0));
 				clearSelection();
 			} else
 				MainWindow.NothingIsSelectedMessage();

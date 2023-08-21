@@ -14,7 +14,6 @@ public class ParticleShape extends AbstractShape {
 	public static final Color PARTICLE_DEFAULT = new Color(100, 100, 100);
 	public static final Color PARTICLE_BORDER = Color.DARK_GRAY;
 	public static final Color PARTICLE_FIXED = Color.BLACK;
-	public static final Color PARTICLE_WATCH = Color.ORANGE;
 	public static final Color PARTICLE_CROSS = Color.ORANGE;
 	public static boolean drawParticleBorders = true;
 	public static boolean drawGradientParticles = false;

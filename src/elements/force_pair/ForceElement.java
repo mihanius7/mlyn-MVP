@@ -1,8 +1,6 @@
 package elements.force_pair;
 
-import elements.Element;
-
-public interface ForceElement extends Element {
+public interface ForceElement {
 	public void applyForce();
 
 	public double getForce();

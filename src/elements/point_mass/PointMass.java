@@ -1,5 +1,8 @@
 package elements.point_mass;
 
+import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
+
 import elements.Element;
 import evaluation.Vector;
 import simulation.Simulation;
@@ -204,6 +207,11 @@ public class PointMass implements Element, Cloneable  {
 
 	public boolean isMoving() {
 		return velocity.normSquared() > 1e-15;
+	}
+
+	@Override
+	public java.awt.geom.Point2D.Double getCenterPoint() {
+		return new Point2D.Double(x, y);
 	}
 
 }
