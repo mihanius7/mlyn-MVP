@@ -17,11 +17,9 @@ import elements.Element;
 import elements.Interactable;
 import elements.Selectable;
 import elements.point_mass.Particle;
-import gui.MainWindow;
+import gui.ConsoleWindow;
 import gui.Viewport;
 import gui.lang.GUIStrings;
-import gui.shapes.AbstractShape;
-import gui.shapes.ParticleShape;
 import gui.shapes.SpringShape;
 import simulation.Simulation;
 
@@ -74,9 +72,9 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 		distance = l0;
 		lastDistance = distance;
 		shape = new SpringShape(this);
-		MainWindow.println(GUIStrings.SPRING_CREATED + ": ");
+		ConsoleWindow.println(GUIStrings.SPRING_CREATED + ": ");
 		refreshResonantFrequency();
-		MainWindow.println(String.format("	" + GUIStrings.SPRING_DAMPING_RATIO + " %.3f", defineDampingRatio()));
+		ConsoleWindow.println(String.format("	" + GUIStrings.SPRING_DAMPING_RATIO + " %.3f", defineDampingRatio()));
 		checkOverCriticalDamping();
 	}
 
@@ -84,7 +82,7 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 		this.k = k;
 		this.c = c;
 		lastDistance = distance;
-		MainWindow.println(GUIStrings.REFERENCE_SPRING_CREATED);
+		ConsoleWindow.println(GUIStrings.REFERENCE_SPRING_CREATED);
 	}
 
 	public double getAbsoluteDeformation() {
@@ -133,7 +131,7 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 
 	public void setNominalLength(double length) {
 		this.l0 = length;
-		MainWindow.println(String.format(GUIStrings.SPRING_NOMINAL_LENGTH + " %.6e", length));
+		ConsoleWindow.println(String.format(GUIStrings.SPRING_NOMINAL_LENGTH + " %.6e", length));
 	}
 
 	public double getDeformatedLength() {
@@ -151,7 +149,7 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 	public void setStiffnes(double k) {
 		this.k = k;
 		refreshResonantFrequency();
-		MainWindow.println(String.format(GUIStrings.SPRING_STIFFNES + "  %.3f", k));
+		ConsoleWindow.println(String.format(GUIStrings.SPRING_STIFFNES + "  %.3f", k));
 	}
 
 	public double getHardening() {
@@ -160,7 +158,7 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 
 	public void setHardening(double u) {
 		this.uSquared = sqr(u);
-		MainWindow.println(GUIStrings.SPRING_HARDENING_COEFFICIENT + " " + u);
+		ConsoleWindow.println(GUIStrings.SPRING_HARDENING_COEFFICIENT + " " + u);
 	}
 
 	public double getMaxStress() {
@@ -188,9 +186,9 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 	public void setResonantFrequency(double f) {
 		if (f > 0)
 			k = 4 * sqr(Math.PI) * sqr(f) * defineReducedMass(p1, p2);
-		MainWindow.println(String.format(GUIStrings.SPRING_STIFFNES + " %.3e N/m", k));
+		ConsoleWindow.println(String.format(GUIStrings.SPRING_STIFFNES + " %.3e N/m", k));
 		refreshResonantFrequency();
-		MainWindow.println(String.format(GUIStrings.SPRING_RESONANT_FREQUENCY + " %.1f Hz", fn));
+		ConsoleWindow.println(String.format(GUIStrings.SPRING_RESONANT_FREQUENCY + " %.1f Hz", fn));
 	}
 
 	public double defineDampingRatio() {
@@ -216,13 +214,13 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 	public void setDampingRatio(double ksi) {
 		setDamping(ksi * defineCriticalDamping());
 		checkOverCriticalDamping();
-		MainWindow.println(String.format(GUIStrings.SPRING_DAMPING_RATIO + " %.3f", defineDampingRatio())
+		ConsoleWindow.println(String.format(GUIStrings.SPRING_DAMPING_RATIO + " %.3f", defineDampingRatio())
 				+ String.format(", " + GUIStrings.SPRING_DAMPING + " %.3e N/(m/s)", c));
 	}
 
 	public void setQualityFactor(double Q) {
 		if (Q > 0) {
-			MainWindow.println(String.format(GUIStrings.SPRING_QUALITY_FACTOR + " %.1f...", Q));
+			ConsoleWindow.println(String.format(GUIStrings.SPRING_QUALITY_FACTOR + " %.1f...", Q));
 			setDampingRatio(1f / 2 / Q);
 		}
 	}
@@ -249,7 +247,7 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 	private void checkOverCriticalDamping() {
 		if (defineDampingRatio() > 20) {
 			setDampingRatio(20);
-			MainWindow.println(GUIStrings.HYPERCRITICAL_DAMPING_FIXED);
+			ConsoleWindow.println(GUIStrings.HYPERCRITICAL_DAMPING_FIXED);
 		}
 	}
 

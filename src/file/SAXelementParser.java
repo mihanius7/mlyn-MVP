@@ -9,6 +9,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.lang.GUIStrings;
 
@@ -18,7 +19,7 @@ public class SAXelementParser {
 		try {
 			URL inputURL = new URL(file.toURI().toString());
 			String fileName = inputURL.toString();
-			MainWindow.println(GUIStrings.FILE_LOADING_STARTET +": " + fileName);
+			ConsoleWindow.println(GUIStrings.FILE_LOADING_STARTET +": " + fileName);
 			XMLReader reader = XMLReaderFactory.createXMLReader();
 			ElementHandler handler = new ElementHandler();
 			reader.setContentHandler(handler);
@@ -27,16 +28,16 @@ public class SAXelementParser {
 				reader.parse(fileName);
 		} catch (SAXException e) {
 			e.printStackTrace();
-			MainWindow.println(GUIStrings.PARSER_EXCEPTION);
+			ConsoleWindow.println(GUIStrings.PARSER_EXCEPTION);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			MainWindow.println(GUIStrings.FILE_NOT_FOUND_EXCEPTION);
+			ConsoleWindow.println(GUIStrings.FILE_NOT_FOUND_EXCEPTION);
 		} catch (IOException e) {
 			e.printStackTrace();
-			MainWindow.println(GUIStrings.FILE_READING_EXCEPTION);
+			ConsoleWindow.println(GUIStrings.FILE_READING_EXCEPTION);
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
-			MainWindow.println(GUIStrings.NUMBER_FORMAT_EXCEPTION);
+			ConsoleWindow.println(GUIStrings.NUMBER_FORMAT_EXCEPTION);
 		}
 	}
 

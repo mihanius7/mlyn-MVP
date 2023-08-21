@@ -8,7 +8,7 @@ public class SimulationContent implements Cloneable {
 	
 	ParticleGroup particles = new ParticleGroup();
 	SpringGroup springs = new SpringGroup();
-	Boundaries boundaries = new Boundaries(0, 9, 4.8, 0);
+	Boundaries boundaries = new Boundaries();
 
 	public ParticleGroup getParticles() {
 		return particles;

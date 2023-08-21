@@ -1,24 +1,29 @@
 package simulation.components;
 
-import static simulation.Simulation.*;
+import static constants.PhysicalConstants.cm;
+import static constants.PhysicalConstants.m;
 import static java.lang.Math.abs;
+import static simulation.Simulation.getParticle;
+import static simulation.Simulation.getParticlesCount;
 
-import gui.MainWindow;
+import gui.ConsoleWindow;
 import gui.lang.GUIStrings;
 
-import static constants.PhysicalConstants.cm;
-
 public class Boundaries implements Cloneable {
+	private static final double INITIAL_BOTTOM_BORDER = 0 * m;
+	private static final double INITIAL_UPPER_BORDER = 4.8 * m;
+	private static final double INITIAL_RIGHT_BORDER = 8.5 * m;
+	private static final double INITIAL_LEFT_BORDER = 0 * m;
 	private double left, right, upper, bottom;
 	private double leftEffective, rightEffective, upperEffective, bottomEffective;
 	private double autosizeMargin = 10 * cm;
 	private boolean useLeft, useRight, useUpper, useBottom;
 
-	public Boundaries(double left, double right, double upper, double bottom) {
-		this.left = left;
-		this.right = right;
-		this.upper = upper;
-		this.bottom = bottom;
+	public Boundaries() {
+		this.left = INITIAL_LEFT_BORDER;
+		this.right = INITIAL_RIGHT_BORDER;
+		this.upper = INITIAL_UPPER_BORDER;
+		this.bottom = INITIAL_BOTTOM_BORDER;
 		this.useLeft = true;
 		this.useRight = true;
 		this.useUpper = false;
@@ -27,13 +32,13 @@ public class Boundaries implements Cloneable {
 
 	public void setBounds(double left, double right, double upper, double bottom) {
 		this.left = left;
-		MainWindow.println(GUIStrings.LEFT_BOUNDARY + ", m: " + this.left);
+		ConsoleWindow.println(GUIStrings.LEFT_BOUNDARY + ", m: " + this.left);
 		this.right = right;
-		MainWindow.println(GUIStrings.RIGHT_BOUNDARY + ", m: " + this.right);
+		ConsoleWindow.println(GUIStrings.RIGHT_BOUNDARY + ", m: " + this.right);
 		this.upper = upper;
-		MainWindow.println(GUIStrings.UPPER_BOUNDARY + ", m: " + this.upper);
+		ConsoleWindow.println(GUIStrings.UPPER_BOUNDARY + ", m: " + this.upper);
 		this.bottom = bottom;
-		MainWindow.println(GUIStrings.BOTTOM_BOUNDARY + ", m: " + this.bottom);
+		ConsoleWindow.println(GUIStrings.BOTTOM_BOUNDARY + ", m: " + this.bottom);
 	}
 
 	public double getLeft() {
