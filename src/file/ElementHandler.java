@@ -9,6 +9,7 @@ import org.xml.sax.SAXException;
 
 import elements.force_pair.Spring;
 import elements.point_mass.Particle;
+import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.Viewport;
 import gui.lang.GUIStrings;
@@ -28,7 +29,7 @@ public class ElementHandler implements ContentHandler {
 
 	@Override
 	public void startDocument() throws SAXException {
-		MainWindow.println(GUIStrings.FILE_LOADING_STARTET);
+		ConsoleWindow.println(GUIStrings.FILE_LOADING_STARTET);
 	}
 
 	@Override
@@ -124,7 +125,7 @@ public class ElementHandler implements ContentHandler {
 
 	@Override
 	public void endDocument() throws SAXException {
-		MainWindow.println(GUIStrings.FILE_LOADING_FINISHED);
+		ConsoleWindow.println(GUIStrings.FILE_LOADING_FINISHED);
 		Viewport.scaleToBoundaries();
 	}
 

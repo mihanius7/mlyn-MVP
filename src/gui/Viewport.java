@@ -93,7 +93,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public void run() {
 		refreshLabelsTimer.start();
 		long sleep;
-		MainWindow.println(GUIStrings.RENDERING_THREAD_STARTED);
+		ConsoleWindow.println(GUIStrings.RENDERING_THREAD_STARTED);
 		while (true) {
 			dt = System.currentTimeMillis() - frameTime;
 			repaint();
@@ -393,7 +393,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			size = 20 * cm;
 		gridSize = size;
 		MainWindow.getInstance().refreshGUIControls();
-		MainWindow.println(String.format(GUIStrings.GRID_SIZE + "%.2e m", gridSize));
+		ConsoleWindow.println(String.format(GUIStrings.GRID_SIZE + "%.2e m", gridSize));
 	}
 
 	public static boolean isDrawTracks() {
@@ -403,7 +403,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public static void setDrawTracks(boolean b) {
 		drawTracks = b;
 		clearTracksImage();
-		MainWindow.println(GUIStrings.DRAW_TRACKS + ": " + b);
+		ConsoleWindow.println(GUIStrings.DRAW_TRACKS + ": " + b);
 	}
 
 	public static boolean isDrawFields() {
@@ -448,7 +448,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public static void setMouseMode(MouseMode mouseMode) {
 		ViewportEvent.mouseMode = mouseMode;
 		Simulation.clearSelection();
-		MainWindow.println(GUIStrings.MOUSE_MODE + ": " + ViewportEvent.mouseMode);
+		ConsoleWindow.println(GUIStrings.MOUSE_MODE + ": " + ViewportEvent.mouseMode);
 	}
 
 	public void saveImageToFile() {
@@ -458,7 +458,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.3fñ.jpg", Simulation.getTime());
 		try {
 			if (javax.imageio.ImageIO.write(buffer, "JPEG", new java.io.File(fileName)))
-				MainWindow.println(GUIStrings.IMAGE_SAVED_TO + " " + fileName);
+				ConsoleWindow.println(GUIStrings.IMAGE_SAVED_TO + " " + fileName);
 		} catch (IOException e) {
 			MainWindow.imageWriteErrorMessage(fileName);
 		}

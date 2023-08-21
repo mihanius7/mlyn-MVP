@@ -10,6 +10,7 @@ import static simulation.Simulation.setMaxSelectionNumber;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.MouseMode;
 import gui.Viewport;
@@ -121,7 +122,7 @@ public class MainWindowMenuEvent implements ActionListener {
 		} else if (src.equals(mainWindowMenu.itemLanguage)) {
 			mainWindow.changeLanguage(mainWindow.askForLanguage());
 		} else
-			MainWindow.println("Another menu event");
+			ConsoleWindow.println("Another menu event");
 	}
 
 }

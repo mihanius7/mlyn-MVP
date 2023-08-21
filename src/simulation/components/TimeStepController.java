@@ -2,6 +2,7 @@ package simulation.components;
 
 import static simulation.Simulation.interactionProcessor;
 
+import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.Viewport;
 import gui.lang.GUIStrings;
@@ -45,7 +46,7 @@ public class TimeStepController implements OneTimePerStepProcessable {
 	public void setTimeStepSize(double newdt) {
 		if (newdt > 0) {
 			dt = newdt;
-			MainWindow.println(String.format(GUIStrings.TIMESTEP + ": %.1e ñ", dt));
+			ConsoleWindow.println(String.format(GUIStrings.TIMESTEP + ": %.1e ñ", dt));
 		}
 	}
 
@@ -59,7 +60,7 @@ public class TimeStepController implements OneTimePerStepProcessable {
 		setTimeStepSize(dt * r * TIME_STEP_ALARM_DECREMENT);
 		if (mode == TimeStepMode.DYNAMIC)
 			setTimeScale(timeScale * r * TIME_STEP_ALARM_DECREMENT);
-		MainWindow.println(String.format(GUIStrings.TIMESTEP_CORRECTION_DONE + " -> ", dt, r));
+		ConsoleWindow.println(String.format(GUIStrings.TIMESTEP_CORRECTION_DONE + " -> ", dt, r));
 	}
 
 	public void decreaseTimeStepSize(double coef) {
@@ -102,7 +103,7 @@ public class TimeStepController implements OneTimePerStepProcessable {
 
 	private void setMode(TimeStepMode newMode) {
 		mode = newMode;
-		MainWindow.println(GUIStrings.TIMESTEP_CONTROL_MODE + ": " + mode.toString());
+		ConsoleWindow.println(GUIStrings.TIMESTEP_CONTROL_MODE + ": " + mode.toString());
 	}
 
 	public double getTimeScale() {
@@ -113,7 +114,7 @@ public class TimeStepController implements OneTimePerStepProcessable {
 		if (newTimeScale > 0) {
 			if (mode == TimeStepMode.DYNAMIC) {
 				timeScale = newTimeScale;
-				MainWindow.println(String.format(GUIStrings.TIMESCALE + ": %.1e", timeScale));
+				ConsoleWindow.println(String.format(GUIStrings.TIMESCALE + ": %.1e", timeScale));
 			} else if (newTimeScale == 1 && measuredTimeScale > 0)
 				multiplyTimeStepSize(1d / measuredTimeScale);
 		}

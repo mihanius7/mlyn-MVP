@@ -26,6 +26,7 @@ import elements.force_pair.Spring;
 import elements.groups.ParticleGroup;
 import elements.groups.SpringGroup;
 import elements.point_mass.Particle;
+import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.MouseMode;
 import gui.Viewport;
@@ -290,17 +291,17 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 
 	public void setBeta(double r1, double r2, double e, double u) {
 		this.beta = (2 * e * sqrt(r1 * r2 / (r1 + r2))) / (3 * (1 - u * u));
-		MainWindow.println(String.format(GUIStrings.RECOIL_BY_HERTZ + ", beta = %.3e", beta));
+		ConsoleWindow.println(String.format(GUIStrings.RECOIL_BY_HERTZ + ", beta = %.3e", beta));
 	}
 
 	public void setBeta(double r1, double r2, double e1, double e2, double u1, double u2) {
 		this.beta = 4 / 3 / (1 / e1 - u1 * u1 / e1 + 1 / e2 - u2 * u2 / e2) / sqrt(1 / r1 + 1 / r2);
-		MainWindow.println(String.format(GUIStrings.RECOIL_BY_HERTZ + ", beta = %.3e", beta));
+		ConsoleWindow.println(String.format(GUIStrings.RECOIL_BY_HERTZ + ", beta = %.3e", beta));
 	}
 
 	public void setBeta(double beta) {
 		this.beta = beta;
-		MainWindow.println(String.format(GUIStrings.RECOIL_BY_HERTZ + ", beta = %.3e", beta));
+		ConsoleWindow.println(String.format(GUIStrings.RECOIL_BY_HERTZ + ", beta = %.3e", beta));
 	}
 
 	public double getMaxPairInteractionDistance() {
@@ -317,7 +318,7 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 
 	public void setUseExternalForces(boolean b) {
 		useExternalForces = b;
-		MainWindow.println(GUIStrings.EXTERNAL_FORCES + ": " + useExternalForces);
+		ConsoleWindow.println(GUIStrings.EXTERNAL_FORCES + ": " + useExternalForces);
 	}
 
 	public double defineCoulombForce(Particle particle1, Particle particle2, double distance) {
@@ -392,7 +393,7 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 	public void setUsePPCollisions(boolean b) {
 		this.usePPCollisions = b;
 		recalculateNeighborsNeeded();
-		MainWindow.println(GUIStrings.COLLISIONS_PP + ": " + this.usePPCollisions);
+		ConsoleWindow.println(GUIStrings.COLLISIONS_PP + ": " + this.usePPCollisions);
 	}
 
 	public boolean isUseSPCollisionsNeeded() {
@@ -404,7 +405,7 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 				break;
 			}
 		}
-		MainWindow.println(GUIStrings.COLLISIONS_PS_NEEDED + ": " + b);
+		ConsoleWindow.println(GUIStrings.COLLISIONS_PS_NEEDED + ": " + b);
 		return b;
 	}
 
@@ -425,7 +426,7 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 	}
 
 	public void message() {
-		MainWindow.println(
+		ConsoleWindow.println(
 				String.format(GUIStrings.MAX_INTERACTION_DEFINING_DISTANCE + ": %.1e ì", maxPairInteractionDistance));
 	}
 

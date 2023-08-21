@@ -44,8 +44,6 @@ public class MainWindow extends JFrame {
 	private static EditBoundariesWindow ebw;
 	public static Thread simulationThread, renderingThread;
 	public static int viewportInitWidth = 960, viewportInitHeight = 512;
-	private static JTextArea outputTextArea;
-	private static JScrollPane scrollArea;
 	private JLabel labelTimeStep;
 	private JFileChooser openSceneChooser, saveSceneChooser;
 	JButton buttonStart;
@@ -69,6 +67,8 @@ public class MainWindow extends JFrame {
 		setJMenuBar(menuBar);
 		createButtons();
 		createDialogs();
+		
+		new ConsoleWindow();
 
 		changeLanguage(askForLanguage());
 
@@ -118,16 +118,6 @@ public class MainWindow extends JFrame {
 		buttonStart.addActionListener(listener);
 		getContentPane().add(buttonStart);
 
-		outputTextArea = new JTextArea();
-		outputTextArea.setLineWrap(true);
-		outputTextArea.setFont(new Font("Monospaced", Font.BOLD, 12));
-		outputTextArea.setFocusable(false);
-		outputTextArea.setBackground(new Color(204, 204, 204));
-
-		scrollArea = new JScrollPane();
-		scrollArea.setViewportView(outputTextArea);
-		getContentPane().add(scrollArea);
-
 		labelTimeStep = new JLabel();
 		labelTimeStep.setHorizontalAlignment(SwingConstants.TRAILING);
 
@@ -166,7 +156,7 @@ public class MainWindow extends JFrame {
 		International.prepareStrings(lang);
 		applyLabels();
 		menuBar.applyLabels();
-		MainWindow.println("Language changed to " + lang);
+		ConsoleWindow.println("Language changed to " + lang);
 	}
 
 	public Language askForLanguage() {
@@ -181,12 +171,10 @@ public class MainWindow extends JFrame {
 	}
 
 	void resizeGUI() {
-		outputTextArea.setBounds(4, getHeight() - 130 - 67, getWidth() - 26, 128);
-		scrollArea.setBounds(outputTextArea.getBounds());
-		viewport.setBounds(0, 0, getWidth() - 14, getHeight() - outputTextArea.getHeight() - 76 - buttonStart.getHeight());
+		viewport.setBounds(0, 0, getWidth() - 14, getHeight() - 76 - buttonStart.getHeight());
 		viewport.refreshStaticSizeConstants();
 		viewport.initTracksImage();
-		int buttonsY = getHeight() - scrollArea.getHeight() - 97;
+		int buttonsY = getHeight() - 97;
 		buttonStart.setBounds(getWidth() - 215, buttonsY, 192, 24);
 		labelTimeStep.setBounds(1, buttonsY + 4, 89, 16);
 		buttonDecrease.setBounds(228, buttonsY, 48, 24);
@@ -262,25 +250,6 @@ public class MainWindow extends JFrame {
 		double r = Simulation.interactionProcessor.getTimeStepReserveRatio();
 		if (r > 10000)
 			r = 10000;
-	}
-
-	public static void print(String s) {
-		if (outputTextArea != null) {
-			outputTextArea.append(s);
-		}
-	}
-
-	public static void println(String s) {
-		if (outputTextArea != null) {
-			outputTextArea.append(outputTextArea.getLineCount() + ": " + s + "\n");
-			outputTextArea.scrollRectToVisible(new java.awt.Rectangle(0, outputTextArea.getHeight(), 1, 1));
-		}
-	}
-
-	public static void clearConsole() {
-		if (outputTextArea != null) {
-			outputTextArea.setText("");
-		}
 	}
 
 	public static void showEditBoundariesWindow() {
