@@ -3,7 +3,6 @@ package simulation.components;
 import static simulation.Simulation.interactionProcessor;
 
 import gui.ConsoleWindow;
-import gui.MainWindow;
 import gui.Viewport;
 import gui.lang.GUIStrings;
 import simulation.Simulation;

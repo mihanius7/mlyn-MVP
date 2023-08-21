@@ -3,9 +3,9 @@ package elements.force_pair;
 import static evaluation.MyMath.defineDistance;
 import static java.lang.Math.min;
 import static simulation.Simulation.timeStepController;
+
 import elements.point_mass.Particle;
 import evaluation.MyMath;
-import gui.MainWindow;
 import simulation.Simulation;
 
 public abstract class ForcePair implements ForceElement {

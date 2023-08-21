@@ -2,7 +2,6 @@ package gui;
 
 import static constants.PhysicalConstants.cm;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
 import java.util.Arrays;
@@ -12,8 +11,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;

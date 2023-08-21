@@ -18,11 +18,8 @@ import elements.Interactable;
 import elements.Selectable;
 import elements.point_mass.Particle;
 import gui.ConsoleWindow;
-import gui.MainWindow;
 import gui.Viewport;
 import gui.lang.GUIStrings;
-import gui.shapes.AbstractShape;
-import gui.shapes.ParticleShape;
 import gui.shapes.SpringShape;
 import simulation.Simulation;
 

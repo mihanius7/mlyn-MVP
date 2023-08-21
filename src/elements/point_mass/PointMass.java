@@ -1,7 +1,6 @@
 package elements.point_mass;
 
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 
 import elements.Element;
 import evaluation.Vector;

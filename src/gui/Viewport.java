@@ -28,7 +28,6 @@ import elements.groups.SpringGroup;
 import elements.point_mass.Particle;
 import evaluation.Vector;
 import gui.lang.GUIStrings;
-import gui.shapes.ParticleShape;
 import gui.shapes.SpringShape;
 import simulation.Simulation;
 import simulation.components.Boundaries;
