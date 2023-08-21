@@ -37,7 +37,7 @@ public class SampleScenes {
 		Viewport.setGridSize(Viewport.DEFAULT_GRID_SIZE);
 		Viewport.setDrawTracks(false);
 		Boundaries b = Simulation.getContent().getBoundaries();
-		b.setBounds(0, 9, 4.8, 0);
+		b.setBounds(0, 9.2, 4.2, 0);
 		b.setUseAll(true);
 		b.setUseUpper(false);
 		Simulation.perfomStep(10);
@@ -52,7 +52,7 @@ public static void scenePreset() {
 		interactionProcessor.setUseExternalForces(true);
 		interactionProcessor.setBeta(10 * m, 5 * cm, 1E7, 0.28);		
 		Boundaries b = Simulation.getContent().getBoundaries();
-		b.setBounds(0, 9, 4.8, 0);
+		b.setBounds(0, 9.2, 4.2, 0);
 		Simulation.addToSimulation(new Particle(301 * cm, 90 * cm, 1 * kg, 5 * cm));
 		Simulation.addToSimulation(new Particle(299 * cm, 30 * cm, 1 * kg, 5 * cm));
 		Simulation.addToSimulation(new Particle(300 * cm, 120 * cm, 1 * kg, 5 * cm));

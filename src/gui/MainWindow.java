@@ -67,10 +67,10 @@ public class MainWindow extends JFrame {
 		setJMenuBar(menuBar);
 		createButtons();
 		createDialogs();
-		
-		new ConsoleWindow();
 
 		changeLanguage(askForLanguage());
+		
+		new ConsoleWindow();
 
 		setFocusTo(Simulation.getReferenceParticle());
 		Simulation.getReferenceSpring();
@@ -79,7 +79,7 @@ public class MainWindow extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		setFocusable(true);
-		setBounds(0, 0, 1024, 768);
+		setBounds(0, 0, 960, 540);
 		setLocationRelativeTo(null);
 		setVisible(true);
 		setCaption(GUIStrings.NEW_PROJECT_NAME);
@@ -174,7 +174,7 @@ public class MainWindow extends JFrame {
 		viewport.setBounds(0, 0, getWidth() - 14, getHeight() - 76 - buttonStart.getHeight());
 		viewport.refreshStaticSizeConstants();
 		viewport.initTracksImage();
-		int buttonsY = getHeight() - 97;
+		int buttonsY = getHeight() - 92;
 		buttonStart.setBounds(getWidth() - 215, buttonsY, 192, 24);
 		labelTimeStep.setBounds(1, buttonsY + 4, 89, 16);
 		buttonDecrease.setBounds(228, buttonsY, 48, 24);

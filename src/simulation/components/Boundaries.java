@@ -1,25 +1,29 @@
 package simulation.components;
 
-import static simulation.Simulation.*;
+import static constants.PhysicalConstants.cm;
+import static constants.PhysicalConstants.m;
 import static java.lang.Math.abs;
+import static simulation.Simulation.getParticle;
+import static simulation.Simulation.getParticlesCount;
 
 import gui.ConsoleWindow;
-import gui.MainWindow;
 import gui.lang.GUIStrings;
 
-import static constants.PhysicalConstants.cm;
-
 public class Boundaries implements Cloneable {
+	private static final double INITIAL_BOTTOM_BORDER = 0 * m;
+	private static final double INITIAL_UPPER_BORDER = 4.8 * m;
+	private static final double INITIAL_RIGHT_BORDER = 8.5 * m;
+	private static final double INITIAL_LEFT_BORDER = 0 * m;
 	private double left, right, upper, bottom;
 	private double leftEffective, rightEffective, upperEffective, bottomEffective;
 	private double autosizeMargin = 10 * cm;
 	private boolean useLeft, useRight, useUpper, useBottom;
 
-	public Boundaries(double left, double right, double upper, double bottom) {
-		this.left = left;
-		this.right = right;
-		this.upper = upper;
-		this.bottom = bottom;
+	public Boundaries() {
+		this.left = INITIAL_LEFT_BORDER;
+		this.right = INITIAL_RIGHT_BORDER;
+		this.upper = INITIAL_UPPER_BORDER;
+		this.bottom = INITIAL_BOTTOM_BORDER;
 		this.useLeft = true;
 		this.useRight = true;
 		this.useUpper = false;
