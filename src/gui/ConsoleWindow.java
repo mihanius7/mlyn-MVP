@@ -6,24 +6,31 @@ import java.awt.Font;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 public class ConsoleWindow extends JFrame {
+	private static final int VIEW_WIDTH = 800;
+	private static final int VIEW_HEIGHT = 512;
 	private static JTextArea outputTextArea;
 	private static JScrollPane scrollArea;
 	
 	public ConsoleWindow() {
-		outputTextArea = new JTextArea();
+		
+		outputTextArea = new JTextArea(16, 58);
 		outputTextArea.setLineWrap(true);
 		outputTextArea.setFont(new Font("Monospaced", Font.BOLD, 12));
-		outputTextArea.setFocusable(false);
 		outputTextArea.setBackground(new Color(204, 204, 204));
+		outputTextArea.setEditable(false);
 
-		scrollArea = new JScrollPane();
-		scrollArea.setViewportView(outputTextArea);
-		getContentPane().add(scrollArea);
+		scrollArea = new JScrollPane(outputTextArea);
+		scrollArea.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		
-		outputTextArea.setBounds(4, getHeight() - 130 - 67, getWidth() - 26, 128);
-		scrollArea.setBounds(outputTextArea.getBounds());
+		add(scrollArea);
+		
+		setTitle("Simulation Messages");
+
+		setBounds(0, 0, VIEW_WIDTH, VIEW_HEIGHT);
+		setVisible(true);		
 	}
 	
 	public static void print(String s) {
