@@ -39,6 +39,7 @@ public class GUIStrings {
 	public static String MENU_ZOOM_TO_PARTICLES = "Zoom to particles";
 	public static String MENU_SHOW = "View";
 	public static String MENU_SIMULATION_BOUNDS = "Bounds";
+	public static String MENU_CONSOLE = "Console";
 	public static String MENU_NULLIFY_VELOCITIES = "Nullify velocities";
 	public static String MENU_FRICTION = "Friction";
 	public static String MENU_OUTER_FORCES = "External forces";

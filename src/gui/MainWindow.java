@@ -35,6 +35,7 @@ public class MainWindow extends JFrame {
 	private static final long serialVersionUID = 6398390928434245781L;
 	public static Simulation simulation;
 	public static Viewport viewport;
+	public static ConsoleWindow consoleWindow;
 	private static MainWindowMenu menuBar;
 	private static MainWindowEvent listener;
 	private static ViewportEvent viewportListener;
@@ -67,7 +68,7 @@ public class MainWindow extends JFrame {
 
 		changeLanguage(askForLanguage());
 		
-		new ConsoleWindow();
+		consoleWindow = new ConsoleWindow();
 
 		setFocusTo(Simulation.getReferenceParticle());
 		Simulation.getReferenceSpring();
@@ -254,6 +255,10 @@ public class MainWindow extends JFrame {
 			ebw.view();
 		else
 			ebw = new EditBoundariesWindow();
+	}
+	
+	public static void showConsoleWindow() {
+		consoleWindow.setVisible(!consoleWindow.isVisible());
 	}
 
 	public void showAboutWindow() {

@@ -55,6 +55,8 @@ public class MainWindowMenuEvent implements ActionListener {
 			getParticles().setZeroVelocities();
 		} else if (src.equals(mainWindowMenu.itemBoundaries)) {
 			MainWindow.showEditBoundariesWindow();
+		} else if (src.equals(mainWindowMenu.itemConsole)) {
+			MainWindow.showConsoleWindow();
 		} else if (src.equals(mainWindowMenu.itemSelectAll)) {
 			Viewport.setMouseMode(MouseMode.PARTICLE_SELECT);
 			setMaxSelectionNumber(Integer.MAX_VALUE);

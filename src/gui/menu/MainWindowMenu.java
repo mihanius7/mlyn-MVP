@@ -45,6 +45,7 @@ public class MainWindowMenu extends JMenuBar {
 	JMenuItem itemClear;
 	JMenuItem itemFreeze;
 	JMenuItem itemBoundaries;
+	JMenuItem itemConsole;
 	JMenuItem itemAutoscale1;
 	JMenuItem itemAutoscale2;
 	JMenuItem itemSelectAll;
@@ -186,6 +187,10 @@ public class MainWindowMenu extends JMenuBar {
 
 		menuShow = new JMenu();
 		menuShow.setMnemonic(KeyEvent.VK_W);
+		itemConsole = new JMenuItem();
+		itemConsole.addActionListener(listener);
+		menuShow.add(itemConsole);
+		menuShow.addSeparator();
 		itemAutoscale1 = new JMenuItem();
 		itemAutoscale1
 				.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK | ActionEvent.ALT_MASK));
@@ -196,7 +201,6 @@ public class MainWindowMenu extends JMenuBar {
 				.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.CTRL_MASK | ActionEvent.ALT_MASK));
 		itemAutoscale2.addActionListener(listener);
 		menuShow.add(itemAutoscale2);
-		menuShow.addSeparator();
 		itemFollow = new JMenuItem();
 		itemFollow.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK | ActionEvent.ALT_MASK));
 		itemFollow.addActionListener(listener);
@@ -227,6 +231,7 @@ public class MainWindowMenu extends JMenuBar {
 		itemScreenshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, ActionEvent.ALT_MASK));
 		itemScreenshot.addActionListener(listener);
 		menuShow.add(itemScreenshot);
+		menuShow.addSeparator();
 		itemLanguage = new JMenuItem();
 		itemLanguage.addActionListener(listener);
 		menuShow.add(itemLanguage);
@@ -291,6 +296,7 @@ public class MainWindowMenu extends JMenuBar {
 		menuShow.setText(GUIStrings.MENU_SHOW);
 		itemLanguage.setText(GUIStrings.MENU_LANGUAGE);
 		itemBoundaries.setText(GUIStrings.MENU_SIMULATION_BOUNDS);
+		itemConsole.setText(GUIStrings.MENU_CONSOLE);
 		itemAutoscale1.setText(GUIStrings.MENU_ZOOM_TO_PARTICLES);
 		itemAutoscale2.setText(GUIStrings.MENU_ZOOM_TO_BOUNDARIES);
 		itemFollow.setText(GUIStrings.MENU_FOLLOW_PARTICLE);

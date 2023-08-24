@@ -30,7 +30,7 @@ public class ConsoleWindow extends JFrame {
 		setTitle("Simulation Messages");
 
 		setBounds(0, 0, VIEW_WIDTH, VIEW_HEIGHT);
-		setVisible(true);		
+		setVisible(false);		
 	}
 	
 	public static void print(String s) {
