@@ -45,7 +45,7 @@ public class SpringShape extends AbstractShape {
 		}
 		if (drawLabel || s.isSelected()) {
 			String label = String.format("%.3f kg", s.getForceSmoothed() / PhysicalConstants.kgf);
-			Viewport.drawStringTilted(label, x1, y1, x2, y2);
+			Viewport.drawStringTilted(targetG2d, label, x1, y1, x2, y2);
 		}
 	}
 

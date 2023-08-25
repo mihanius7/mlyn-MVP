@@ -66,9 +66,9 @@ public class ParticleShape extends AbstractShape {
 			targetG2d.drawOval(x - nradius, y - nradius, nradius * 2, nradius * 2);
 		}
 		if (drawForces || p.isSelected())
-			Viewport.drawArrowLine(x, y, p.getLastForceVector(), Viewport.ARROW_FORCE, "N");
+			Viewport.drawArrowLine(targetG2d, x, y, p.getLastForceVector(), Viewport.ARROW_FORCE, "N");
 		if (drawVelocities)
-			Viewport.drawArrowLine(x, y, p.getVelocityVector(), Viewport.ARROW_VELOCITY, "m/s");
+			Viewport.drawArrowLine(targetG2d, x, y, p.getVelocityVector(), Viewport.ARROW_VELOCITY, "m/s");
 		if (drawTags || p.isSelected()) {
 			targetG2d.setFont(Viewport.labelsFont.deriveFont(Viewport.getCurrentFontSize()));
 			targetG2d.setColor(Viewport.FONT_TAGS);

@@ -83,7 +83,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		particles = Simulation.getParticles();
 		springs = Simulation.getSprings();
 		rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
 		setBounds(0, 0, initW, initH);
 		setDoubleBuffered(true);
 		refreshStaticSizeConstants();
@@ -121,7 +121,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	private void drawWholeFrameOn(Graphics2D graphics) {
-		graphics.setRenderingHints(rh);
 		camera.follow();
 		currentFontSize = scaleLabelsFont();
 		drawBackgroundOn(graphics);
@@ -242,18 +241,18 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.drawString(timeStepString, 2, 28);
 	}
 
-	public static void drawStringTilted(String string, int x1, int y1, int x2, int y2) {
+	public static void drawStringTilted(Graphics2D targetG2d, String string, int x1, int y1, int x2, int y2) {
 		double alpha = Math.atan2(x2 - x1, y1 - y2) + Math.PI / 2;
-		globalCanvas.setFont(labelsFont.deriveFont(getCurrentFontSize()));
-		globalCanvas.setColor(FONT_TAGS);
+		targetG2d.setFont(labelsFont.deriveFont(getCurrentFontSize()));
+		targetG2d.setColor(FONT_TAGS);
 		int xc = Math.min(x1, x2) + (Math.max(x1, x2) - Math.min(x1, x2)) / 2;
 		int yc = Math.min(y1, y2) + (Math.max(y1, y2) - Math.min(y1, y2)) / 2;
 		alpha = evaluation.MyMath.fitAbsAngleRad(alpha);
-		globalCanvas.translate(xc, yc);
-		globalCanvas.rotate(alpha);
-		globalCanvas.drawString(string, -(currentFontSize * string.length()) / 4, -currentFontSize / 2);
-		globalCanvas.rotate(-alpha);
-		globalCanvas.translate(-xc, -yc);
+		targetG2d.translate(xc, yc);
+		targetG2d.rotate(alpha);
+		targetG2d.drawString(string, -(currentFontSize * string.length()) / 4, -currentFontSize / 2);
+		targetG2d.rotate(-alpha);
+		targetG2d.translate(-xc, -yc);
 	}
 
 	private static float scaleLabelsFont() {
@@ -304,8 +303,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		int y0 = viewportHeight - 20;
 		int x1 = x0 + 50;
 		int y1 = y0 - 50;
-		drawArrowLine(x0, y0, x1, y0, 10, 4);
-		drawArrowLine(x0, y0, x0, y1, 10, 4);
+		drawArrowLine(targetG2d, x0, y0, x1, y0, 10, 4);
+		drawArrowLine(targetG2d, x0, y0, x0, y1, 10, 4);
 		targetG2d.drawString("X", x1, y0 - 4);
 		targetG2d.drawString("Y", x0 + 2, y1);
 	}
@@ -318,21 +317,21 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.drawString(String.format("%.1e m", fromScreen(l)), xc - 32, yc - 4);
 	}
 
-	public static void drawArrowLine(int x1, int y1, Vector v, Color arrowColor, String label) {
+	public static void drawArrowLine(Graphics2D targetG2d, int x1, int y1, Vector v, Color arrowColor, String label) {
 		double length = Math.log10(v.norm() + 1) / 2;
 		int dx = toScreen(length * v.defineCos());
 		int dy = toScreen(length * v.defineSin());
 		if (length > fromScreen(ARROW_DRAWING_MIN_THRESHOLD)) {
-			globalCanvas.setColor(arrowColor);
-			globalCanvas.setStroke(arrowStroke);
-			drawArrowLine(x1, y1, x1 + dx, y1 - dy, 11, 4);
+			targetG2d.setColor(arrowColor);
+			targetG2d.setStroke(arrowStroke);
+			drawArrowLine(targetG2d, x1, y1, x1 + dx, y1 - dy, 11, 4);
 			if (!label.isEmpty()) {
-				drawStringTilted(String.format("%.2f " + label, v.norm()), x1, y1, x1 + dx, y1 - dy);
+				drawStringTilted(targetG2d, String.format("%.2f " + label, v.norm()), x1, y1, x1 + dx, y1 - dy);
 			}
 		}
 	}
 
-	private static void drawArrowLine(int x1, int y1, int x2, int y2, int d, int h) {
+	private static void drawArrowLine(Graphics2D targetG2d, int x1, int y1, int x2, int y2, int d, int h) {
 		int dx = x2 - x1, dy = y2 - y1;
 		double D = Math.sqrt(dx * dx + dy * dy);
 		double xm = D - d, xn = xm, ym = h, yn = -h, x;
@@ -349,8 +348,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		int[] xpoints = { x2, (int) xm, (int) xn };
 		int[] ypoints = { y2, (int) ym, (int) yn };
 
-		globalCanvas.drawLine(x1, y1, x2, y2);
-		globalCanvas.fillPolygon(xpoints, ypoints, 3);
+		targetG2d.drawLine(x1, y1, x2, y2);
+		targetG2d.fillPolygon(xpoints, ypoints, 3);
 	}
 
 	public static void clearTracksImage() {

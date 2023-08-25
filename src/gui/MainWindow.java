@@ -258,7 +258,7 @@ public class MainWindow extends JFrame {
 	}
 	
 	public static void showConsoleWindow() {
-		consoleWindow.setVisible(!consoleWindow.isVisible());
+		consoleWindow.setVisible(true);
 	}
 
 	public void showAboutWindow() {
