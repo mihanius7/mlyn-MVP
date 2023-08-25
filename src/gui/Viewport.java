@@ -221,7 +221,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			Simulation.getReferenceParticle().getShape().paintShape(targetG2d);
 		if (camera.getFollowong() != null) {
 			Element following = camera.getFollowong();
-			drawCrossOn(targetG2d, following.getCenterPoint().x, following.getCenterPoint().y, true);
+			drawCrossOn(targetG2d, following.getCenterPoint().x, following.getCenterPoint().y, false);
 		}
 	}
 
