@@ -123,6 +123,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private void drawWholeFrameOn(Graphics2D graphics) {
 		graphics.setRenderingHints(rh);
 		camera.follow();
+		currentFontSize = scaleLabelsFont();
 		drawBackgroundOn(graphics);
 		if (drawTracks)
 			graphics.drawImage(tracksImage, 0, 0, null);
@@ -243,8 +244,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	public static void drawStringTilted(String string, int x1, int y1, int x2, int y2) {
 		double alpha = Math.atan2(x2 - x1, y1 - y2) + Math.PI / 2;
-		currentFontSize = scaleTagFont();
-		globalCanvas.setFont(labelsFont.deriveFont(currentFontSize));
+		globalCanvas.setFont(labelsFont.deriveFont(getCurrentFontSize()));
 		globalCanvas.setColor(FONT_TAGS);
 		int xc = Math.min(x1, x2) + (Math.max(x1, x2) - Math.min(x1, x2)) / 2;
 		int yc = Math.min(y1, y2) + (Math.max(y1, y2) - Math.min(y1, y2)) / 2;
@@ -256,13 +256,17 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		globalCanvas.translate(-xc, -yc);
 	}
 
-	private static float scaleTagFont() {
+	private static float scaleLabelsFont() {
 		float size = (float) (scale * SpringShape.fontSize * PhysicalConstants.cm);
 		if (size > LABELS_MAX_FONT_SIZE)
 			size = LABELS_MAX_FONT_SIZE;
 		else if (size < LABELS_MIN_FONT_SIZE)
 			size = LABELS_MIN_FONT_SIZE;
 		return size;
+	}
+	
+	public static float getCurrentFontSize() {
+		return currentFontSize;
 	}
 
 	private void drawBoundariesOn(Graphics2D targetG2d) {

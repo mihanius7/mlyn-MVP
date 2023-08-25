@@ -70,9 +70,10 @@ public class ParticleShape extends AbstractShape {
 		if (drawVelocities)
 			Viewport.drawArrowLine(x, y, p.getVelocityVector(), Viewport.ARROW_VELOCITY, "m/s");
 		if (drawTags || p.isSelected()) {
-			float fontSizeCoefficient = (float) (Viewport.getScale() * fontSize / 128.0);
-			float stringsInterval = (float) (0.1 * fontSizeCoefficient);
-			targetG2d.setFont(Viewport.labelsFont.deriveFont(fontSizeCoefficient));
+			targetG2d.setFont(Viewport.labelsFont.deriveFont(Viewport.getCurrentFontSize()));
+			targetG2d.setColor(Viewport.FONT_TAGS);
+			float stringsInterval = (float) (0.08 * Viewport.getCurrentFontSize());
+			targetG2d.setFont(Viewport.labelsFont.deriveFont(Viewport.getCurrentFontSize()));
 			targetG2d.setColor(Viewport.FONT_TAGS);
 			x = (int) (Viewport.toScreenX(p.getX()) + r * 1);
 			y = (int) (Viewport.toScreenY(p.getY()) - r * 2);
