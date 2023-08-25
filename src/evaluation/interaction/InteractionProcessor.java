@@ -38,11 +38,13 @@ import simulation.components.OneTimePerStepProcessable;
 public class InteractionProcessor implements OneTimePerStepProcessable {
 
 	public static final int DEFAULT_NEIGHBOR_SEARCH_PERIOD = 25;
+	private InteractionType interactionType = InteractionType.COULOMB;
+	private TabulatedFunction forceTable;
 	private ParticleGroup particles;
 	private SpringGroup springs;
 	private ArrayList<ForceElement> forceElements = new ArrayList<ForceElement>();
 	private boolean useExternalForces = false, usePPCollisions = true, recalculateNeighborsNeeded = true,
-			useFriction = true;
+			useFriction = true, useInterparticleForces = true;
 	public boolean useFastSpringProjection = true, useBoundaries = true;
 	private double externalAccelerationX = 0;
 	private double externalAccelerationY = -g;
@@ -111,10 +113,12 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 	private void recalculateNeighborsList() {
 		forceElements.clear();
 		double sqDist, maxSqDist;
-		if (usePPCollisions) {
+		if (usePPCollisions || useInterparticleForces) {
 			for (int i = 0; i < particles.size() - 1; i++) {
 				for (int j = i + 1; j < particles.size(); j++) {
-					maxSqDist = 1.1 * (particles.get(i).getRadius() + particles.get(j).getRadius());
+					maxSqDist = (useInterparticleForces)
+							? neighborRange + particles.get(i).getRadius() + particles.get(j).getRadius()
+							: 1.1 * (particles.get(i).getRadius() + particles.get(j).getRadius());
 					maxSqDist *= maxSqDist;
 					sqDist = defineSquaredDistance(i, j);
 					if (sqDist <= maxSqDist)
@@ -130,6 +134,17 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 
 	public double applyPairInteraction(Particle i, Particle j, double distance) {
 		dF = 0;
+		if (useInterparticleForces) {
+			if (interactionType == InteractionType.COULOMB)
+				dF = defineCoulombForce(i, j, distance);
+			else if (interactionType == InteractionType.TABULATED)
+				dF = forceTable.getFromTable(distance);
+			else if (interactionType == InteractionType.GRAVITATION)
+				dF = defineGravitationForce(i, j, distance);
+			else if (interactionType == InteractionType.COULOMB_AND_GRAVITATION)
+				dF = defineCoulombForce(i, j, distance) + defineGravitationForce(i, j, distance);
+			applyForceParallelToDistance(i, j, dF, distance);
+		}
 		if (usePPCollisions) {
 			if (i.isCanCollide() && j.isCanCollide()) {
 				double collisionEventSquaredDistance = sqr(i.getRadius() + j.getRadius());
@@ -427,7 +442,7 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 
 	public void message() {
 		ConsoleWindow.println(
-				String.format(GUIStrings.MAX_INTERACTION_DEFINING_DISTANCE + ": %.1e ì", maxPairInteractionDistance));
+				String.format(GUIStrings.MAX_INTERACTION_DEFINING_DISTANCE + ": %.1e m", maxPairInteractionDistance));
 	}
 
 }
