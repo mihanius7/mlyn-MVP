@@ -80,7 +80,6 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				if (!p.isSelected()) {
 					addToSelection(p);
 					mainWindow.setFocusTo(p);
-					selectAttachedSprings(p);
 				} else
 					removeFromSelection(p);
 			} else {
@@ -108,15 +107,17 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				mainWindow.setFocusTo(p);
 				dx = Viewport.toScreenX(p.getX()) - x0;
 				dy = Viewport.toScreenY(p.getY()) - y0;
-				selectAttachedSprings(p);
+				labelAttachedSprings(p);
 			}
 		}
 	}
 
-	private void selectAttachedSprings(Particle p) {
+	private void labelAttachedSprings(Particle p) {
 		SpringGroup springGroup = Simulation.findAttachedSprings(p);
-		for (Spring s1 : springGroup) {
-			s1.getShape().setDrawLabel(true);
+		if (springGroup.size() > 1) {
+			for (Spring s1 : springGroup) {
+				s1.getShape().setDrawLabel(true);
+			}
 		}
 	}
 
