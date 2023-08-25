@@ -21,6 +21,7 @@ import java.io.IOException;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import constants.PhysicalConstants;
 import elements.Element;
 import elements.force_pair.Spring;
 import elements.groups.ParticleGroup;
@@ -45,6 +46,10 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private static final int ARROW_DRAWING_MIN_THRESHOLD = 8;
 	public static final Color FONT_MAIN = Color.BLACK;
 	public static final Color FONT_TAGS = Color.BLACK;
+	public static final float LABELS_MIN_FONT_SIZE = 10;
+	public static final int LABELS_FONT_SIZE = 14;
+	public static final float LABELS_MAX_FONT_SIZE = 32;
+	private static float currentFontSize = LABELS_FONT_SIZE;
 	public static final int REFRESH_MESSAGES_INTERVAL = 400;
 	static final int FRAME_PAINT_DELAY = 18;
 	static final int AUTOSCALE_MARGIN = 75;
@@ -58,7 +63,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private static Graphics2D globalCanvas;
 	public static Graphics2D tracksCanvas;
 	private static RenderingHints rh;
-	public static Font tagFont;
+	public static Font labelsFont;
 	private static Font mainFont;
 	private static final Camera camera = new Camera();
 	private static int viewportHeight, viewportWidth, fps = 0;
@@ -84,7 +89,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		refreshStaticSizeConstants();
 		initTracksImage();
 		mainFont = new Font("Tahoma", Font.TRUETYPE_FONT, 14);
-		tagFont = new Font("Arial", Font.TRUETYPE_FONT, 12);
+		labelsFont = new Font("Arial", Font.TRUETYPE_FONT, LABELS_FONT_SIZE);
 		refreshLabelsTimer = new Timer(REFRESH_MESSAGES_INTERVAL, this);
 	}
 
@@ -215,8 +220,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			Simulation.getReferenceParticle().getShape().paintShape(targetG2d);
 		if (camera.getFollowong() != null) {
 			Element following = camera.getFollowong();
-			drawCrossOn(targetG2d, following.getCenterPoint().x, following.getCenterPoint().y,
-					true);
+			drawCrossOn(targetG2d, following.getCenterPoint().x, following.getCenterPoint().y, true);
 		}
 	}
 
@@ -239,17 +243,26 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	public static void drawStringTilted(String string, int x1, int y1, int x2, int y2) {
 		double alpha = Math.atan2(x2 - x1, y1 - y2) + Math.PI / 2;
-		globalCanvas.setFont(tagFont.deriveFont((float) (scale * SpringShape.fontSize / 128.0)));
+		currentFontSize = scaleTagFont();
+		globalCanvas.setFont(labelsFont.deriveFont(currentFontSize));
 		globalCanvas.setColor(FONT_TAGS);
 		int xc = Math.min(x1, x2) + (Math.max(x1, x2) - Math.min(x1, x2)) / 2;
 		int yc = Math.min(y1, y2) + (Math.max(y1, y2) - Math.min(y1, y2)) / 2;
 		alpha = evaluation.MyMath.fitAbsAngleRad(alpha);
 		globalCanvas.translate(xc, yc);
 		globalCanvas.rotate(alpha);
-		globalCanvas.drawString(string, (int) -(scale * SpringShape.fontSize / 50.0),
-				(int) -(scale * SpringShape.fontSize / 256.0));
+		globalCanvas.drawString(string, -(currentFontSize * string.length()) / 4, -currentFontSize / 2);
 		globalCanvas.rotate(-alpha);
 		globalCanvas.translate(-xc, -yc);
+	}
+
+	private static float scaleTagFont() {
+		float size = (float) (scale * SpringShape.fontSize * PhysicalConstants.cm);
+		if (size > LABELS_MAX_FONT_SIZE)
+			size = LABELS_MAX_FONT_SIZE;
+		else if (size < LABELS_MIN_FONT_SIZE)
+			size = LABELS_MIN_FONT_SIZE;
+		return size;
 	}
 
 	private void drawBoundariesOn(Graphics2D targetG2d) {
@@ -276,7 +289,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.setColor(CROSS);
 		targetG2d.drawLine(xc, yc + 8, xc, yc - 8);
 		targetG2d.drawLine(xc - 8, yc, xc + 8, yc);
-		targetG2d.setFont(tagFont);
+		targetG2d.setFont(labelsFont);
 		targetG2d.setColor(FONT_TAGS);
 		if (drawTag)
 			targetG2d.drawString(String.format("(%.1e", x) + String.format("; %.1e) m", y), xc + 4, yc - 4);

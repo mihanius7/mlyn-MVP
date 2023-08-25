@@ -72,15 +72,15 @@ public class ParticleShape extends AbstractShape {
 		if (drawTags || p.isSelected()) {
 			float fontSizeCoefficient = (float) (Viewport.getScale() * fontSize / 128.0);
 			float stringsInterval = (float) (0.1 * fontSizeCoefficient);
-			targetG2d.setFont(Viewport.tagFont.deriveFont(fontSizeCoefficient));
+			targetG2d.setFont(Viewport.labelsFont.deriveFont(fontSizeCoefficient));
 			targetG2d.setColor(Viewport.FONT_TAGS);
 			x = (int) (Viewport.toScreenX(p.getX()) + r * 1);
 			y = (int) (Viewport.toScreenY(p.getY()) - r * 2);
-			y -= Viewport.tagFont.getSize() * stringsInterval;
+			y -= Viewport.labelsFont.getSize() * stringsInterval;
 			targetG2d.drawString(String.format("%.1e kg", p.getMass()), x, y);
-			y += Viewport.tagFont.getSize() * stringsInterval;
+			y += Viewport.labelsFont.getSize() * stringsInterval;
 			targetG2d.drawString(String.format("(%.2f; %.2f) m", p.getX(), p.getY(), p.defineVelocity()), x, y);
-			y += Viewport.tagFont.getSize() * stringsInterval;
+			y += Viewport.labelsFont.getSize() * stringsInterval;
 			targetG2d.drawString(String.format("%.2f m/s", p.defineVelocity()), x, y);
 		}
 	}
