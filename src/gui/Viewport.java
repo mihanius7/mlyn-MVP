@@ -51,12 +51,13 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private static boolean drawHeatMap = false;
 	private ParticleGroup particles;
 	private SpringGroup springs;
+	private static Camera camera = new Camera();
 	private static Graphics2D globalCanvas;
 	public static Graphics2D tracksCanvas;
 	private static RenderingHints rh;
 	public static Font labelsFont;
 	private static Font mainFont;
-	private static final Camera camera = new Camera();
+
 	private static int viewportHeight, viewportWidth, fps = 0;
 	private static double scale = 100;
 	private static double targetScale = 10;
@@ -73,6 +74,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public Viewport(int initW, int initH) {
 		particles = Simulation.getParticles();
 		springs = Simulation.getSprings();
+		camera = new Camera();
 		rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
 		setBounds(0, 0, initW, initH);
