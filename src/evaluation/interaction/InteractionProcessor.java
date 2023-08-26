@@ -14,7 +14,6 @@ import static java.lang.Math.sqrt;
 import static simulation.Simulation.getParticle;
 import static simulation.Simulation.getParticlesCount;
 import static simulation.Simulation.getSelectedParticle;
-import static simulation.Simulation.getSelectedParticles;
 import static simulation.Simulation.timeStepController;
 
 import java.awt.geom.Point2D;
@@ -28,11 +27,6 @@ import elements.groups.ParticleGroup;
 import elements.groups.SpringGroup;
 import elements.point_mass.Particle;
 import gui.ConsoleWindow;
-import gui.CoordinateConverter;
-import gui.MainWindow;
-import gui.MouseMode;
-import gui.Viewport;
-import gui.ViewportEvent;
 import gui.lang.GUIStrings;
 import simulation.SimulationContent;
 import simulation.components.OneTimePerStepProcessable;
@@ -209,9 +203,9 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 			double y = p.getY();
 			double newx = particleTargetXY.getX();
 			double newy = particleTargetXY.getY();
-			p.setX(newx);
-			p.setY(newy);
-			p.setVelocity(0, 0);
+			//p.setX(newx);
+			//p.setY(newy);
+			//p.setVelocity(0, 0);
 		}
 	}
 

@@ -72,10 +72,10 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public BasicStroke crossStroke = new BasicStroke(3f);
 	private ViewportEvent viewportEvent;
 
-	public Viewport(int initW, int initH) {
+	public Viewport(int initW, int initH, MainWindow mw) {
 		particles = Simulation.getParticles();
 		springs = Simulation.getSprings();
-		viewportEvent = new ViewportEvent(this, null);
+		viewportEvent = new ViewportEvent(this, mw);
 		addKeyListener(viewportEvent);
 		addMouseListener(viewportEvent);
 		addMouseMotionListener(viewportEvent);

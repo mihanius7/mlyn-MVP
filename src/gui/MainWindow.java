@@ -51,7 +51,7 @@ public class MainWindow extends JFrame {
 	public MainWindow() {
 		instance = this;
 		simulation = new Simulation();
-		viewport = new Viewport(viewportInitWidth, viewportInitHeight);
+		viewport = new Viewport(viewportInitWidth, viewportInitHeight, this);
 		viewport.setBackground(UIManager.getColor("Button.light"));
 		viewport.setBorder(null);
 		listener = new MainWindowEvent(this);

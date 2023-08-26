@@ -34,6 +34,7 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		lasty = y;
 		lastVelocity.setXY(velocity.X(), velocity.Y());
 		shape = new ParticleShape(this);
+		shape.setColor(c);
 	}
 	
 	public Particle(double x, double y, double vx, double vy, double m, double radius) {
