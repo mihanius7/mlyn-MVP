@@ -408,7 +408,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			size = 20 * cm;
 		gridSize = size;
 		MainWindow.getInstance().refreshGUIControls();
-		ConsoleWindow.println(String.format(GUIStrings.GRID_SIZE + "%.2e m", gridSize));
+		ConsoleWindow.println(String.format(GUIStrings.GRID_SIZE + " %.2e m", gridSize));
 	}
 
 	public static boolean isDrawTracks() {
@@ -470,7 +470,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		BufferedImage buffer = new BufferedImage(viewportWidth, viewportHeight, BufferedImage.TYPE_INT_RGB);
 		Graphics2D ig2 = buffer.createGraphics();
 		drawWholeFrameOn(ig2);
-		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.3fñ.jpg", Simulation.getTime());
+		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fñ.jpg", Simulation.getTime());
 		try {
 			if (javax.imageio.ImageIO.write(buffer, "JPEG", new java.io.File(fileName)))
 				ConsoleWindow.println(GUIStrings.IMAGE_SAVED_TO + " " + fileName);
