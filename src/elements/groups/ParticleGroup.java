@@ -85,8 +85,6 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 
 	public Vector defineCenterOfMass() {
 		Vector v = MyMath.centreOfMass(toArray(new Particle[] {}));
-		Viewport.setCrossX(v.X());
-		Viewport.setCrossY(v.Y());
 		ConsoleWindow.println("Xc = " + v.X() + ", Yc = " + v.Y());
 		return v;
 	}
@@ -106,13 +104,13 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 			MainWindow.NothingIsSelectedMessage();
 	}
 
-	public void snapToGrid() {
+	public void snapToGrid(double gridSize) {
 		if (!isEmpty()) {
 			Particle p;
 			Iterator<Particle> it = iterator();
 			while (it.hasNext()) {
 				p = it.next();
-				p.snapToGrid();
+				p.snapToGrid(gridSize);
 			}
 		} else
 			MainWindow.NothingIsSelectedMessage();

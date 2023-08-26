@@ -2,15 +2,14 @@ package elements.point_mass;
 
 import java.awt.Color;
 
-import simulation.Simulation;
-import simulation.components.Boundaries;
 import elements.Interactable;
 import elements.Selectable;
 import evaluation.MyMath;
 import evaluation.Vector;
-import gui.Viewport;
-import gui.shapes.AbstractShape;
+import gui.Colors;
 import gui.shapes.ParticleShape;
+import simulation.Simulation;
+import simulation.components.Boundaries;
 
 public class Particle extends PointMass implements Cloneable, Selectable, Interactable {
 
@@ -198,7 +197,7 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		if (!isSelected)
 			return shape.getColor();
 		else
-			return Viewport.SELECTED;
+			return Colors.SELECTED;
 	}
 
 	public Color getEigeneColor() {
@@ -214,9 +213,9 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		//color = oldColor;
 	}
 
-	public void snapToGrid() {
-		x = MyMath.roundTo(x, 1 / Viewport.getGridSize());
-		y = MyMath.roundTo(y, 1 / Viewport.getGridSize());
+	public void snapToGrid(double gridSize) {
+		x = MyMath.roundTo(x, 1 / gridSize);
+		y = MyMath.roundTo(y, 1 / gridSize);
 	}
 
 	public boolean isVisible() {

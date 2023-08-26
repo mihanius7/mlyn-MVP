@@ -9,7 +9,12 @@ public class Camera {
 	public static final float CAMERA_ZOOM_INCREMENT = 1.25f;
 	double x, y; 
 	double vx = 0, vy = 0;
-	Element following;
+	private Element following;
+	private Viewport viewport;
+	
+	public Camera(Viewport v) {
+		this.viewport = v;
+	}
 
 	public double getX() {
 		return x;
@@ -49,7 +54,7 @@ public class Camera {
 
 	public void setVx(double vx) {
 		this.vx = vx;
-		Viewport.clearTracksImage();
+		viewport.clearTracksImage();
 	}
 
 	public double getVy() {
@@ -58,7 +63,7 @@ public class Camera {
 
 	public void setVy(double vy) {
 		this.vy = vy;
-		Viewport.clearTracksImage();
+		viewport.clearTracksImage();
 	}
 
 	public void follow() {

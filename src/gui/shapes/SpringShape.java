@@ -10,6 +10,7 @@ import java.awt.geom.Line2D;
 import constants.PhysicalConstants;
 import elements.force_pair.Spring;
 import elements.point_mass.Particle;
+import gui.CoordinateConverter;
 import gui.Viewport;
 
 public class SpringShape extends AbstractShape {
@@ -28,15 +29,15 @@ public class SpringShape extends AbstractShape {
 	}
 
 	@Override
-	public void paintShape(Graphics2D targetG2d) {
+	public void paintShape(Graphics2D targetG2d, Viewport viewport) {
 		Particle p1 = s.getFirstParticle();
 		Particle p2 = s.getSecondParticle();
-		int x1 = Viewport.toScreenX(p1.getX());
-		int y1 = Viewport.toScreenY(p1.getY());
-		int x2 = Viewport.toScreenX(p2.getX());
-		int y2 = Viewport.toScreenY(p2.getY());
+		int x1 = CoordinateConverter.toScreenX(p1.getX());
+		int y1 = CoordinateConverter.toScreenY(p1.getY());
+		int x2 = CoordinateConverter.toScreenX(p2.getX());
+		int y2 = CoordinateConverter.toScreenY(p2.getY());
 		targetG2d.setColor(s.getColor());
-		targetG2d.setStroke(new BasicStroke((float) (Viewport.getScale() * s.getVisibleWidth()), BasicStroke.CAP_ROUND,
+		targetG2d.setStroke(new BasicStroke((float) (viewport.getScale() * s.getVisibleWidth()), BasicStroke.CAP_ROUND,
 				BasicStroke.JOIN_BEVEL));
 		if (s.isLine())
 			targetG2d.drawLine(x1, y1, x2, y2);
@@ -45,15 +46,15 @@ public class SpringShape extends AbstractShape {
 		}
 		if (drawLabel || s.isSelected()) {
 			String label = String.format("%.3f kg", s.getForceSmoothed() / PhysicalConstants.kgf);
-			Viewport.drawStringTilted(targetG2d, label, x1, y1, x2, y2);
+			viewport.drawStringTilted(targetG2d, label, x1, y1, x2, y2);
 		}
 	}
 
 	private void drawZigzag(Graphics2D targetG2d, int x1, int y1, double length, double alpha) {
 		double beta = alpha + Math.PI / 2;
 		double n = length / SPRING_ZIGZAG_PERIOD;
-		double step = Viewport.toScreen(s.getDeformatedLength()) / n;
-		double width = Viewport.toScreen(SPRING_ZIGZAG_AMPLITUDE);
+		double step = CoordinateConverter.toScreen(s.getDeformatedLength()) / n;
+		double width = CoordinateConverter.toScreen(SPRING_ZIGZAG_AMPLITUDE);
 		targetG2d.translate(x1, y1);
 		targetG2d.rotate(beta);
 		int b = 1;

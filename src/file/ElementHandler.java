@@ -126,7 +126,6 @@ public class ElementHandler implements ContentHandler {
 	@Override
 	public void endDocument() throws SAXException {
 		ConsoleWindow.println(GUIStrings.FILE_LOADING_FINISHED);
-		Viewport.scaleToBoundaries();
 	}
 
 	@Override

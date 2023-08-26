@@ -30,18 +30,16 @@ import simulation.components.TimeStepController.TimeStepMode;
 
 public class MainWindow extends JFrame {
 
-	public static final int RECORDER_MAX_ROWS = 8;
+	public final int RECORDER_MAX_ROWS = 8;
 	private static MainWindow instance;
-	private static final long serialVersionUID = 6398390928434245781L;
-	public static Simulation simulation;
-	public static Viewport viewport;
-	public static ConsoleWindow consoleWindow;
-	private static MainWindowMenu menuBar;
-	private static MainWindowEvent listener;
-	private static ViewportEvent viewportListener;
-	private static EditBoundariesWindow ebw;
-	public static Thread simulationThread, renderingThread;
-	public static int viewportInitWidth = 960, viewportInitHeight = 512;
+	public Simulation simulation;
+	public Viewport viewport;
+	public ConsoleWindow consoleWindow;
+	private MainWindowMenu menuBar;
+	private MainWindowEvent listener;
+	private EditBoundariesWindow ebw;
+	public Thread simulationThread, renderingThread;
+	public int viewportInitWidth = 960, viewportInitHeight = 512;
 	private JLabel labelTimeStep;
 	private JFileChooser openSceneChooser, saveSceneChooser;
 	JButton buttonStart;
@@ -53,15 +51,14 @@ public class MainWindow extends JFrame {
 	public MainWindow() {
 		instance = this;
 		simulation = new Simulation();
-		viewport = new Viewport(viewportInitWidth, viewportInitHeight);
+		viewport = new Viewport(viewportInitWidth, viewportInitHeight, this);
 		viewport.setBackground(UIManager.getColor("Button.light"));
 		viewport.setBorder(null);
 		listener = new MainWindowEvent(this);
-		viewportListener = new ViewportEvent(viewport, this);
 		getContentPane().setLayout(null);
 		getContentPane().add(viewport);
 
-		menuBar = new MainWindowMenu();
+		menuBar = new MainWindowMenu(viewport);
 		setJMenuBar(menuBar);
 		createButtons();
 		createDialogs();
@@ -82,10 +79,6 @@ public class MainWindow extends JFrame {
 		setVisible(true);
 		setCaption(GUIStrings.NEW_PROJECT_NAME);
 
-		viewport.addKeyListener(viewportListener);
-		viewport.addMouseListener(viewportListener);
-		viewport.addMouseMotionListener(viewportListener);
-		viewport.addMouseWheelListener(viewportListener);
 		viewport.grabFocus();
 
 		new SampleScenes().initializeScene();
@@ -93,9 +86,10 @@ public class MainWindow extends JFrame {
 
 		startViewportRepaintThread();
 		startSimulationThread();
+		
+		viewport.scaleToBoundaries();
 
 		resizeGUI();
-		viewport.refreshStaticSizeConstants();
 	}
 
 	public static MainWindow getInstance() {
@@ -170,7 +164,6 @@ public class MainWindow extends JFrame {
 
 	void resizeGUI() {
 		viewport.setBounds(0, 0, getWidth() - 14, getHeight() - 76 - buttonStart.getHeight());
-		viewport.refreshStaticSizeConstants();
 		viewport.initTracksImage();
 		int buttonsY = getHeight() - 92;
 		buttonStart.setBounds(getWidth() - 215, buttonsY, 192, 24);
@@ -227,7 +220,7 @@ public class MainWindow extends JFrame {
 	}
 
 	public void applyReferenceParticleParameters() {
-		Viewport.setMouseMode(MouseMode.PARTICLE_ADD);
+		viewport.setMouseMode(MouseMode.PARTICLE_ADD);
 		clearSelection();
 		refreshGUIControls();
 	}
@@ -235,13 +228,13 @@ public class MainWindow extends JFrame {
 	public void refreshGUIControls() {
 		menuBar.refreshItems();
 		buttonTimeStepMode.setText(Simulation.timeStepController.getMode()==TimeStepMode.FIXED ? GUIStrings.TIMESTEP_FIXED : GUIStrings.TIMESTEP_DYNAMIC);
-		Double.toString(Viewport.getGridSize() / cm);
+		Double.toString(viewport.getGridSize() / cm);
 	}
 
 	public void refreshGUIDisplays() {
 		if (Simulation.getInstance().isActive())
 			refreshTimeStepReserveDisplay();
-		Viewport.getScale();
+		viewport.getScale();
 	}
 
 	private void refreshTimeStepReserveDisplay() {
@@ -250,14 +243,14 @@ public class MainWindow extends JFrame {
 			r = 10000;
 	}
 
-	public static void showEditBoundariesWindow() {
+	public void showEditBoundariesWindow() {
 		if (ebw != null)
 			ebw.view();
 		else
-			ebw = new EditBoundariesWindow();
+			ebw = new EditBoundariesWindow(viewport);
 	}
 	
-	public static void showConsoleWindow() {
+	public void showConsoleWindow() {
 		consoleWindow.setVisible(true);
 	}
 
@@ -302,14 +295,15 @@ public class MainWindow extends JFrame {
 			setCaption(selectedFile.getName());
 			Simulation.perfomStep(5);
 			refreshGUIControls();
-			Viewport.scaleToAllParticles();
+			viewport.reset();
+			viewport.scaleToAllParticles();
 		} else if (ret == JFileChooser.CANCEL_OPTION) {
 			startSimulationThread();
 		}
 	}
 
 	public void setSelectedNextSpring(boolean previous) {
-		if (Viewport.getMouseMode() == MouseMode.SPRING_SELECT)
+		if (viewport.getMouseMode() == MouseMode.SPRING_SELECT)
 			if (!previous) {
 				Simulation.addToSelectionNextSpring();
 				setFocusTo(Simulation.getSelectedSpring(0));
@@ -318,7 +312,7 @@ public class MainWindow extends JFrame {
 				setFocusTo(Simulation.getSelectedSpring(0));
 			}
 		else {
-			Viewport.setMouseMode(MouseMode.SPRING_SELECT);
+			viewport.setMouseMode(MouseMode.SPRING_SELECT);
 			setSelectedNextSpring(previous);
 		}
 	}

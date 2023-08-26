@@ -14,9 +14,9 @@ import static java.lang.Math.sqrt;
 import static simulation.Simulation.getParticle;
 import static simulation.Simulation.getParticlesCount;
 import static simulation.Simulation.getSelectedParticle;
-import static simulation.Simulation.getSelectedParticles;
 import static simulation.Simulation.timeStepController;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -27,10 +27,6 @@ import elements.groups.ParticleGroup;
 import elements.groups.SpringGroup;
 import elements.point_mass.Particle;
 import gui.ConsoleWindow;
-import gui.MainWindow;
-import gui.MouseMode;
-import gui.Viewport;
-import gui.ViewportEvent;
 import gui.lang.GUIStrings;
 import simulation.SimulationContent;
 import simulation.components.OneTimePerStepProcessable;
@@ -48,6 +44,8 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 	public boolean useFastSpringProjection = true, useBoundaries = true;
 	private double externalAccelerationX = 0;
 	private double externalAccelerationY = -g;
+	private Point2D.Double particleForceXY = new Point2D.Double(0, 0);
+	private Point2D.Double particleTargetXY = new Point2D.Double(0, 0);
 	private double spaceFrictionCoefficient = 0.2;
 	private double timeStepReserveRatio;
 	private double dF, maxSpringForce, maxPairForce, maxParticleSquaredVelocity, mouseForceCoef;
@@ -199,31 +197,26 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 	// }
 
 	private void moveSelectedParticle() {
-		if (Viewport.getMouseMode() == MouseMode.PARTICLE_MANIPULATION_COORDINATE
-				&& !getSelectedParticles().isEmpty()) {
-			Particle p = getSelectedParticle(0);
-			if (p != null) {
-				double x = p.getX();
-				double y = p.getY();
-				double newx = x - (x - Viewport.fromScreenX(ViewportEvent.x1 + ViewportEvent.dx)) / 1000;
-				double newy = y - (y - Viewport.fromScreenY(ViewportEvent.y1 + ViewportEvent.dy)) / 1000;
-				p.setX(newx);
-				p.setY(newy);
-				p.setVelocity(0, 0);
-			}
+		Particle p = getSelectedParticle(0);
+		if (p != null) {
+			double x = p.getX();
+			double y = p.getY();
+			double newx = particleTargetXY.getX();
+			double newy = particleTargetXY.getY();
+			//p.setX(newx);
+			//p.setY(newy);
+			//p.setVelocity(0, 0);
 		}
 	}
 
 	private void accelerateSelectedParticle() {
-		if (Viewport.getMouseMode() == MouseMode.PARTICLE_MANIPULATION_ACCELERATION
-				&& getSelectedParticles().size() > 0) {
-			Particle p = getSelectedParticle(0);
-			if (p != null) {
-				mouseForceCoef = 1 * getSelectedParticle(0).getMass();
-				p.addFx(-mouseForceCoef * (Viewport.toScreenX(p.getX()) - ViewportEvent.x1));
-				p.addFy(mouseForceCoef * (Viewport.toScreenY(p.getY()) - ViewportEvent.y1));
-			}
+		Particle p = getSelectedParticle(0);
+		if (p != null) {
+			mouseForceCoef = 1 * getSelectedParticle(0).getMass();
+			p.addFx(-mouseForceCoef * particleForceXY.getX());
+			p.addFy(mouseForceCoef * particleForceXY.getY());
 		}
+
 	}
 
 	private void moveParticles() {
@@ -336,6 +329,14 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 		ConsoleWindow.println(GUIStrings.EXTERNAL_FORCES + ": " + useExternalForces);
 	}
 
+	public void setParticleForceXY(Point2D.Double particleForceXY) {
+		this.particleForceXY = particleForceXY;
+	}
+
+	public void setParticleTargetXY(Point2D.Double particleTargetXY) {
+		this.particleTargetXY = particleTargetXY;
+	}
+
 	public double defineCoulombForce(Particle particle1, Particle particle2, double distance) {
 		double q1 = particle1.getCharge();
 		double q2 = particle2.getCharge();
@@ -386,6 +387,7 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 		neighborSearchNumber = 0;
 		neighborSearchSkipSteps = DEFAULT_NEIGHBOR_SEARCH_PERIOD;
 		recalculateNeighborsNeeded();
+		ConsoleWindow.println(GUIStrings.INTERACTION_PROCESSOR_RESTARTED);
 	}
 
 	public int getNeighborSearchsNumber() {

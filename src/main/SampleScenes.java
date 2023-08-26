@@ -10,8 +10,8 @@ import static simulation.Simulation.timeStepController;
 import java.awt.Color;
 
 import elements.point_mass.Particle;
+import gui.ConsoleWindow;
 import gui.MainWindow;
-import gui.Viewport;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;
@@ -24,7 +24,8 @@ public class SampleScenes {
 		scenePreset();
 	}
 
-	public static void emptyScene() {
+	public void emptyScene() {
+		ConsoleWindow.println(GUIStrings.EMPTY_SCENE_LOADING);
 		timeStepController.setModeAndReset(TimeStepMode.DYNAMIC);
 		timeStepController.setTimeScale(1d);
 		interactionProcessor.setUseExternalForces(true);
@@ -35,19 +36,16 @@ public class SampleScenes {
 		ParticleShape.drawTags = false;
 		ParticleShape.drawVelocities = false;
 		ParticleShape.drawGradientParticles = false;
-		Viewport.useGrid = true;
-		Viewport.setGridSize(Viewport.DEFAULT_GRID_SIZE);
-		Viewport.setDrawTracks(false);
 		Boundaries b = Simulation.getContent().getBoundaries();
 		b.setBounds(0, 9.2, 4.2, 0);
 		b.setUseAll(true);
 		b.setUseUpper(false);
 		Simulation.perfomStep(10);
 		MainWindow.setCaption(GUIStrings.NEW_PROJECT_NAME);
-		Viewport.scaleToBoundaries();
+		ConsoleWindow.println("	"+ GUIStrings.DONE);
 	}
 
-public static void scenePreset() {
+public void scenePreset() {
 		timeStepController.setModeAndReset(TimeStepMode.DYNAMIC);
 		timeStepController.setTimeScale(0.25d);
 		interactionProcessor.setUsePPCollisions(true);
@@ -60,7 +58,8 @@ public static void scenePreset() {
 		Simulation.addToSimulation(new Particle(300 * cm, 120 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
 		Simulation.addToSimulation(new Particle(300 * cm, 10 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
 		getLastAddedParticle().setMovable(false);
-		Viewport.scaleToBoundaries();
+		Simulation.addToSimulation(new Particle(310 * cm, 100 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
+		Simulation.addToSimulation(new Particle(290 * cm, 100 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
 		ParticleShape.drawForces = true;
 	}
 
