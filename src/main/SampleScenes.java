@@ -60,6 +60,8 @@ public static void scenePreset() {
 		Simulation.addToSimulation(new Particle(300 * cm, 120 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
 		Simulation.addToSimulation(new Particle(300 * cm, 10 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
 		getLastAddedParticle().setMovable(false);
+		Simulation.addToSimulation(new Particle(310 * cm, 100 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
+		Simulation.addToSimulation(new Particle(290 * cm, 100 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
 		Viewport.scaleToBoundaries();
 		ParticleShape.drawForces = true;
 	}

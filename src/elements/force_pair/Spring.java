@@ -17,8 +17,8 @@ import elements.Element;
 import elements.Interactable;
 import elements.Selectable;
 import elements.point_mass.Particle;
+import gui.Colors;
 import gui.ConsoleWindow;
-import gui.Viewport;
 import gui.lang.GUIStrings;
 import gui.shapes.SpringShape;
 import simulation.Simulation;
@@ -233,7 +233,7 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 		if (!isSelected)
 			return shape.getColor();
 		else
-			return Viewport.SELECTED;
+			return Colors.SELECTED;
 	}
 
 	public Color getEigeneColor() {

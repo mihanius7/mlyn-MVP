@@ -36,16 +36,7 @@ import simulation.components.Boundaries;
 public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	private static final long serialVersionUID = -8872059106110231269L;
-	public static final Color BACKGROUND = new Color(255, 255, 255);
-	public static final Color GRID = new Color(200, 200, 200);
-	public static final Color BOUNDARIES = new Color(200, 50, 50);
-	public static final Color CROSS = Color.MAGENTA;
-	public static final Color SELECTED = Color.YELLOW;
-	public static final Color ARROW_VELOCITY = Color.BLUE;
-	public static final Color ARROW_FORCE = Color.ORANGE;
 	private static final int ARROW_DRAWING_MIN_THRESHOLD = 8;
-	public static final Color FONT_MAIN = Color.BLACK;
-	public static final Color FONT_TAGS = Color.BLACK;
 	public static final float LABELS_MIN_FONT_SIZE = 10;
 	public static final int LABELS_FONT_SIZE = 14;
 	public static final float LABELS_MAX_FONT_SIZE = 32;
@@ -129,7 +120,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		drawBoundariesOn(graphics);
 		drawSpringsOn(graphics);
 		drawCirclesOn(graphics);
-		graphics.setColor(FONT_TAGS);
+		graphics.setColor(Colors.FONT_TAGS);
 		graphics.setStroke(arrowStroke);
 		drawCrossOn(graphics, crossX, crossY, true);
 		drawAxisOn(graphics);
@@ -177,9 +168,9 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			if (gridStep >= 15 && gridStep < viewportWidth * 2) {
 				BufferedImage bi = new BufferedImage(gridMinorStep, gridMinorStep, BufferedImage.TYPE_INT_RGB);
 				Graphics2D big2d = bi.createGraphics();
-				big2d.setColor(BACKGROUND);
+				big2d.setColor(Colors.BACKGROUND);
 				big2d.fillRect(0, 0, gridMinorStep, gridMinorStep);
-				big2d.setColor(GRID);
+				big2d.setColor(Colors.GRID);
 				big2d.drawLine(0, 0, gridMinorStep, 0);
 				big2d.drawLine(0, 0, 0, gridMinorStep);
 				TexturePaint tp = new TexturePaint(bi,
@@ -187,10 +178,10 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 				targetG2d.setPaint(tp);
 				targetG2d.setRenderingHints(rh);
 			} else {
-				targetG2d.setColor(BACKGROUND);
+				targetG2d.setColor(Colors.BACKGROUND);
 			}
 		} else
-			targetG2d.setColor(BACKGROUND);
+			targetG2d.setColor(Colors.BACKGROUND);
 		targetG2d.fillRect(0, 0, viewportWidth, viewportHeight);
 	}
 
@@ -244,7 +235,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public static void drawStringTilted(Graphics2D targetG2d, String string, int x1, int y1, int x2, int y2) {
 		double alpha = Math.atan2(x2 - x1, y1 - y2) + Math.PI / 2;
 		targetG2d.setFont(labelsFont.deriveFont(getCurrentFontSize()));
-		targetG2d.setColor(FONT_TAGS);
+		targetG2d.setColor(Colors.FONT_TAGS);
 		int xc = Math.min(x1, x2) + (Math.max(x1, x2) - Math.min(x1, x2)) / 2;
 		int yc = Math.min(y1, y2) + (Math.max(y1, y2) - Math.min(y1, y2)) / 2;
 		alpha = evaluation.MyMath.fitAbsAngleRad(alpha);
@@ -269,7 +260,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	private void drawBoundariesOn(Graphics2D targetG2d) {
-		targetG2d.setColor(BOUNDARIES);
+		targetG2d.setColor(Colors.BOUNDARIES);
 		targetG2d.setStroke(arrowStroke);
 		Boundaries b = Simulation.getContent().getBoundaries();
 		int x1 = toScreenX(b.getLeft());
@@ -289,11 +280,11 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private void drawCrossOn(Graphics2D targetG2d, double x, double y, boolean drawTag) {
 		int xc = toScreenX(x);
 		int yc = toScreenY(y);
-		targetG2d.setColor(CROSS);
+		targetG2d.setColor(Colors.CROSS);
 		targetG2d.drawLine(xc, yc + 8, xc, yc - 8);
 		targetG2d.drawLine(xc - 8, yc, xc + 8, yc);
 		targetG2d.setFont(labelsFont);
-		targetG2d.setColor(FONT_TAGS);
+		targetG2d.setColor(Colors.FONT_TAGS);
 		if (drawTag)
 			targetG2d.drawString(String.format("(%.1e", x) + String.format("; %.1e) m", y), xc + 4, yc - 4);
 	}

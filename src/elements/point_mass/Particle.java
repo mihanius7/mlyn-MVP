@@ -2,15 +2,15 @@ package elements.point_mass;
 
 import java.awt.Color;
 
-import simulation.Simulation;
-import simulation.components.Boundaries;
 import elements.Interactable;
 import elements.Selectable;
 import evaluation.MyMath;
 import evaluation.Vector;
+import gui.Colors;
 import gui.Viewport;
-import gui.shapes.AbstractShape;
 import gui.shapes.ParticleShape;
+import simulation.Simulation;
+import simulation.components.Boundaries;
 
 public class Particle extends PointMass implements Cloneable, Selectable, Interactable {
 
@@ -198,7 +198,7 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		if (!isSelected)
 			return shape.getColor();
 		else
-			return Viewport.SELECTED;
+			return Colors.SELECTED;
 	}
 
 	public Color getEigeneColor() {

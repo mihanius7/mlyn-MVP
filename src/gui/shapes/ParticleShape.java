@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 import elements.point_mass.Particle;
+import gui.Colors;
 import gui.Viewport;
 
 public class ParticleShape extends AbstractShape {
@@ -22,7 +23,6 @@ public class ParticleShape extends AbstractShape {
 	public static boolean drawNeighbourRadius = false;
 	public static boolean drawTags = false;
 	public static BasicStroke particleBorder = new BasicStroke(0.5f);
-	private float fontSize = 14;
 
 	public ParticleShape(Particle p) {
 		super();
@@ -66,15 +66,15 @@ public class ParticleShape extends AbstractShape {
 			targetG2d.drawOval(x - nradius, y - nradius, nradius * 2, nradius * 2);
 		}
 		if (drawForces || p.isSelected())
-			Viewport.drawArrowLine(targetG2d, x, y, p.getLastForceVector(), Viewport.ARROW_FORCE, "N");
+			Viewport.drawArrowLine(targetG2d, x, y, p.getLastForceVector(), Colors.ARROW_FORCE, "N");
 		if (drawVelocities)
-			Viewport.drawArrowLine(targetG2d, x, y, p.getVelocityVector(), Viewport.ARROW_VELOCITY, "m/s");
+			Viewport.drawArrowLine(targetG2d, x, y, p.getVelocityVector(), Colors.ARROW_VELOCITY, "m/s");
 		if (drawTags || p.isSelected()) {
 			targetG2d.setFont(Viewport.labelsFont.deriveFont(Viewport.getCurrentFontSize()));
-			targetG2d.setColor(Viewport.FONT_TAGS);
+			targetG2d.setColor(Colors.FONT_TAGS);
 			float stringsInterval = (float) (0.08 * Viewport.getCurrentFontSize());
 			targetG2d.setFont(Viewport.labelsFont.deriveFont(Viewport.getCurrentFontSize()));
-			targetG2d.setColor(Viewport.FONT_TAGS);
+			targetG2d.setColor(Colors.FONT_TAGS);
 			x = (int) (Viewport.toScreenX(p.getX()) + r * 1);
 			y = (int) (Viewport.toScreenY(p.getY()) - r * 2);
 			y -= Viewport.labelsFont.getSize() * stringsInterval;
