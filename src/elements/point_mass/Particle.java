@@ -7,7 +7,6 @@ import elements.Selectable;
 import evaluation.MyMath;
 import evaluation.Vector;
 import gui.Colors;
-import gui.Viewport;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;
 import simulation.components.Boundaries;
@@ -35,7 +34,6 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		lasty = y;
 		lastVelocity.setXY(velocity.X(), velocity.Y());
 		shape = new ParticleShape(this);
-		shape.setColor(c);
 	}
 	
 	public Particle(double x, double y, double vx, double vy, double m, double radius) {
@@ -214,9 +212,9 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		//color = oldColor;
 	}
 
-	public void snapToGrid() {
-		x = MyMath.roundTo(x, 1 / Viewport.getGridSize());
-		y = MyMath.roundTo(y, 1 / Viewport.getGridSize());
+	public void snapToGrid(double gridSize) {
+		x = MyMath.roundTo(x, 1 / gridSize);
+		y = MyMath.roundTo(y, 1 / gridSize);
 	}
 
 	public boolean isVisible() {

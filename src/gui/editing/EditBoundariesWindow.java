@@ -26,10 +26,12 @@ public class EditBoundariesWindow extends AbstractEditWindow implements ActionLi
 	private JTextField field1, field2, field3, field4;
 	private JCheckBox checkBox1, checkBox2, checkBox3, checkBox4;
 	private Boundaries boundaries = Simulation.getContent().getBoundaries();
+	private Viewport viewport;
 
-	public EditBoundariesWindow() {
+	public EditBoundariesWindow(Viewport v) {
 		buildGUI();
 		view();
+		this.viewport = v;
 	}
 
 	void buildGUI() {
@@ -109,7 +111,7 @@ public class EditBoundariesWindow extends AbstractEditWindow implements ActionLi
 			boundaries.setUseRight(checkBox2.isSelected());
 			boundaries.setUseBottom(checkBox3.isSelected());
 			boundaries.setUseUpper(checkBox4.isSelected());
-			Viewport.scaleToBoundaries();
+			viewport.scaleToBoundaries();
 		} catch (NumberFormatException e1) {
 			JOptionPane.showMessageDialog(null, GUIStrings.NUMBER_FORMAT_EXCEPTION, "Атрыманне лічбы...",
 					JOptionPane.WARNING_MESSAGE);

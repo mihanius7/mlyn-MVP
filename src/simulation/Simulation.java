@@ -359,19 +359,11 @@ public class Simulation implements Runnable {
 		oneTimePerStepProcessables.clear();
 		oneTimePerStepProcessables.add(timeStepController);
 		oneTimePerStepProcessables.add(interactionProcessor);
-		Viewport.reset();
-		Viewport.setCrossX(0);
-		Viewport.setCrossY(0);
 		ConsoleWindow.println(GUIStrings.CLEARED);
 		interactionProcessor.reset();
-		ConsoleWindow.println(GUIStrings.INTERACTION_PROCESSOR_RESTARTED);
 		timeStepController.resetTimeStep();
-		ConsoleWindow.println(GUIStrings.TIMESTEP_CONTROLLER_RESTARTED);
-		ConsoleWindow.println(GUIStrings.EMPTY_SCENE_LOADING);
-		SampleScenes.emptyScene();
-		ConsoleWindow.println("	"+ GUIStrings.DONE);
-		Viewport.scaleToBoundaries();
-		ConsoleWindow.println(GUIStrings.AUTOSCALE);
+		SampleScenes sampleScenes = new SampleScenes();
+		sampleScenes.emptyScene();
 	}
 
 	private static void refreshContent() {

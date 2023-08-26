@@ -89,6 +89,7 @@ public class TimeStepController implements OneTimePerStepProcessable {
 		stepsPerSecond = 0;
 		measuredTimeScale = 1d;
 		lastTimeMillis = 0;
+		ConsoleWindow.println(GUIStrings.TIMESTEP_CONTROLLER_RESTARTED);
 	}
 
 	public TimeStepMode getMode() {
