@@ -31,9 +31,11 @@ import gui.lang.GUIStrings;
 import simulation.SimulationContent;
 import simulation.components.OneTimePerStepProcessable;
 
-public class InteractionProcessor implements OneTimePerStepProcessable {
+public class InteractionProcessor implements OneTimePerStepProcessable {	
 
 	public static final int DEFAULT_NEIGHBOR_SEARCH_PERIOD = 25;
+	private static final int PARTICLE_BY_MOUSE_MOVING_SMOOTH = 500;
+	private static final int PARTICLE_ACCELERATION_BY_MOUSE = 1;
 	private InteractionType interactionType = InteractionType.COULOMB;
 	private TabulatedFunction forceTable;
 	private ParticleGroup particles;
@@ -42,6 +44,7 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 	private boolean useExternalForces = false, usePPCollisions = true, recalculateNeighborsNeeded = true,
 			useFriction = true, useInterparticleForces = true;
 	public boolean useFastSpringProjection = true, useBoundaries = true;
+	private boolean isLookingAtMouse;
 	private double externalAccelerationX = 0;
 	private double externalAccelerationY = -g;
 	private Point2D.Double particleForceXY = new Point2D.Double(0, 0);
@@ -198,23 +201,22 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 
 	private void moveSelectedParticle() {
 		Particle p = getSelectedParticle(0);
-		if (p != null) {
-			double x = p.getX();
-			double y = p.getY();
-			double newx = particleTargetXY.getX();
-			double newy = particleTargetXY.getY();
-			//p.setX(newx);
-			//p.setY(newy);
-			//p.setVelocity(0, 0);
+		if (p != null && isLookingAtMouse) {
+			p.setVelocity(0, 0);
+			double newx = p.getX() + (particleTargetXY.getX() - p.getX()) / PARTICLE_BY_MOUSE_MOVING_SMOOTH;
+			double newy = p.getY() + (particleTargetXY.getY() - p.getY()) / PARTICLE_BY_MOUSE_MOVING_SMOOTH;
+			p.setX(newx);
+			p.setY(newy);
 		}
 	}
 
 	private void accelerateSelectedParticle() {
 		Particle p = getSelectedParticle(0);
 		if (p != null) {
-			mouseForceCoef = 1 * getSelectedParticle(0).getMass();
-			p.addFx(-mouseForceCoef * particleForceXY.getX());
-			p.addFy(mouseForceCoef * particleForceXY.getY());
+			double force = PARTICLE_ACCELERATION_BY_MOUSE * getSelectedParticle(0).getMass();
+			double angle = Math.atan2(particleForceXY.getY(), particleForceXY.getX());
+			p.addFx(force * angle * Math.cos(angle));
+			p.addFy(force * angle * Math.sin(angle));
 		}
 
 	}
@@ -240,7 +242,7 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 		maxParticleSquaredVelocity = maxVel;
 	}
 
-	public void movekBackParticles() {
+	public void moveBackParticles() {
 		Particle p;
 		for (int i = 0; i < getParticlesCount(); i++) {
 			p = getParticle(i);
@@ -335,6 +337,10 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 
 	public void setParticleTargetXY(Point2D.Double particleTargetXY) {
 		this.particleTargetXY = particleTargetXY;
+	}
+	
+	public void setLookingAtMouse(boolean b) {
+		this.isLookingAtMouse = b;
 	}
 
 	public double defineCoulombForce(Particle particle1, Particle particle2, double distance) {
