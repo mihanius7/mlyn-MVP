@@ -15,16 +15,16 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
 
-import simulation.Simulation;
-import simulation.components.TimeStepController;
 import elements.force_pair.Spring;
 import elements.groups.SpringGroup;
 import elements.point_mass.Particle;
-import evaluation.interaction.InteractionProcessor;
+import simulation.Simulation;
+import simulation.components.TimeStepController;
 
 public class ViewportEvent implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
 
-	private int x1, y1, dx, dy, x0, y0;
+	private int x1, y1, radiusX, radiusY, x0, y0;
+	private int differenceX, differenceY;
 	MouseMode mouseMode = MouseMode.PARTICLE_MANIPULATION_ACCELERATION;
 	private Viewport viewport;
 	private MainWindow mainWindow;
@@ -61,17 +61,19 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 		Spring s = null;
 		deselectAttachedSprings();
 		if (mouseMode == MouseMode.PARTICLE_ADD) {
-			p = Simulation.findNearestParticle(CoordinateConverter.fromScreenX(x0), CoordinateConverter.fromScreenY(y0), CoordinateConverter.fromScreen(10));
+			p = Simulation.findNearestParticle(CoordinateConverter.fromScreenX(x0), CoordinateConverter.fromScreenY(y0),
+					CoordinateConverter.fromScreen(10));
 			if (p == null) {
 				Simulation.getReferenceParticle().setX(CoordinateConverter.fromScreenX(x0));
 				Simulation.getReferenceParticle().setY(CoordinateConverter.fromScreenY(y0));
-				if (viewport.useGrid)
+				if (viewport.useGrid && !Simulation.getInstance().isActive())
 					Simulation.getReferenceParticle().snapToGrid(viewport.getGridSize());
 				Simulation.getReferenceParticle().setVisible(true);
 				mainWindow.clearSelection();
 			}
 		} else if (mouseMode == MouseMode.PARTICLE_SELECT) {
-			p = Simulation.findNearestParticle(CoordinateConverter.fromScreenX(x0), CoordinateConverter.fromScreenY(y0), CoordinateConverter.fromScreen(10));
+			p = Simulation.findNearestParticle(CoordinateConverter.fromScreenX(x0), CoordinateConverter.fromScreenY(y0),
+					CoordinateConverter.fromScreen(10));
 			if (!arg0.isControlDown()) {
 				mainWindow.clearSelection();
 			}
@@ -86,7 +88,8 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				viewport.setCrossY(CoordinateConverter.fromScreenY(y0));
 			}
 		} else if (mouseMode == MouseMode.SPRING_SELECT) {
-			s = Simulation.findNearestSpring(CoordinateConverter.fromScreenX(x0), CoordinateConverter.fromScreenY(y0), CoordinateConverter.fromScreen(5));
+			s = Simulation.findNearestSpring(CoordinateConverter.fromScreenX(x0), CoordinateConverter.fromScreenY(y0),
+					CoordinateConverter.fromScreen(5));
 			if (!arg0.isControlDown()) {
 				mainWindow.clearSelection();
 			}
@@ -98,14 +101,14 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 					removeFromSelection(s);
 			}
 		} else if (mouseMode == MouseMode.PARTICLE_MANIPULATION_ACCELERATION
-				|| mouseMode == MouseMode.PARTICLE_MANIPULATION_COORDINATE
-				|| mouseMode == MouseMode.SPRING_ADD) {
-			p = Simulation.findNearestParticle(CoordinateConverter.fromScreenX(x0), CoordinateConverter.fromScreenY(y0), CoordinateConverter.fromScreen(10));
+				|| mouseMode == MouseMode.PARTICLE_MANIPULATION_COORDINATE || mouseMode == MouseMode.SPRING_ADD) {
+			p = Simulation.findNearestParticle(CoordinateConverter.fromScreenX(x0), CoordinateConverter.fromScreenY(y0),
+					CoordinateConverter.fromScreen(10));
 			if (p != null) {
 				addToSelection(p);
 				mainWindow.setFocusTo(p);
-				dx = CoordinateConverter.toScreenX(p.getX()) - x0;
-				dy = CoordinateConverter.toScreenY(p.getY()) - y0;
+				radiusX = CoordinateConverter.toScreenX(p.getX()) - x0;
+				radiusY = CoordinateConverter.toScreenY(p.getY()) - y0;
 				labelAttachedSprings(p);
 			}
 		}
@@ -125,7 +128,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 			s1.getShape().setDrawLabel(false);
 		}
 	}
-	
+
 	public int getMouseX() {
 		return x1;
 	}
@@ -133,33 +136,40 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 	public int getMouseY() {
 		return y1;
 	}
-	
+
 	public int getMouseDx() {
-		return dx;
+		return differenceX;
 	}
 
 	public int getMouseDy() {
-		return dy;
+		return differenceY;
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		x1 = arg0.getX();
 		y1 = arg0.getY();
+		differenceX = x1 - x0;
+		differenceY = y1 - y0;
 		if (mouseMode == MouseMode.PARTICLE_MANIPULATION_COORDINATE && getSelectedParticle(0) != null) {
 			if (!Simulation.getInstance().isActive()) {
-				getSelectedParticle(0).setX(CoordinateConverter.fromScreenX(x1 + dx));
-				getSelectedParticle(0).setY(CoordinateConverter.fromScreenY(y1 + dy));
+				getSelectedParticle(0).setX(CoordinateConverter.fromScreenX(x1 + radiusX));
+				getSelectedParticle(0).setY(CoordinateConverter.fromScreenY(y1 + radiusY));
 				if (viewport.useGrid)
 					getSelectedParticle(0).snapToGrid(viewport.getGridSize());
 			} else {
-				Simulation.interactionProcessor.setParticleTargetXY(new Point2D.Double(CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1)));
+				Simulation.interactionProcessor.setParticleTargetXY(new Point2D.Double(
+						CoordinateConverter.fromScreenX(x1 + radiusX), CoordinateConverter.fromScreenY(y1 + radiusY)));
 				Simulation.interactionProcessor.setLookingAtMouse(true);
 			}
+		} else if (mouseMode == MouseMode.PARTICLE_MANIPULATION_ACCELERATION && getSelectedParticle(0) != null
+				&& Simulation.getInstance().isActive()) {
+			Simulation.interactionProcessor.setParticleForceXY(new Point2D.Double(
+					CoordinateConverter.fromScreen(differenceX), CoordinateConverter.fromScreen(-differenceY)));
 		} else if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getReferenceParticle().isVisible()) {
 			Simulation.getReferenceParticle().setX(CoordinateConverter.fromScreenX(x1));
 			Simulation.getReferenceParticle().setY(CoordinateConverter.fromScreenY(y1));
-			if (viewport.useGrid)
+			if (viewport.useGrid && !Simulation.getInstance().isActive())
 				Simulation.getReferenceParticle().snapToGrid(viewport.getGridSize());
 		}
 	}
@@ -167,20 +177,22 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		Simulation.interactionProcessor.setLookingAtMouse(false);
+		Simulation.interactionProcessor.setParticleForceXY(new Point2D.Double(0, 0));
+		radiusX = 0;
+		radiusY = 0;
 		if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getReferenceParticle().isVisible()) {
 			Simulation.getReferenceParticle().setVisible(false);
-			dx = x0 - x1;
-			dy = y0 - y1;
 			Particle refP = Simulation.getReferenceParticle();
 			Particle newP = new Particle(refP.getX(), refP.getY(), refP);
 			addToSimulation(newP);
 			addToSelection(newP);
 			mainWindow.setFocusTo(newP);
 		} else if (mouseMode == MouseMode.SPRING_ADD && getSelectedParticles().size() > 0) {
-			Particle p = Simulation.findNearestParticle(CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1), CoordinateConverter.fromScreen(10));
+			Particle p = Simulation.findNearestParticle(CoordinateConverter.fromScreenX(x1),
+					CoordinateConverter.fromScreenY(y1), CoordinateConverter.fromScreen(10));
 			if (p == null) {
-				Particle p2 = new Particle(CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1), 0, 0,
-						Simulation.getReferenceParticle().getMass(), Simulation.getReferenceParticle().getRadius());
+				Particle p2 = new Particle(CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1), 0,
+						0, Simulation.getReferenceParticle().getMass(), Simulation.getReferenceParticle().getRadius());
 				addToSimulation(p2);
 				p2.setX(CoordinateConverter.fromScreenX(x1));
 				p2.setY(CoordinateConverter.fromScreenY(y1));
@@ -199,8 +211,6 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				|| mouseMode == MouseMode.PARTICLE_MANIPULATION_COORDINATE) {
 			mainWindow.clearSelection();
 		}
-		dx = 0;
-		dy = 0;
 	}
 
 	@Override
