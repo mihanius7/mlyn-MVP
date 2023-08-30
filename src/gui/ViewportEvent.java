@@ -13,12 +13,14 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.Point2D;
 
 import simulation.Simulation;
 import simulation.components.TimeStepController;
 import elements.force_pair.Spring;
 import elements.groups.SpringGroup;
 import elements.point_mass.Particle;
+import evaluation.interaction.InteractionProcessor;
 
 public class ViewportEvent implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
 
@@ -150,6 +152,9 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				getSelectedParticle(0).setY(CoordinateConverter.fromScreenY(y1 + dy));
 				if (viewport.useGrid)
 					getSelectedParticle(0).snapToGrid(viewport.getGridSize());
+			} else {
+				Simulation.interactionProcessor.setParticleTargetXY(new Point2D.Double(CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1)));
+				Simulation.interactionProcessor.setLookingAtMouse(true);
 			}
 		} else if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getReferenceParticle().isVisible()) {
 			Simulation.getReferenceParticle().setX(CoordinateConverter.fromScreenX(x1));
@@ -161,6 +166,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
+		Simulation.interactionProcessor.setLookingAtMouse(false);
 		if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getReferenceParticle().isVisible()) {
 			Simulation.getReferenceParticle().setVisible(false);
 			dx = x0 - x1;
