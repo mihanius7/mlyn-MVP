@@ -24,7 +24,8 @@ import simulation.components.TimeStepController;
 public class ViewportEvent implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
 
 	private int x1, y1, radiusX, radiusY, x0, y0;
-	private int differenceX, differenceY;
+	private int mouseDifferenceX, mouseDifferenceY;
+	private int particleMouseDifferenceX, particleMouseDifferenceY;
 	MouseMode mouseMode = MouseMode.PARTICLE_MANIPULATION_ACCELERATION;
 	private Viewport viewport;
 	private MainWindow mainWindow;
@@ -138,19 +139,19 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 	}
 
 	public int getMouseDx() {
-		return differenceX;
+		return mouseDifferenceX;
 	}
 
 	public int getMouseDy() {
-		return differenceY;
+		return mouseDifferenceY;
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		x1 = arg0.getX();
 		y1 = arg0.getY();
-		differenceX = x1 - x0;
-		differenceY = y1 - y0;
+		mouseDifferenceX = x1 - x0;
+		mouseDifferenceY = y1 - y0;
 		if (mouseMode == MouseMode.PARTICLE_MANIPULATION_COORDINATE && getSelectedParticle(0) != null) {
 			if (!Simulation.getInstance().isActive()) {
 				getSelectedParticle(0).setX(CoordinateConverter.fromScreenX(x1 + radiusX));
@@ -164,8 +165,10 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 			}
 		} else if (mouseMode == MouseMode.PARTICLE_MANIPULATION_ACCELERATION && getSelectedParticle(0) != null
 				&& Simulation.getInstance().isActive()) {
+			particleMouseDifferenceX = CoordinateConverter.toScreenX(getSelectedParticle(0).getX()) - x1;
+			particleMouseDifferenceY = CoordinateConverter.toScreenY(getSelectedParticle(0).getY()) - y1;
 			Simulation.interactionProcessor.setParticleForceXY(new Point2D.Double(
-					CoordinateConverter.fromScreen(differenceX), CoordinateConverter.fromScreen(-differenceY)));
+					CoordinateConverter.fromScreen(-particleMouseDifferenceX), CoordinateConverter.fromScreen(particleMouseDifferenceY)));
 		} else if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getReferenceParticle().isVisible()) {
 			Simulation.getReferenceParticle().setX(CoordinateConverter.fromScreenX(x1));
 			Simulation.getReferenceParticle().setY(CoordinateConverter.fromScreenY(y1));
