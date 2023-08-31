@@ -322,6 +322,6 @@ public class MainWindow extends JFrame {
 	}
 
 	public void saveImageToFile() {
-		viewport.saveImageToFile();
+		viewport.saveScreenshot();
 	}
 }
