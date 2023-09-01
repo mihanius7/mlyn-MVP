@@ -55,7 +55,7 @@ public class Simulation implements Runnable {
 		interactionProcessor = new InteractionProcessor(content);
 		oneTimePerStepProcessables.add(timeStepController);
 		oneTimePerStepProcessables.add(interactionProcessor);
-		referenceSpring = new Spring(1, 0);
+
 		referenceParticle = new Particle(0, 0, 1 * kg, 6 * cm);
 		referenceParticle.setVisible(false);
 
