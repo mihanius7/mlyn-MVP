@@ -23,8 +23,8 @@ import simulation.components.TimeStepController;
 
 public class ViewportEvent implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
 
+	private static final int MAX_SPRINGS_FOR_LABEL_AFTER_SELECTION = 8;
 	private int x1, y1, radiusX, radiusY, x0, y0;
-	private int mouseDifferenceX, mouseDifferenceY;
 	MouseMode mouseMode = MouseMode.PARTICLE_MANIPULATION_ACCELERATION;
 	private Viewport viewport;
 	private MainWindow mainWindow;
@@ -116,7 +116,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 
 	private void labelAttachedSprings(Particle p) {
 		SpringGroup springGroup = Simulation.findAttachedSprings(p);
-		if (springGroup.size() > 1) {
+		if (springGroup.size() > 1 && springGroup.size() < MAX_SPRINGS_FOR_LABEL_AFTER_SELECTION) {
 			for (Spring s1 : springGroup) {
 				s1.getShape().setDrawLabel(true);
 			}
@@ -129,28 +129,10 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 		}
 	}
 
-	public int getMouseX() {
-		return x1;
-	}
-
-	public int getMouseY() {
-		return y1;
-	}
-
-	public int getMouseDx() {
-		return mouseDifferenceX;
-	}
-
-	public int getMouseDy() {
-		return mouseDifferenceY;
-	}
-
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		x1 = arg0.getX();
 		y1 = arg0.getY();
-		mouseDifferenceX = x1 - x0;
-		mouseDifferenceY = y1 - y0;
 		if (mouseMode == MouseMode.PARTICLE_MANIPULATION_COORDINATE && getSelectedParticle(0) != null) {
 			if (!Simulation.getInstance().isActive()) {
 				getSelectedParticle(0).setX(CoordinateConverter.fromScreenX(x1 + radiusX));
