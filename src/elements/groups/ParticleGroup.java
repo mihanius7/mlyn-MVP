@@ -1,6 +1,7 @@
 package elements.groups;
 
 import static java.lang.Math.random;
+
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,7 +11,6 @@ import evaluation.MyMath;
 import evaluation.Vector;
 import gui.ConsoleWindow;
 import gui.MainWindow;
-import gui.Viewport;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;
