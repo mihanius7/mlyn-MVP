@@ -35,7 +35,6 @@ import simulation.components.Boundaries;
 
 public class Viewport extends JPanel implements ActionListener, Runnable {
 
-	private final long serialVersionUID = -8872059106110231269L;
 	private final int ARROW_DRAWING_MIN_THRESHOLD = 8;
 	public final float LABELS_MIN_FONT_SIZE = 10;
 	public final int LABELS_FONT_SIZE = 14;
@@ -52,7 +51,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private ParticleGroup particles;
 	private SpringGroup springs;
 	Camera camera;
-	CoordinateConverter coordinateConverter;
 	private Graphics2D globalCanvas;
 	public Graphics2D tracksCanvas;
 	private RenderingHints rh;
@@ -81,7 +79,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		addMouseMotionListener(viewportEvent);
 		addMouseWheelListener(viewportEvent);
 		camera = new Camera(this);
-		coordinateConverter = new CoordinateConverter(this);
+		new CoordinateConverter(this);
 		rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
 		setBounds(0, 0, initW, initH);
@@ -182,8 +180,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 				big2d.setColor(Colors.GRID);
 				big2d.drawLine(0, 0, gridMinorStep, 0);
 				big2d.drawLine(0, 0, 0, gridMinorStep);
-				TexturePaint tp = new TexturePaint(bi,
-						new Rectangle2D.Double(CoordinateConverter.toScreenX(0), CoordinateConverter.toScreenY(0), gridStep, gridStep));
+				TexturePaint tp = new TexturePaint(bi, new Rectangle2D.Double(CoordinateConverter.toScreenX(0),
+						CoordinateConverter.toScreenY(0), gridStep, gridStep));
 				targetG2d.setPaint(tp);
 			} else {
 				targetG2d.setColor(Colors.BACKGROUND);
@@ -257,7 +255,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			size = LABELS_MIN_FONT_SIZE;
 		return size;
 	}
-	
+
 	public float getCurrentFontSize() {
 		return currentFontSize;
 	}

@@ -25,7 +25,6 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 
 	private int x1, y1, radiusX, radiusY, x0, y0;
 	private int mouseDifferenceX, mouseDifferenceY;
-	private int particleMouseDifferenceX, particleMouseDifferenceY;
 	MouseMode mouseMode = MouseMode.PARTICLE_MANIPULATION_ACCELERATION;
 	private Viewport viewport;
 	private MainWindow mainWindow;
@@ -161,14 +160,13 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 			} else {
 				Simulation.interactionProcessor.setParticleTargetXY(new Point2D.Double(
 						CoordinateConverter.fromScreenX(x1 + radiusX), CoordinateConverter.fromScreenY(y1 + radiusY)));
-				Simulation.interactionProcessor.setLookingAtMouse(true);
+				Simulation.interactionProcessor.setMoveToMouse(true);
 			}
 		} else if (mouseMode == MouseMode.PARTICLE_MANIPULATION_ACCELERATION && getSelectedParticle(0) != null
 				&& Simulation.getInstance().isActive()) {
-			particleMouseDifferenceX = CoordinateConverter.toScreenX(getSelectedParticle(0).getX()) - x1;
-			particleMouseDifferenceY = CoordinateConverter.toScreenY(getSelectedParticle(0).getY()) - y1;
-			Simulation.interactionProcessor.setParticleForceXY(new Point2D.Double(
-					CoordinateConverter.fromScreen(-particleMouseDifferenceX), CoordinateConverter.fromScreen(particleMouseDifferenceY)));
+			Simulation.interactionProcessor.setAccelerateByMouse(true);
+			Simulation.interactionProcessor.setParticleTargetXY(new Point2D.Double(
+					CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1)));
 		} else if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getReferenceParticle().isVisible()) {
 			Simulation.getReferenceParticle().setX(CoordinateConverter.fromScreenX(x1));
 			Simulation.getReferenceParticle().setY(CoordinateConverter.fromScreenY(y1));
@@ -179,8 +177,9 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		Simulation.interactionProcessor.setLookingAtMouse(false);
-		Simulation.interactionProcessor.setParticleForceXY(new Point2D.Double(0, 0));
+		Simulation.interactionProcessor.setMoveToMouse(false);
+		Simulation.interactionProcessor.setAccelerateByMouse(false);
+		Simulation.interactionProcessor.setParticleTargetXY(new Point2D.Double(0, 0));
 		radiusX = 0;
 		radiusY = 0;
 		if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getReferenceParticle().isVisible()) {
