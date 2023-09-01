@@ -68,7 +68,6 @@ public class MainWindow extends JFrame {
 		consoleWindow = new ConsoleWindow();
 
 		setFocusTo(Simulation.getReferenceParticle());
-		Simulation.getReferenceSpring();
 
 		setResizable(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -322,6 +321,6 @@ public class MainWindow extends JFrame {
 	}
 
 	public void saveImageToFile() {
-		viewport.saveImageToFile();
+		viewport.saveScreenshot();
 	}
 }

@@ -79,7 +79,7 @@ public class ElementHandler implements ContentHandler {
 			else
 				maxStress = Double.MAX_VALUE;
 			asLine = Boolean.parseBoolean(attrs.getValue("as_line"));
-			s = new Spring(i, j, l0, k, c);
+			s = new Spring(i, j, l0, k, c, 0);
 			s.setCanCollide(collidableS);
 			s.setMaxStress(maxStress);
 			s.setIsLine(asLine);

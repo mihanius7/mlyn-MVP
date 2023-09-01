@@ -35,7 +35,6 @@ import simulation.components.Boundaries;
 
 public class Viewport extends JPanel implements ActionListener, Runnable {
 
-	private final long serialVersionUID = -8872059106110231269L;
 	private final int ARROW_DRAWING_MIN_THRESHOLD = 8;
 	public final float LABELS_MIN_FONT_SIZE = 10;
 	public final int LABELS_FONT_SIZE = 14;
@@ -52,7 +51,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private ParticleGroup particles;
 	private SpringGroup springs;
 	Camera camera;
-	CoordinateConverter coordinateConverter;
 	private Graphics2D globalCanvas;
 	public Graphics2D tracksCanvas;
 	private RenderingHints rh;
@@ -81,7 +79,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		addMouseMotionListener(viewportEvent);
 		addMouseWheelListener(viewportEvent);
 		camera = new Camera(this);
-		coordinateConverter = new CoordinateConverter(this);
+		new CoordinateConverter(this);
 		rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
 		setBounds(0, 0, initW, initH);
@@ -116,6 +114,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public void paintComponent(Graphics g) {
 		scale += (targetScale - scale) / 2;
 		globalCanvas = (Graphics2D) g;
+		globalCanvas.setRenderingHints(rh);
 		drawWholeFrameOn(globalCanvas);
 	}
 
@@ -181,10 +180,9 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 				big2d.setColor(Colors.GRID);
 				big2d.drawLine(0, 0, gridMinorStep, 0);
 				big2d.drawLine(0, 0, 0, gridMinorStep);
-				TexturePaint tp = new TexturePaint(bi,
-						new Rectangle2D.Double(coordinateConverter.toScreenX(0), coordinateConverter.toScreenY(0), gridStep, gridStep));
+				TexturePaint tp = new TexturePaint(bi, new Rectangle2D.Double(CoordinateConverter.toScreenX(0),
+						CoordinateConverter.toScreenY(0), gridStep, gridStep));
 				targetG2d.setPaint(tp);
-				targetG2d.setRenderingHints(rh);
 			} else {
 				targetG2d.setColor(Colors.BACKGROUND);
 			}
@@ -257,7 +255,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			size = LABELS_MIN_FONT_SIZE;
 		return size;
 	}
-	
+
 	public float getCurrentFontSize() {
 		return currentFontSize;
 	}
@@ -266,10 +264,10 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.setColor(Colors.BOUNDARIES);
 		targetG2d.setStroke(arrowStroke);
 		Boundaries b = Simulation.getContent().getBoundaries();
-		int x1 = coordinateConverter.toScreenX(b.getLeft());
-		int y1 = coordinateConverter.toScreenY(b.getUpper());
-		int w = coordinateConverter.toScreen(b.getWidth());
-		int h = coordinateConverter.toScreen(b.getHeight());
+		int x1 = CoordinateConverter.toScreenX(b.getLeft());
+		int y1 = CoordinateConverter.toScreenY(b.getUpper());
+		int w = CoordinateConverter.toScreen(b.getWidth());
+		int h = CoordinateConverter.toScreen(b.getHeight());
 		if (b.isUseBottom())
 			targetG2d.drawLine(0, y1 + h, getWidth(), y1 + h);
 		if (b.isUseRight())
@@ -281,8 +279,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	private void drawCrossOn(Graphics2D targetG2d, double x, double y, boolean drawTag) {
-		int xc = coordinateConverter.toScreenX(x);
-		int yc = coordinateConverter.toScreenY(y);
+		int xc = CoordinateConverter.toScreenX(x);
+		int yc = CoordinateConverter.toScreenY(y);
 		targetG2d.setColor(Colors.CROSS);
 		targetG2d.drawLine(xc, yc + 8, xc, yc - 8);
 		targetG2d.drawLine(xc - 8, yc, xc + 8, yc);
@@ -308,14 +306,14 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		int xc = getWidth() - l / 2 - 20;
 		int yc = getHeight() - 20;
 		targetG2d.drawLine(xc - l / 2, yc, xc + l / 2, yc);
-		targetG2d.drawString(String.format("%.1e m", coordinateConverter.fromScreen(l)), xc - 32, yc - 4);
+		targetG2d.drawString(String.format("%.1e m", CoordinateConverter.fromScreen(l)), xc - 32, yc - 4);
 	}
 
 	public void drawArrowLine(Graphics2D targetG2d, int x1, int y1, Vector v, Color arrowColor, String label) {
 		double length = Math.log10(v.norm() + 1) / 2;
-		int dx = coordinateConverter.toScreen(length * v.defineCos());
-		int dy = coordinateConverter.toScreen(length * v.defineSin());
-		if (length > coordinateConverter.fromScreen(ARROW_DRAWING_MIN_THRESHOLD)) {
+		int dx = CoordinateConverter.toScreen(length * v.defineCos());
+		int dy = CoordinateConverter.toScreen(length * v.defineSin());
+		if (length > CoordinateConverter.fromScreen(ARROW_DRAWING_MIN_THRESHOLD)) {
 			targetG2d.setColor(arrowColor);
 			targetG2d.setStroke(arrowStroke);
 			drawArrowLine(targetG2d, x1, y1, x1 + dx, y1 - dy, 11, 4);
@@ -438,9 +436,12 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		ConsoleWindow.println(GUIStrings.MOUSE_MODE + ": " + viewportEvent.mouseMode);
 	}
 
-	public void saveImageToFile() {
+	public void saveScreenshot() {
 		BufferedImage buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
 		Graphics2D ig2 = buffer.createGraphics();
+		RenderingHints rhs = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		rhs.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		ig2.setRenderingHints(rhs);
 		drawWholeFrameOn(ig2);
 		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fñ.jpg", Simulation.getTime());
 		try {

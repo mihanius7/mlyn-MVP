@@ -27,15 +27,16 @@ import elements.groups.ParticleGroup;
 import elements.groups.SpringGroup;
 import elements.point_mass.Particle;
 import gui.ConsoleWindow;
+import gui.CoordinateConverter;
 import gui.lang.GUIStrings;
 import simulation.SimulationContent;
 import simulation.components.OneTimePerStepProcessable;
 
-public class InteractionProcessor implements OneTimePerStepProcessable {	
+public class InteractionProcessor implements OneTimePerStepProcessable {
 
 	public static final int DEFAULT_NEIGHBOR_SEARCH_PERIOD = 25;
 	private static final int PARTICLE_BY_MOUSE_MOVING_SMOOTH = 500;
-	private static final int PARTICLE_ACCELERATION_BY_MOUSE = 1;
+	private static final int PARTICLE_ACCELERATION_BY_MOUSE = 2;
 	private InteractionType interactionType = InteractionType.COULOMB;
 	private TabulatedFunction forceTable;
 	private ParticleGroup particles;
@@ -44,14 +45,14 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 	private boolean useExternalForces = false, usePPCollisions = true, recalculateNeighborsNeeded = true,
 			useFriction = true, useInterparticleForces = true;
 	public boolean useFastSpringProjection = true, useBoundaries = true;
-	private boolean isLookingAtMouse;
+	private boolean isMoveToMouse;
+	private boolean isAccelerateByMouse;
 	private double externalAccelerationX = 0;
 	private double externalAccelerationY = -g;
-	private Point2D.Double particleForceXY = new Point2D.Double(0, 0);
 	private Point2D.Double particleTargetXY = new Point2D.Double(0, 0);
 	private double spaceFrictionCoefficient = 0.2;
 	private double timeStepReserveRatio;
-	private double dF, maxSpringForce, maxPairForce, maxParticleSquaredVelocity, mouseForceCoef;
+	private double dF, maxSpringForce, maxPairForce, maxParticleSquaredVelocity;
 	private double minPairInteractionDistance = 1 * ang, maxPairInteractionDistance = 1.5 * m,
 			neighborRange = maxPairInteractionDistance * 1.1;
 	private long pairInteractionsNumber = 0;
@@ -201,7 +202,7 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 
 	private void moveSelectedParticle() {
 		Particle p = getSelectedParticle(0);
-		if (p != null && isLookingAtMouse) {
+		if (p != null && isMoveToMouse) {
 			p.setVelocity(0, 0);
 			double newx = p.getX() + (particleTargetXY.getX() - p.getX()) / PARTICLE_BY_MOUSE_MOVING_SMOOTH;
 			double newy = p.getY() + (particleTargetXY.getY() - p.getY()) / PARTICLE_BY_MOUSE_MOVING_SMOOTH;
@@ -212,11 +213,15 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 
 	private void accelerateSelectedParticle() {
 		Particle p = getSelectedParticle(0);
-		if (p != null) {
-			double force = PARTICLE_ACCELERATION_BY_MOUSE * getSelectedParticle(0).getMass();
-			double angle = Math.atan2(particleForceXY.getY(), particleForceXY.getX());
-			p.addFx(force * angle * Math.cos(angle));
-			p.addFy(force * angle * Math.sin(angle));
+		if (p != null && isAccelerateByMouse) {
+			Point2D.Double particleMouseDifferenceXY = new Point2D.Double(
+					particleTargetXY.getX() - getSelectedParticle(0).getX(),
+					particleTargetXY.getY() - getSelectedParticle(0).getY());
+			double force = PARTICLE_ACCELERATION_BY_MOUSE * getSelectedParticle(0).getMass()
+					* Math.pow(particleMouseDifferenceXY.distance(0, 0), 3);
+			double angle = Math.atan2(particleMouseDifferenceXY.getY(), particleMouseDifferenceXY.getX());
+			p.addFx(force * Math.cos(angle));
+			p.addFy(force * Math.sin(angle));
 		}
 
 	}
@@ -331,16 +336,16 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 		ConsoleWindow.println(GUIStrings.EXTERNAL_FORCES + ": " + useExternalForces);
 	}
 
-	public void setParticleForceXY(Point2D.Double particleForceXY) {
-		this.particleForceXY = particleForceXY;
-	}
-
 	public void setParticleTargetXY(Point2D.Double particleTargetXY) {
 		this.particleTargetXY = particleTargetXY;
 	}
+
+	public void setMoveToMouse(boolean b) {
+		this.isMoveToMouse = b;
+	}
 	
-	public void setLookingAtMouse(boolean b) {
-		this.isLookingAtMouse = b;
+	public void setAccelerateByMouse(boolean b) {
+		this.isAccelerateByMouse = b;
 	}
 
 	public double defineCoulombForce(Particle particle1, Particle particle2, double distance) {

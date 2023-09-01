@@ -26,7 +26,7 @@ import simulation.Simulation;
 public class Spring extends ForcePair implements Element, Selectable, Interactable {
 
 	public static double DEFAULT_VISIBLE_WIDTH = 2 * cm;
-	protected double l0 = 0, k = 0, c = 0, uSquared = 0, dx = 0;
+	protected double l0 = 0, k = 0, c = 0, u2 = 0, dx = 0;
 	protected double visibleWidth = DEFAULT_VISIBLE_WIDTH;
 	protected double fn;
 	protected double maxStress = Double.MAX_VALUE;
@@ -34,35 +34,26 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 	protected GapType gapType = GapType.NONE;
 	protected SpringShape shape;
 
-	public enum GapType {
-		NONE, ONE_SIDED, TWO_SIDED
-	};
-
-	public Spring(Particle i, Particle j, double l0, double k, double c) {
+	public Spring(Particle i, Particle j, double l0, double k, double c, double u2) {
 		super(i, j);
 		initSpring(k, l0, c);
+		this.u2 = u2;
 		distance = defineDistance(i, j);
 	}
 
-	public Spring(int i, int j, double l0, double k, double c) {
+	public Spring(int i, int j, double l0, double k, double c, double u2) {
 		super(i, j);
 		initSpring(k, l0, c);
+		this.u2 = u2;
 		distance = defineDistance(i, j);
 	}
 
 	public Spring(Particle i, Particle j, double k, double c) {
-		super(i, j);
-		initSpring(k, defineDistance(i, j), c);
+		this(i, j, defineDistance(i, j), k, c, 0);
 	}
 
 	public Spring(int i, int j, double k, double c) {
-		super(i, j);
-		initSpring(k, defineDistance(i, j), c);
-	}
-
-	public Spring(double k, double c) {
-		super();
-		initSpring(k, c);
+		this(i, j, defineDistance(i, j), k, c, 0);
 	}
 
 	private void initSpring(double k, double l0, double c) {
@@ -78,13 +69,6 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 		checkOverCriticalDamping();
 	}
 
-	private void initSpring(double k, double c) {
-		this.k = k;
-		this.c = c;
-		lastDistance = distance;
-		ConsoleWindow.println(GUIStrings.REFERENCE_SPRING_CREATED);
-	}
-
 	public double getAbsoluteDeformation() {
 		return dx;
 	}
@@ -93,13 +77,14 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 		dx = distance - l0;
 		double fd = defineVelocityProjection() * c;
 		double fs;
-		if (uSquared == 0)
+		if (u2 == 0)
 			fs = -k * dx;
 		else
-			fs = -k * (dx + uSquared * cube(dx));
+			fs = -k * (dx + u2 * cube(dx));
 		force = fs + fd;
 	}
-
+	
+	@Override
 	public void applyForce() {
 		super.applyForce();
 		defineForce();
@@ -153,11 +138,11 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 	}
 
 	public double getHardening() {
-		return sqrt(uSquared);
+		return sqrt(u2);
 	}
 
 	public void setHardening(double u) {
-		this.uSquared = sqr(u);
+		this.u2 = sqr(u);
 		ConsoleWindow.println(GUIStrings.SPRING_HARDENING_COEFFICIENT + " " + u);
 	}
 
@@ -234,14 +219,6 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 			return shape.getColor();
 		else
 			return Colors.SELECTED;
-	}
-
-	public Color getEigeneColor() {
-		return shape.getColor();
-	}
-
-	public void setColor(Color color) {
-		// this.color = color;
 	}
 
 	private void checkOverCriticalDamping() {

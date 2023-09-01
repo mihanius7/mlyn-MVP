@@ -23,8 +23,8 @@ import simulation.components.TimeStepController;
 
 public class ViewportEvent implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
 
+	private static final int MAX_SPRINGS_FOR_LABEL_AFTER_SELECTION = 8;
 	private int x1, y1, radiusX, radiusY, x0, y0;
-	private int differenceX, differenceY;
 	MouseMode mouseMode = MouseMode.PARTICLE_MANIPULATION_ACCELERATION;
 	private Viewport viewport;
 	private MainWindow mainWindow;
@@ -116,7 +116,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 
 	private void labelAttachedSprings(Particle p) {
 		SpringGroup springGroup = Simulation.findAttachedSprings(p);
-		if (springGroup.size() > 1) {
+		if (springGroup.size() > 1 && springGroup.size() < MAX_SPRINGS_FOR_LABEL_AFTER_SELECTION) {
 			for (Spring s1 : springGroup) {
 				s1.getShape().setDrawLabel(true);
 			}
@@ -129,28 +129,10 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 		}
 	}
 
-	public int getMouseX() {
-		return x1;
-	}
-
-	public int getMouseY() {
-		return y1;
-	}
-
-	public int getMouseDx() {
-		return differenceX;
-	}
-
-	public int getMouseDy() {
-		return differenceY;
-	}
-
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
 		x1 = arg0.getX();
 		y1 = arg0.getY();
-		differenceX = x1 - x0;
-		differenceY = y1 - y0;
 		if (mouseMode == MouseMode.PARTICLE_MANIPULATION_COORDINATE && getSelectedParticle(0) != null) {
 			if (!Simulation.getInstance().isActive()) {
 				getSelectedParticle(0).setX(CoordinateConverter.fromScreenX(x1 + radiusX));
@@ -160,12 +142,13 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 			} else {
 				Simulation.interactionProcessor.setParticleTargetXY(new Point2D.Double(
 						CoordinateConverter.fromScreenX(x1 + radiusX), CoordinateConverter.fromScreenY(y1 + radiusY)));
-				Simulation.interactionProcessor.setLookingAtMouse(true);
+				Simulation.interactionProcessor.setMoveToMouse(true);
 			}
 		} else if (mouseMode == MouseMode.PARTICLE_MANIPULATION_ACCELERATION && getSelectedParticle(0) != null
 				&& Simulation.getInstance().isActive()) {
-			Simulation.interactionProcessor.setParticleForceXY(new Point2D.Double(
-					CoordinateConverter.fromScreen(differenceX), CoordinateConverter.fromScreen(-differenceY)));
+			Simulation.interactionProcessor.setAccelerateByMouse(true);
+			Simulation.interactionProcessor.setParticleTargetXY(new Point2D.Double(
+					CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1)));
 		} else if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getReferenceParticle().isVisible()) {
 			Simulation.getReferenceParticle().setX(CoordinateConverter.fromScreenX(x1));
 			Simulation.getReferenceParticle().setY(CoordinateConverter.fromScreenY(y1));
@@ -176,8 +159,9 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		Simulation.interactionProcessor.setLookingAtMouse(false);
-		Simulation.interactionProcessor.setParticleForceXY(new Point2D.Double(0, 0));
+		Simulation.interactionProcessor.setMoveToMouse(false);
+		Simulation.interactionProcessor.setAccelerateByMouse(false);
+		Simulation.interactionProcessor.setParticleTargetXY(new Point2D.Double(0, 0));
 		radiusX = 0;
 		radiusY = 0;
 		if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getReferenceParticle().isVisible()) {

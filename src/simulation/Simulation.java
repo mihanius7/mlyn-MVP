@@ -14,7 +14,6 @@ import evaluation.MyMath;
 import evaluation.interaction.InteractionProcessor;
 import gui.ConsoleWindow;
 import gui.MainWindow;
-import gui.Viewport;
 import gui.lang.GUIStrings;
 import gui.shapes.SpringShape;
 import main.SampleScenes;
@@ -38,7 +37,6 @@ public class Simulation implements Runnable {
 	private static final ArrayList<OneTimePerStepProcessable> oneTimePerStepProcessables = new ArrayList<OneTimePerStepProcessable>();
 
 	private static Particle referenceParticle;
-	private static Spring referenceSpring;
 
 	public static InteractionProcessor interactionProcessor;
 	public static final TimeStepController timeStepController = new TimeStepController();
@@ -55,7 +53,7 @@ public class Simulation implements Runnable {
 		interactionProcessor = new InteractionProcessor(content);
 		oneTimePerStepProcessables.add(timeStepController);
 		oneTimePerStepProcessables.add(interactionProcessor);
-		referenceSpring = new Spring(1, 0);
+
 		referenceParticle = new Particle(0, 0, 1 * kg, 6 * cm);
 		referenceParticle.setVisible(false);
 
@@ -107,7 +105,7 @@ public class Simulation implements Runnable {
 	}
 
 	public static void perfomSimulation(double simulationTime) {
-
+		
 	}
 
 	private static void waitForStepComplete() {
@@ -281,10 +279,6 @@ public class Simulation implements Runnable {
 			return p1;
 		else
 			return p2;
-	}
-
-	public static Spring getReferenceSpring() {
-		return referenceSpring;
 	}
 
 	public static int getIndex(Particle p) {
