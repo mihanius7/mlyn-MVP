@@ -1,5 +1,5 @@
 package gui.lang;
 
 public enum Language {
-	ENGLISH, BELARUSSIAN, RUSSIAN, POLISH
+	BELARUSSIAN, POLISH, RUSSIAN, ENGLISH 
 }
