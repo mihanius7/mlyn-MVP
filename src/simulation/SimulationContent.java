@@ -1,8 +1,8 @@
 package simulation;
 
+import elements.Boundaries;
 import elements.groups.ParticleGroup;
 import elements.groups.SpringGroup;
-import simulation.components.Boundaries;
 
 public class SimulationContent implements Cloneable {
 	

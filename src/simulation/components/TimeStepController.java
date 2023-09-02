@@ -7,7 +7,7 @@ import gui.Viewport;
 import gui.lang.GUIStrings;
 import simulation.Simulation;
 
-public class TimeStepController implements OneTimePerStepProcessable {
+public class TimeStepController implements SimulationComponent {
 	private double dt, targetdt, timeScale = 1, lastTimeMillis, measuredTimeScale;
 	public static final double INITIAL_STEP_SIZE = 1e-20;
 	public static final double TIME_STEP_ALARM_DECREMENT = 0.75;

@@ -1,4 +1,4 @@
-package simulation.components;
+package elements;
 
 import static constants.PhysicalConstants.cm;
 import static constants.PhysicalConstants.m;
@@ -6,8 +6,10 @@ import static java.lang.Math.abs;
 import static simulation.Simulation.getParticle;
 import static simulation.Simulation.getParticlesCount;
 
+import elements.point_mass.Particle;
 import gui.ConsoleWindow;
 import gui.lang.GUIStrings;
+import simulation.Simulation;
 
 public class Boundaries implements Cloneable {
 	private static final double INITIAL_BOTTOM_BORDER = 0 * m;
@@ -161,5 +163,35 @@ public class Boundaries implements Cloneable {
 
 	public double getEffectiveCenterY() {
 		return bottomEffective + 0.5 * getEffectiveHeight();
+	}
+
+
+	public void applyBoundaryConditions(Particle p) {
+
+		Boundaries b = Simulation.getContent().getBoundaries();
+
+		if (b.isUseRight() && p.getX() + p.getRadius() > b.getRight()) {
+			p.getVelocityVector().multiplyX(-p.getElasticity());
+			p.setX(b.getRight() - p.getRadius());
+			p.getVelocityVector().multiplyY(0.95);
+		} else if (b.isUseLeft() && p.getX() - p.getRadius() < b.getLeft()) {
+			p.getVelocityVector().multiplyX(-p.getElasticity());
+			p.setX(b.getLeft() + p.getRadius());
+			p.getVelocityVector().multiplyY(0.95);
+		}
+
+		if (b.isUseBottom() && b.getBottom() > p.getY() - p.getRadius()) {
+			double newvy = -p.getVelocityVector().Y() * p.getElasticity();
+			if (p.getVelocityVector().Y() < -1E-6)
+				p.setVy(newvy);
+			else
+				p.setVy(0);
+			p.setY(b.getBottom() + p.getRadius());
+			p.getVelocityVector().multiplyX(0.95);
+		} else if (b.isUseUpper() && p.getY() + p.getRadius() > b.getUpper()) {
+			p.getVelocityVector().multiplyY(-p.getElasticity());
+			p.setY(b.getUpper() - p.getRadius());
+			p.getVelocityVector().multiplyX(0.95);
+		}
 	}
 }

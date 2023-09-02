@@ -7,6 +7,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
+import elements.Boundaries;
 import elements.force_pair.Spring;
 import elements.point_mass.Particle;
 import gui.ConsoleWindow;
@@ -15,7 +16,6 @@ import gui.Viewport;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;
-import simulation.components.Boundaries;
 
 public class ElementHandler implements ContentHandler {
 
@@ -62,7 +62,7 @@ public class ElementHandler implements ContentHandler {
 			colorString = attrs.getValue("color");
 			if (colorString != null) {
 				colorIndex = Integer.parseInt(colorString);
-				p.setColor(new Color(colorIndex));
+				p.getShape().setColor(new Color(colorIndex));
 			}
 		} else if (qName.equalsIgnoreCase("spring")) {
 			String str;

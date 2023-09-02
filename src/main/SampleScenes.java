@@ -9,13 +9,13 @@ import static simulation.Simulation.timeStepController;
 
 import java.awt.Color;
 
+import elements.Boundaries;
 import elements.point_mass.Particle;
 import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;
-import simulation.components.Boundaries;
 import simulation.components.TimeStepController.TimeStepMode;
 
 public class SampleScenes {

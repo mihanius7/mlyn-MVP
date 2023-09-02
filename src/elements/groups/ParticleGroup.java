@@ -69,11 +69,11 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 	public void colorizeByCharge() {
 		for (Particle p : this)
 			if (p.getCharge() > 0)
-				p.setColor(Color.RED);
+				p.getShape().setColor(Color.RED);
 			else if (p.getCharge() < 0)
-				p.setColor(Color.BLUE);
+				p.getShape().setColor(Color.BLUE);
 			else if (p.getCharge() == 0)
-				p.setColor(ParticleShape.PARTICLE_DEFAULT);
+				p.getShape().setColor(ParticleShape.PARTICLE_DEFAULT);
 		ConsoleWindow.println(GUIStrings.PARTICLE_COLOURS_CORRESPONDS_TO_CHARGE);
 	}
 
@@ -122,7 +122,7 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 			r = (int) Math.round(255 * Math.random());
 			g = (int) Math.round(255 * Math.random());
 			b = (int) Math.round(255 * Math.random());
-			p.setColor(new java.awt.Color(r, g, b));
+			p.getShape().setColor(new java.awt.Color(r, g, b));
 		}
 	}
 

@@ -1,4 +1,4 @@
-package evaluation.interaction;
+package simulation.components;
 
 import static constants.PhysicalConstants.G;
 import static constants.PhysicalConstants.ang;
@@ -20,19 +20,20 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import elements.Boundaries;
 import elements.force_pair.ForceElement;
 import elements.force_pair.NeighborPair;
 import elements.force_pair.Spring;
 import elements.groups.ParticleGroup;
 import elements.groups.SpringGroup;
 import elements.point_mass.Particle;
+import evaluation.TabulatedFunction;
 import gui.ConsoleWindow;
-import gui.CoordinateConverter;
 import gui.lang.GUIStrings;
+import simulation.Simulation;
 import simulation.SimulationContent;
-import simulation.components.OneTimePerStepProcessable;
 
-public class InteractionProcessor implements OneTimePerStepProcessable {
+public class InteractionProcessor implements SimulationComponent {
 
 	public static final int DEFAULT_NEIGHBOR_SEARCH_PERIOD = 25;
 	private static final int PARTICLE_BY_MOUSE_MOVING_SMOOTH = 500;
@@ -240,8 +241,10 @@ public class InteractionProcessor implements OneTimePerStepProcessable {
 			p.move(dt);
 			if (currentStep == 0)
 				p.clearForce();
-			if (useBoundaries)
-				p.applyBoundaryConditions();
+			if (useBoundaries) {
+				Boundaries b = Simulation.getContent().getBoundaries();
+				b.applyBoundaryConditions(p);
+			}
 		}
 		moveSelectedParticle();
 		maxParticleSquaredVelocity = maxVel;

@@ -9,7 +9,6 @@ import static java.lang.Math.PI;
 import static java.lang.Math.sqrt;
 import static simulation.Simulation.interactionProcessor;
 
-import java.awt.Color;
 import java.awt.geom.Point2D;
 
 import constants.PhysicalConstants;
@@ -17,7 +16,6 @@ import elements.Element;
 import elements.Interactable;
 import elements.Selectable;
 import elements.point_mass.Particle;
-import gui.Colors;
 import gui.ConsoleWindow;
 import gui.lang.GUIStrings;
 import gui.shapes.SpringShape;
@@ -29,7 +27,7 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 	protected double l0 = 0, k = 0, c = 0, u2 = 0, dx = 0;
 	protected double visibleWidth = DEFAULT_VISIBLE_WIDTH;
 	protected double fn;
-	protected double maxStress = Double.MAX_VALUE;
+	protected double breakUpTension = Double.MAX_VALUE;
 	protected boolean visible = true, isSelected = false, isLine = true, canCollide = false;
 	protected GapType gapType = GapType.NONE;
 	protected SpringShape shape;
@@ -83,14 +81,14 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 			fs = -k * (dx + u2 * cube(dx));
 		force = fs + fd;
 	}
-	
+
 	@Override
 	public void applyForce() {
 		super.applyForce();
 		defineForce();
 		interactionProcessor.applyForceParallelToDistance(p1, p2, force, distance);
 		interactionProcessor.tryToSetMaxSpringForce(force);
-		if (force >= maxStress)
+		if (force >= breakUpTension)
 			Simulation.removeSpringSafety(this);
 	}
 
@@ -147,11 +145,11 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 	}
 
 	public double getMaxStress() {
-		return maxStress;
+		return breakUpTension;
 	}
 
 	public void setMaxStress(double maxStress) {
-		this.maxStress = maxStress;
+		this.breakUpTension = maxStress;
 	}
 
 	public double refreshResonantFrequency() {
@@ -212,13 +210,6 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 
 	public void setVisibleWidth(double visibleWidth) {
 		this.visibleWidth = visibleWidth;
-	}
-
-	public Color getColor() {
-		if (!isSelected)
-			return shape.getColor();
-		else
-			return Colors.SELECTED;
 	}
 
 	private void checkOverCriticalDamping() {
