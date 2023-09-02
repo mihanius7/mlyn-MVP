@@ -11,13 +11,13 @@ import elements.groups.ParticleGroup;
 import elements.groups.SpringGroup;
 import elements.point_mass.Particle;
 import evaluation.MyMath;
-import evaluation.interaction.InteractionProcessor;
 import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.lang.GUIStrings;
 import gui.shapes.SpringShape;
 import main.SampleScenes;
-import simulation.components.OneTimePerStepProcessable;
+import simulation.components.InteractionProcessor;
+import simulation.components.SimulationComponent;
 import simulation.components.TimeStepController;
 
 public class Simulation implements Runnable {
@@ -34,7 +34,7 @@ public class Simulation implements Runnable {
 	private static final SpringGroup sForRemove = new SpringGroup();
 	private static final SpringGroup sForAdd = new SpringGroup();
 
-	private static final ArrayList<OneTimePerStepProcessable> oneTimePerStepProcessables = new ArrayList<OneTimePerStepProcessable>();
+	private static final ArrayList<SimulationComponent> simulationComponents = new ArrayList<SimulationComponent>();
 
 	private static Particle referenceParticle;
 
@@ -51,8 +51,8 @@ public class Simulation implements Runnable {
 
 		instance = this;
 		interactionProcessor = new InteractionProcessor(content);
-		oneTimePerStepProcessables.add(timeStepController);
-		oneTimePerStepProcessables.add(interactionProcessor);
+		simulationComponents.add(timeStepController);
+		simulationComponents.add(interactionProcessor);
 
 		referenceParticle = new Particle(0, 0, 1 * kg, 6 * cm);
 		referenceParticle.setVisible(false);
@@ -89,23 +89,27 @@ public class Simulation implements Runnable {
 
 	private static void perfomStep() {
 		time += timeStepController.getTimeStepSize();
-		for (OneTimePerStepProcessable esp : oneTimePerStepProcessables)
+		for (SimulationComponent esp : simulationComponents)
 			esp.process();
 	}
 
-	public static void perfomStep(int stepNumber) {
-		long t = System.nanoTime();
-		ConsoleWindow.println(GUIStrings.TIMESTEP + " " + timeStepController.getTimeStepSize() + " c");
+	public static long perfomStep(int stepNumber) {
+		long t1 = System.nanoTime();
+		int n1 = interactionProcessor.getNeighborSearchsNumber();
+		ConsoleWindow.println(GUIStrings.TIMESTEP + " " + timeStepController.getTimeStepSize() + " s");
 		for (int i = 1; i < stepNumber; i++)
 			perfomStep();
+		long t2 = System.nanoTime();
+		int n2 = interactionProcessor.getNeighborSearchsNumber();
 		ConsoleWindow.println("Done " + stepNumber + " steps");
-		ConsoleWindow.println("	elapsed: " + (System.nanoTime() - t) / 1E6 + " ms");
-		ConsoleWindow.println("	neighbor searches: " + interactionProcessor.getNeighborSearchsNumber());
+		ConsoleWindow.println("	elapsed: " + (t2 - t1) / 1E6 + " ms");
+		ConsoleWindow.println("	neighbor searches: " + (n2 - n1));
 		ConsoleWindow.println(GUIStrings.TIMESTEP + " " + timeStepController.getTimeStepSize() + " s");
+		return t2 - t1;
 	}
 
 	public static void perfomSimulation(double simulationTime) {
-		
+
 	}
 
 	private static void waitForStepComplete() {
@@ -170,14 +174,14 @@ public class Simulation implements Runnable {
 		ConsoleWindow.println(GUIStrings.SPRINGS_ADDED);
 	}
 
-	public static synchronized void addToSimulation(OneTimePerStepProcessable arg) {
+	public static synchronized void addToSimulation(SimulationComponent arg) {
 		boolean wasActive = false;
 		if (isRunning) {
 			stopSimulationAndWait();
 			wasActive = true;
 		}
-		oneTimePerStepProcessables.add((OneTimePerStepProcessable) arg);
-		ConsoleWindow.println(GUIStrings.TO_SIMULATION_ADDED +" " + arg.getClass().getSimpleName());
+		simulationComponents.add((SimulationComponent) arg);
+		ConsoleWindow.println(GUIStrings.TO_SIMULATION_ADDED + " " + arg.getClass().getSimpleName());
 		if (wasActive)
 			MainWindow.getInstance().startSimulationThread();
 	}
@@ -350,9 +354,9 @@ public class Simulation implements Runnable {
 		stepEvaluationTime = 1;
 		content.springs.clear();
 		content.particles.clear();
-		oneTimePerStepProcessables.clear();
-		oneTimePerStepProcessables.add(timeStepController);
-		oneTimePerStepProcessables.add(interactionProcessor);
+		simulationComponents.clear();
+		simulationComponents.add(timeStepController);
+		simulationComponents.add(interactionProcessor);
 		ConsoleWindow.println(GUIStrings.CLEARED);
 		interactionProcessor.reset();
 		timeStepController.resetTimeStep();

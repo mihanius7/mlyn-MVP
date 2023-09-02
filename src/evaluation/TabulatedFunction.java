@@ -1,4 +1,4 @@
-package evaluation.interaction;
+package evaluation;
 
 import gui.ConsoleWindow;
 

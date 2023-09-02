@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import constants.PhysicalConstants;
+import elements.Boundaries;
 import elements.Element;
 import elements.force_pair.Spring;
 import elements.groups.ParticleGroup;
@@ -31,7 +32,6 @@ import evaluation.Vector;
 import gui.lang.GUIStrings;
 import gui.shapes.SpringShape;
 import simulation.Simulation;
-import simulation.components.Boundaries;
 
 public class Viewport extends JPanel implements ActionListener, Runnable {
 

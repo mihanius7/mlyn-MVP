@@ -1,9 +1,9 @@
 package elements;
 
 import elements.point_mass.Particle;
-import simulation.components.OneTimePerStepProcessable;
+import simulation.components.SimulationComponent;
 
-public class StaticForce implements OneTimePerStepProcessable {
+public class StaticForce implements SimulationComponent {
 	private Particle p;
 	private double fx, fy;
 

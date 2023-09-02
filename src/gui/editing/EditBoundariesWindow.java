@@ -3,7 +3,6 @@ package gui.editing;
 import gui.Viewport;
 import gui.lang.GUIStrings;
 import simulation.Simulation;
-import simulation.components.Boundaries;
 
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -19,6 +18,8 @@ import javax.swing.JTextField;
 
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
+
+import elements.Boundaries;
 
 public class EditBoundariesWindow extends AbstractEditWindow implements ActionListener {
 
