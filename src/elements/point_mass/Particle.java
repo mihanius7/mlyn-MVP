@@ -6,27 +6,23 @@ import elements.Interactable;
 import elements.Selectable;
 import evaluation.MyMath;
 import evaluation.Vector;
-import gui.Colors;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;
-import simulation.components.Boundaries;
 
 public class Particle extends PointMass implements Cloneable, Selectable, Interactable {
 
+	public static final double PARTICLE_ELASTICITY_DEFAULT = 0.99;
 	protected double r, q;
 	protected Vector force = new Vector();
 	protected Vector lastForce = new Vector();
 	protected boolean visible = true, canCollide = true, isSelected = false;
-	protected double frictionForce = 0, stictionForce = 0;
-	protected double elasticity = 0.995;
-	
+	protected double frictionForce, stictionForce;
+	protected double elasticity = PARTICLE_ELASTICITY_DEFAULT;	
 	protected ParticleShape shape;
 
 	public Particle(double x, double y, double m, double q, double vx, double vy, double radius, Color c) {
-		this.x = x;
-		this.y = y;
+		super(x, y, m);
 		this.q = q;
-		this.m = m;
 		velocity.setX(vx);
 		velocity.setY(vy);
 		this.r = radius;
@@ -47,7 +43,7 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 
 	public Particle(double x, double y, Particle referenceParticle) {
 		this(x, y, referenceParticle.getMass(), referenceParticle.getCharge(), referenceParticle.getVx(),
-				referenceParticle.getVy(), referenceParticle.getRadius(), referenceParticle.getColor());
+				referenceParticle.getVy(), referenceParticle.getRadius(), referenceParticle.getShape().getColor());
 		this.movableX = (referenceParticle.isMovableX() == true) ? 1 : 0;
 		this.movableY = (referenceParticle.isMovableY() == true) ? 1 : 0;
 		this.elasticity = referenceParticle.getElasticity();
@@ -97,35 +93,6 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 	public void clearForcesAndHistory() {
 		lastForce.setXY(0, 0);
 		force.setXY(0, 0);
-	}
-
-	public void applyBoundaryConditions() {
-
-		Boundaries b = Simulation.getContent().getBoundaries();
-
-		if (b.isUseRight() && x + r > b.getRight()) {
-			velocity.multiplyX(-elasticity);
-			setX(b.getRight() - r);
-			velocity.multiplyY(0.95);
-		} else if (b.isUseLeft() && x - r < b.getLeft()) {
-			velocity.multiplyX(-elasticity);
-			setX(b.getLeft() + r);
-			velocity.multiplyY(0.95);
-		}
-
-		if (b.isUseBottom() && b.getBottom() > y - r) {
-			double newvy = -velocity.Y() * elasticity;
-			if (velocity.Y() < -1E-6)
-				setVy(newvy);
-			else
-				setVy(0);
-			setY(b.getBottom() + r);
-			velocity.multiplyX(0.95);
-		} else if (b.isUseUpper() && y + r > b.getUpper()) {
-			velocity.multiplyY(-elasticity);
-			setY(b.getUpper() - r);
-			velocity.multiplyX(0.95);
-		}
 	}
 
 	public double getCharge() {
@@ -191,26 +158,6 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 
 	public boolean isStictionReached() {
 		return lastForce.normSquared() > stictionForce * stictionForce;
-	}
-
-	public Color getColor() {
-		if (!isSelected)
-			return shape.getColor();
-		else
-			return Colors.SELECTED;
-	}
-
-	public Color getEigeneColor() {
-		return shape.getColor();
-	}
-
-	public void setColor(Color newColor) {
-		//oldColor = color;
-		shape.setColor(newColor);
-	}
-
-	public void setOldColor() {
-		//color = oldColor;
 	}
 
 	public void snapToGrid(double gridSize) {

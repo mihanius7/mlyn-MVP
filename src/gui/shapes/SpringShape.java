@@ -14,11 +14,16 @@ import gui.CoordinateConverter;
 import gui.Viewport;
 
 public class SpringShape extends AbstractShape {
+	
 	private Spring s;
-	private boolean drawLabel;
-	public static float fontSize = 14;
+	
 	public static final Color SPRING_DEFAULT = new Color(80, 80, 80);
 	public static final Color SPRING_OFF = new Color(230, 200, 200);
+	public static final Color SPRING_SELECTED = Color.YELLOW;
+	
+	private boolean drawLabel;
+	
+	public static float fontSize = 14;
 	public static final float SPRING_ZIGZAG_AMPLITUDE = 0.06f;
 	private static final double SPRING_ZIGZAG_PERIOD = 4 * cm;
 
@@ -36,7 +41,7 @@ public class SpringShape extends AbstractShape {
 		int y1 = CoordinateConverter.toScreenY(p1.getY());
 		int x2 = CoordinateConverter.toScreenX(p2.getX());
 		int y2 = CoordinateConverter.toScreenY(p2.getY());
-		targetG2d.setColor(s.getColor());
+		targetG2d.setColor(s.isSelected()? SPRING_SELECTED : color);
 		targetG2d.setStroke(new BasicStroke((float) (viewport.getScale() * s.getVisibleWidth()), BasicStroke.CAP_ROUND,
 				BasicStroke.JOIN_BEVEL));
 		if (s.isLine())
