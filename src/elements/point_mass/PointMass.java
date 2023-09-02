@@ -8,16 +8,17 @@ import simulation.Simulation;
 
 public class PointMass implements Element, Cloneable  {
 
-	protected double m = 1;
-	protected double x = 0, y = 0, lastx, lasty;
+	protected double m;
+	protected double x, y, lastx, lasty;
 	protected double oldVelocitySmoothed;
 	protected Vector velocity = new Vector();
 	protected Vector lastVelocity = new Vector();
-	protected int movableX, movableY;
+	protected int movableX = 1, movableY = 1;
 
-	public PointMass() {
-		movableX = 1;
-		movableY = 1;
+	public PointMass(double x, double y, double m) {
+		this.x = x;
+		this.y = y;
+		this.setMass(m);
 	}
 
 	public double getMass() {
@@ -27,6 +28,8 @@ public class PointMass implements Element, Cloneable  {
 	public void setMass(double newMass) {
 		if (newMass > 0)
 			m = newMass;
+		else
+			throw new RuntimeException("Can't set particle mass to zero. ");
 	}
 
 	public double getX() {
