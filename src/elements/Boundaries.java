@@ -3,9 +3,6 @@ package elements;
 import static constants.PhysicalConstants.cm;
 import static constants.PhysicalConstants.m;
 import static java.lang.Math.abs;
-import static simulation.Simulation.getParticle;
-import static simulation.Simulation.getParticlesCount;
-
 import elements.point_mass.Particle;
 import gui.ConsoleWindow;
 import gui.lang.GUIStrings;
@@ -126,15 +123,15 @@ public class Boundaries implements Cloneable {
 		bottomEffective = Double.MAX_VALUE;
 		rightEffective = Double.MIN_VALUE;
 		upperEffective = Double.MIN_VALUE;
-		for (int i = 0; i < getParticlesCount(); i++) {
-			if (getParticle(i).getX() - getParticle(i).getRadius() < leftEffective)
-				leftEffective = getParticle(i).getX() - getParticle(i).getRadius();
-			if (getParticle(i).getX() + getParticle(i).getRadius() > rightEffective)
-				rightEffective = getParticle(i).getX() + getParticle(i).getRadius();
-			if (getParticle(i).getY() - getParticle(i).getRadius() < bottomEffective)
-				bottomEffective = getParticle(i).getY() - getParticle(i).getRadius();
-			if (getParticle(i).getY() + getParticle(i).getRadius() > upperEffective)
-				upperEffective = getParticle(i).getY() + getParticle(i).getRadius();
+		for (int i = 0; i < Simulation.getInstance().getContent().getParticlesCount(); i++) {
+			if (Simulation.getInstance().getContent().getParticle(i).getX() - Simulation.getInstance().getContent().getParticle(i).getRadius() < leftEffective)
+				leftEffective = Simulation.getInstance().getContent().getParticle(i).getX() - Simulation.getInstance().getContent().getParticle(i).getRadius();
+			if (Simulation.getInstance().getContent().getParticle(i).getX() + Simulation.getInstance().getContent().getParticle(i).getRadius() > rightEffective)
+				rightEffective = Simulation.getInstance().getContent().getParticle(i).getX() + Simulation.getInstance().getContent().getParticle(i).getRadius();
+			if (Simulation.getInstance().getContent().getParticle(i).getY() - Simulation.getInstance().getContent().getParticle(i).getRadius() < bottomEffective)
+				bottomEffective = Simulation.getInstance().getContent().getParticle(i).getY() - Simulation.getInstance().getContent().getParticle(i).getRadius();
+			if (Simulation.getInstance().getContent().getParticle(i).getY() + Simulation.getInstance().getContent().getParticle(i).getRadius() > upperEffective)
+				upperEffective = Simulation.getInstance().getContent().getParticle(i).getY() + Simulation.getInstance().getContent().getParticle(i).getRadius();
 		}
 	}
 
@@ -168,7 +165,7 @@ public class Boundaries implements Cloneable {
 
 	public void applyBoundaryConditions(Particle p) {
 
-		Boundaries b = Simulation.getContent().getBoundaries();
+		Boundaries b = Simulation.getInstance().getContent().getBoundaries();
 
 		if (b.isUseRight() && p.getX() + p.getRadius() > b.getRight()) {
 			p.getVelocityVector().multiplyX(-p.getElasticity());

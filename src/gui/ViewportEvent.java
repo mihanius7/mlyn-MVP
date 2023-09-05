@@ -1,11 +1,5 @@
 package gui;
 
-import static simulation.Simulation.addToSelection;
-import static simulation.Simulation.addToSimulation;
-import static simulation.Simulation.getSelectedParticle;
-import static simulation.Simulation.getSelectedParticles;
-import static simulation.Simulation.removeFromSelection;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -61,51 +55,53 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 		Spring s = null;
 		deselectAttachedSprings();
 		if (mouseMode == MouseMode.PARTICLE_ADD) {
-			p = Simulation.findNearestParticle(CoordinateConverter.fromScreenX(x0), CoordinateConverter.fromScreenY(y0),
+			p = Simulation.getInstance().findNearestParticle(CoordinateConverter.fromScreenX(x0), CoordinateConverter.fromScreenY(y0),
 					CoordinateConverter.fromScreen(10));
 			if (p == null) {
-				Simulation.getReferenceParticle().setX(CoordinateConverter.fromScreenX(x0));
-				Simulation.getReferenceParticle().setY(CoordinateConverter.fromScreenY(y0));
+				Simulation.getInstance().getContent().getReferenceParticle().setX(CoordinateConverter.fromScreenX(x0));
+				Simulation.getInstance().getContent().getReferenceParticle().setY(CoordinateConverter.fromScreenY(y0));
+				Simulation.getInstance();
 				if (viewport.useGrid && !Simulation.getInstance().isActive())
-					Simulation.getReferenceParticle().snapToGrid(viewport.getGridSize());
-				Simulation.getReferenceParticle().setVisible(true);
+					Simulation.getInstance().getContent().getReferenceParticle().snapToGrid(viewport.getGridSize());
+				Simulation.getInstance().getContent().getReferenceParticle().setVisible(true);
 				mainWindow.clearSelection();
 			}
 		} else if (mouseMode == MouseMode.PARTICLE_SELECT) {
-			p = Simulation.findNearestParticle(CoordinateConverter.fromScreenX(x0), CoordinateConverter.fromScreenY(y0),
+			p = Simulation.getInstance().findNearestParticle(CoordinateConverter.fromScreenX(x0), CoordinateConverter.fromScreenY(y0),
 					CoordinateConverter.fromScreen(10));
 			if (!arg0.isControlDown()) {
 				mainWindow.clearSelection();
 			}
 			if (p != null) {
 				if (!p.isSelected()) {
-					addToSelection(p);
+					Simulation.getInstance().getContent().select(p);
 					mainWindow.setFocusTo(p);
+					labelAttachedSprings(p);
 				} else
-					removeFromSelection(p);
+					Simulation.getInstance().getContent().deselect(p);
 			} else {
 				viewport.setCrossX(CoordinateConverter.fromScreenX(x0));
 				viewport.setCrossY(CoordinateConverter.fromScreenY(y0));
 			}
 		} else if (mouseMode == MouseMode.SPRING_SELECT) {
-			s = Simulation.findNearestSpring(CoordinateConverter.fromScreenX(x0), CoordinateConverter.fromScreenY(y0),
+			s = Simulation.getInstance().findNearestSpring(CoordinateConverter.fromScreenX(x0), CoordinateConverter.fromScreenY(y0),
 					CoordinateConverter.fromScreen(5));
 			if (!arg0.isControlDown()) {
 				mainWindow.clearSelection();
 			}
 			if (s != null) {
 				if (!s.isSelected()) {
-					addToSelection(s);
+					Simulation.getInstance().getContent().select(s);
 					mainWindow.setFocusTo(s);
 				} else
-					removeFromSelection(s);
+					Simulation.getInstance().getContent().deselect(s);
 			}
 		} else if (mouseMode == MouseMode.PARTICLE_MANIPULATION_ACCELERATION
 				|| mouseMode == MouseMode.PARTICLE_MANIPULATION_COORDINATE || mouseMode == MouseMode.SPRING_ADD) {
-			p = Simulation.findNearestParticle(CoordinateConverter.fromScreenX(x0), CoordinateConverter.fromScreenY(y0),
+			p = Simulation.getInstance().findNearestParticle(CoordinateConverter.fromScreenX(x0), CoordinateConverter.fromScreenY(y0),
 					CoordinateConverter.fromScreen(10));
 			if (p != null) {
-				addToSelection(p);
+				Simulation.getInstance().getContent().select(p);
 				mainWindow.setFocusTo(p);
 				radiusX = CoordinateConverter.toScreenX(p.getX()) - x0;
 				radiusY = CoordinateConverter.toScreenY(p.getY()) - y0;
@@ -115,7 +111,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 	}
 
 	private void labelAttachedSprings(Particle p) {
-		SpringGroup springGroup = Simulation.findAttachedSprings(p);
+		SpringGroup springGroup = Simulation.getInstance().findAttachedSprings(p);
 		if (springGroup.size() > 1 && springGroup.size() < MAX_SPRINGS_FOR_LABEL_AFTER_SELECTION) {
 			for (Spring s1 : springGroup) {
 				s1.getShape().setDrawLabel(true);
@@ -124,7 +120,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 	}
 
 	private void deselectAttachedSprings() {
-		for (Spring s1 : Simulation.getSprings()) {
+		for (Spring s1 : Simulation.getInstance().getContent().getSprings()) {
 			s1.getShape().setDrawLabel(false);
 		}
 	}
@@ -133,62 +129,67 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 	public void mouseDragged(MouseEvent arg0) {
 		x1 = arg0.getX();
 		y1 = arg0.getY();
-		if (mouseMode == MouseMode.PARTICLE_MANIPULATION_COORDINATE && getSelectedParticle(0) != null) {
+		if (mouseMode == MouseMode.PARTICLE_MANIPULATION_COORDINATE && Simulation.getInstance().getContent().getSelectedParticle(0) != null) {
+			Simulation.getInstance();
 			if (!Simulation.getInstance().isActive()) {
-				getSelectedParticle(0).setX(CoordinateConverter.fromScreenX(x1 + radiusX));
-				getSelectedParticle(0).setY(CoordinateConverter.fromScreenY(y1 + radiusY));
+				Simulation.getInstance().getContent().getSelectedParticle(0).setX(CoordinateConverter.fromScreenX(x1 + radiusX));
+				Simulation.getInstance().getContent().getSelectedParticle(0).setY(CoordinateConverter.fromScreenY(y1 + radiusY));
 				if (viewport.useGrid)
-					getSelectedParticle(0).snapToGrid(viewport.getGridSize());
+					Simulation.getInstance().getContent().getSelectedParticle(0).snapToGrid(viewport.getGridSize());
 			} else {
-				Simulation.interactionProcessor.setParticleTargetXY(new Point2D.Double(
+				Simulation.getInstance().interactionProcessor.setParticleTargetXY(new Point2D.Double(
 						CoordinateConverter.fromScreenX(x1 + radiusX), CoordinateConverter.fromScreenY(y1 + radiusY)));
-				Simulation.interactionProcessor.setMoveToMouse(true);
+				Simulation.getInstance().interactionProcessor.setMoveToMouse(true);
 			}
-		} else if (mouseMode == MouseMode.PARTICLE_MANIPULATION_ACCELERATION && getSelectedParticle(0) != null
-				&& Simulation.getInstance().isActive()) {
-			Simulation.interactionProcessor.setAccelerateByMouse(true);
-			Simulation.interactionProcessor.setParticleTargetXY(new Point2D.Double(
-					CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1)));
-		} else if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getReferenceParticle().isVisible()) {
-			Simulation.getReferenceParticle().setX(CoordinateConverter.fromScreenX(x1));
-			Simulation.getReferenceParticle().setY(CoordinateConverter.fromScreenY(y1));
-			if (viewport.useGrid && !Simulation.getInstance().isActive())
-				Simulation.getReferenceParticle().snapToGrid(viewport.getGridSize());
+		} else {
+			Simulation.getInstance();
+			if (mouseMode == MouseMode.PARTICLE_MANIPULATION_ACCELERATION && Simulation.getInstance().getContent().getSelectedParticle(0) != null
+					&& Simulation.getInstance().isActive()) {
+				Simulation.getInstance().interactionProcessor.setAccelerateByMouse(true);
+				Simulation.getInstance().interactionProcessor.setParticleTargetXY(new Point2D.Double(
+						CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1)));
+			} else if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getInstance().getContent().getReferenceParticle().isVisible()) {
+				Simulation.getInstance().getContent().getReferenceParticle().setX(CoordinateConverter.fromScreenX(x1));
+				Simulation.getInstance().getContent().getReferenceParticle().setY(CoordinateConverter.fromScreenY(y1));
+				Simulation.getInstance();
+				if (viewport.useGrid && !Simulation.getInstance().isActive())
+					Simulation.getInstance().getContent().getReferenceParticle().snapToGrid(viewport.getGridSize());
+			}
 		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		Simulation.interactionProcessor.setMoveToMouse(false);
-		Simulation.interactionProcessor.setAccelerateByMouse(false);
-		Simulation.interactionProcessor.setParticleTargetXY(new Point2D.Double(0, 0));
+		Simulation.getInstance().interactionProcessor.setMoveToMouse(false);
+		Simulation.getInstance().interactionProcessor.setAccelerateByMouse(false);
+		Simulation.getInstance().interactionProcessor.setParticleTargetXY(new Point2D.Double(0, 0));
 		radiusX = 0;
 		radiusY = 0;
-		if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getReferenceParticle().isVisible()) {
-			Simulation.getReferenceParticle().setVisible(false);
-			Particle refP = Simulation.getReferenceParticle();
+		if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getInstance().getContent().getReferenceParticle().isVisible()) {
+			Simulation.getInstance().getContent().getReferenceParticle().setVisible(false);
+			Particle refP = Simulation.getInstance().getContent().getReferenceParticle();
 			Particle newP = new Particle(refP.getX(), refP.getY(), refP);
-			addToSimulation(newP);
-			addToSelection(newP);
+			Simulation.getInstance().addToSimulation(newP);
+			Simulation.getInstance().getContent().select(newP);
 			mainWindow.setFocusTo(newP);
-		} else if (mouseMode == MouseMode.SPRING_ADD && getSelectedParticles().size() > 0) {
-			Particle p = Simulation.findNearestParticle(CoordinateConverter.fromScreenX(x1),
+		} else if (mouseMode == MouseMode.SPRING_ADD && Simulation.getInstance().getContent().getSelectedParticles().size() > 0) {
+			Particle p = Simulation.getInstance().findNearestParticle(CoordinateConverter.fromScreenX(x1),
 					CoordinateConverter.fromScreenY(y1), CoordinateConverter.fromScreen(10));
 			if (p == null) {
 				Particle p2 = new Particle(CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1), 0,
-						0, Simulation.getReferenceParticle().getMass(), Simulation.getReferenceParticle().getRadius());
-				addToSimulation(p2);
+						0, Simulation.getInstance().getContent().getReferenceParticle().getMass(), Simulation.getInstance().getContent().getReferenceParticle().getRadius());
+				Simulation.getInstance().addToSimulation(p2);
 				p2.setX(CoordinateConverter.fromScreenX(x1));
 				p2.setY(CoordinateConverter.fromScreenY(y1));
 				if (viewport.useGrid)
 					p2.snapToGrid(viewport.getGridSize());
 				p = p2;
 			}
-			if (getSelectedParticle(0) != p) {
-				Spring s = new Spring(getSelectedParticle(0), p, 5E4, 0);
+			if (Simulation.getInstance().getContent().getSelectedParticle(0) != p) {
+				Spring s = new Spring(Simulation.getInstance().getContent().getSelectedParticle(0), p, 5E4, 0);
 				s.setDampingRatio(0.15d);
 				s.setResonantFrequency(50d);
-				addToSimulation(s);
+				Simulation.getInstance().addToSimulation(s);
 			}
 			mainWindow.clearSelection();
 		} else if (mouseMode == MouseMode.PARTICLE_MANIPULATION_ACCELERATION
@@ -237,7 +238,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 	public void keyReleased(KeyEvent arg0) {
 		int kk = arg0.getKeyCode();
 		Camera c = viewport.getCamera();
-		TimeStepController tsh = Simulation.timeStepController;
+		TimeStepController tsh = Simulation.getInstance().timeStepController;
 		if (kk == KeyEvent.VK_RIGHT)
 			c.setVx(0);
 		else if (kk == KeyEvent.VK_LEFT)

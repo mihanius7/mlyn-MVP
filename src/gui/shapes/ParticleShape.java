@@ -1,7 +1,5 @@
 package gui.shapes;
 
-import static simulation.Simulation.interactionProcessor;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.GradientPaint;
@@ -10,6 +8,7 @@ import elements.point_mass.Particle;
 import gui.Colors;
 import gui.CoordinateConverter;
 import gui.Viewport;
+import simulation.Simulation;
 
 public class ParticleShape extends AbstractShape {
 	
@@ -68,7 +67,7 @@ public class ParticleShape extends AbstractShape {
 			targetG2d.drawLine(x - r - 3, y, x + r + 3, y);
 		}
 		if (drawNeighbourRadius) {
-			int nradius = (int) (0.5 * viewport.getScale() * (interactionProcessor.getNeighborRangeExtra()));
+			int nradius = (int) (0.5 * viewport.getScale() * (Simulation.getInstance().interactionProcessor.getNeighborRangeExtra()));
 			targetG2d.drawOval(x - nradius, y - nradius, nradius * 2, nradius * 2);
 		}
 		if (drawForces || p.isSelected())

@@ -1,9 +1,6 @@
 package gui;
 
 import static constants.PhysicalConstants.cm;
-import static simulation.Simulation.interactionProcessor;
-import static simulation.Simulation.timeStepController;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -37,8 +34,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	private final int ARROW_DRAWING_MIN_THRESHOLD = 8;
 	public final float LABELS_MIN_FONT_SIZE = 10;
-	public final int LABELS_FONT_SIZE = 14;
-	public final float LABELS_MAX_FONT_SIZE = 32;
+	public final int LABELS_FONT_SIZE = 12;
+	public final float LABELS_MAX_FONT_SIZE = 20;
 	private float currentFontSize = LABELS_FONT_SIZE;
 	public final static int REFRESH_MESSAGES_INTERVAL = 400;
 	final int FRAME_PAINT_DELAY = 18;
@@ -71,8 +68,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private ViewportEvent viewportEvent;
 
 	public Viewport(int initW, int initH, MainWindow mw) {
-		particles = Simulation.getParticles();
-		springs = Simulation.getSprings();
+		particles = Simulation.getInstance().getContent().getParticles();
+		springs = Simulation.getInstance().getContent().getSprings();
 		viewportEvent = new ViewportEvent(this, mw);
 		addKeyListener(viewportEvent);
 		addMouseListener(viewportEvent);
@@ -143,15 +140,15 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
 		if (src == refreshLabelsTimer) {
-			timeString = String.format("t = %.3f c, ", Simulation.getTime())
-					+ String.format("dt = %.4f", timeStepController.getTimeStepSize() * 1000) + " ms, "
-					+ String.format("Vmax = %.2f m/s", interactionProcessor.defineMaxParticleVelocity()) + ", fps = "
+			timeString = String.format("t = %.3f c, ", Simulation.getInstance().getTime())
+					+ String.format("dt = %.4f", Simulation.getInstance().timeStepController.getTimeStepSize() * 1000) + " ms, "
+					+ String.format("Vmax = %.2f m/s", Simulation.getInstance().interactionProcessor.defineMaxParticleVelocity()) + ", fps = "
 					+ fps * 1000 / REFRESH_MESSAGES_INTERVAL;
-			double r = Simulation.interactionProcessor.getTimeStepReserveRatio();
-			Simulation.timeStepController.measureTimeScale();
-			double timeScale = Simulation.timeStepController.getMeasuredTimeScale();
+			double r = Simulation.getInstance().interactionProcessor.getTimeStepReserveRatio();
+			Simulation.getInstance().timeStepController.measureTimeScale();
+			double timeScale = Simulation.getInstance().timeStepController.getMeasuredTimeScale();
 			String displayedTimeScale = "нявызначаны";
-			if (Simulation.getInstance().isActive())
+			if (Simulation.getInstance().getInstance().isActive())
 				if (timeScale > 1000 || timeScale < 1e-3)
 					displayedTimeScale = String.format("%.2e", timeScale);
 				else
@@ -163,7 +160,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 				timeStepString = String.format(
 						GUIStrings.TIMESTEP_RESERVE + " = %.1f " + GUIStrings.TIME_SCALE + " " + displayedTimeScale, r);
 			MainWindow.getInstance().refreshGUIDisplays();
-			Simulation.timeStepController.clearStepsPerSecond();
+			Simulation.getInstance().timeStepController.clearStepsPerSecond();
 			fps = 0;
 		}
 	}
@@ -208,8 +205,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 				p.getShape().paintShape(targetG2d, this);
 			}
 		}
-		if (Simulation.getReferenceParticle().isVisible())
-			Simulation.getReferenceParticle().getShape().paintShape(targetG2d, this);
+		if (Simulation.getInstance().getContent().getReferenceParticle().isVisible())
+			Simulation.getInstance().getContent().getReferenceParticle().getShape().paintShape(targetG2d, this);
 		if (camera.getFollowong() != null) {
 			Element following = camera.getFollowong();
 			drawCrossOn(targetG2d, following.getCenterPoint().x, following.getCenterPoint().y, false);
@@ -263,7 +260,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private void drawBoundariesOn(Graphics2D targetG2d) {
 		targetG2d.setColor(Colors.BOUNDARIES);
 		targetG2d.setStroke(arrowStroke);
-		Boundaries b = Simulation.getContent().getBoundaries();
+		Boundaries b = Simulation.getInstance().getContent().getBoundaries();
 		int x1 = CoordinateConverter.toScreenX(b.getLeft());
 		int y1 = CoordinateConverter.toScreenY(b.getUpper());
 		int w = CoordinateConverter.toScreen(b.getWidth());
@@ -394,8 +391,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	public void scaleToAllParticles() {
-		if (Simulation.getParticlesCount() > 0) {
-			Boundaries b = Simulation.getContent().getBoundaries();
+		if (Simulation.getInstance().getContent().getParticlesCount() > 0) {
+			Boundaries b = Simulation.getInstance().getContent().getBoundaries();
 			b.refreshEffectiveBoundaries();
 			double h = b.getEffectiveHeight();
 			double w = b.getEffectiveWidth();
@@ -411,7 +408,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	public void scaleToBoundaries() {
-		Boundaries b = Simulation.getContent().getBoundaries();
+		Boundaries b = Simulation.getInstance().getContent().getBoundaries();
 		if (!b.isUseLeft() || !b.isUseRight() || !b.isUseBottom())
 			scaleToAllParticles();
 		else {
@@ -432,7 +429,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	public void setMouseMode(MouseMode mouseMode) {
 		viewportEvent.mouseMode = mouseMode;
-		Simulation.clearSelection();
+		Simulation.getInstance().getContent().deselectAll();
 		ConsoleWindow.println(GUIStrings.MOUSE_MODE + ": " + viewportEvent.mouseMode);
 	}
 
@@ -443,7 +440,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		rhs.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		ig2.setRenderingHints(rhs);
 		drawWholeFrameOn(ig2);
-		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fс.jpg", Simulation.getTime());
+		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fс.jpg", Simulation.getInstance().getTime());
 		try {
 			if (javax.imageio.ImageIO.write(buffer, "JPEG", new java.io.File(fileName)))
 				ConsoleWindow.println(GUIStrings.IMAGE_SAVED_TO + " " + fileName);

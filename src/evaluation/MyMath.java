@@ -1,10 +1,9 @@
 package evaluation;
 
 import static java.lang.Math.*;
-import static simulation.Simulation.x;
-import static simulation.Simulation.y;
 import elements.force_pair.Spring;
 import elements.point_mass.Particle;
+import simulation.Simulation;
 
 public class MyMath {
 
@@ -31,7 +30,7 @@ public class MyMath {
 	}
 
 	public static double defineSquaredDistance(int i, int j) {
-		return (pow(x(i) - x(j), 2) + pow(y(i) - y(j), 2));
+		return (pow(Simulation.getInstance().x(i) - Simulation.getInstance().x(j), 2) + pow(Simulation.getInstance().y(i) - Simulation.getInstance().y(j), 2));
 	}
 
 	public static double defineDistance(int i, int j) {

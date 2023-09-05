@@ -52,13 +52,13 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 	public void applyNewVelocity(double dt, boolean useFriction) {
 		lastVelocity.setX(velocity.X());
 		lastVelocity.setY(velocity.Y());
-		if (Simulation.interactionProcessor.isUseExternalForces()) {
-			force.addToX(Simulation.interactionProcessor.getExternalAccelerationX() * m);
-			force.addToY(Simulation.interactionProcessor.getExternalAccelerationY() * m);
+		if (Simulation.getInstance().interactionProcessor.isUseExternalForces()) {
+			force.addToX(Simulation.getInstance().interactionProcessor.getExternalAccelerationX() * m);
+			force.addToY(Simulation.getInstance().interactionProcessor.getExternalAccelerationY() * m);
 		}
 		if (isMoving()) {
 			if (useFriction) {
-				double airFriction = Simulation.interactionProcessor.getAirFrictionCoefficient();
+				double airFriction = Simulation.getInstance().interactionProcessor.getAirFrictionCoefficient();
 				force.addToXY(-velocity.X() * airFriction, -velocity.Y() * airFriction);
 				double ffx = -velocity.defineCos() * frictionForce;
 				double ffy = -velocity.defineSin() * frictionForce;
