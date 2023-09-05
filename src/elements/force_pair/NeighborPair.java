@@ -1,6 +1,6 @@
 package elements.force_pair;
 
-import static simulation.Simulation.interactionProcessor;
+import simulation.Simulation;
 
 public class NeighborPair extends ForcePair {
 
@@ -12,7 +12,7 @@ public class NeighborPair extends ForcePair {
 
 	public void applyForce() {
 		super.applyForce();
-		force = interactionProcessor.applyPairInteraction(p1, p2, distance);
+		force = Simulation.getInstance().interactionProcessor.applyPairInteraction(p1, p2, distance);
 	}
 
 }

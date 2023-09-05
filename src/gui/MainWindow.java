@@ -67,7 +67,7 @@ public class MainWindow extends JFrame {
 		
 		consoleWindow = new ConsoleWindow();
 
-		setFocusTo(Simulation.getReferenceParticle());
+		setFocusTo(Simulation.getInstance().getContent().getReferenceParticle());
 
 		setResizable(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -140,7 +140,7 @@ public class MainWindow extends JFrame {
 	private void applyLabels() {
 		labelTimeStep.setText(GUIStrings.TIMESTEP_LABEL);
 		buttonStart.setText(GUIStrings.START_PAUSE_BUTTON);
-		buttonTimeStepMode.setText(Simulation.timeStepController.getMode()==TimeStepMode.FIXED ? GUIStrings.TIMESTEP_FIXED : GUIStrings.TIMESTEP_DYNAMIC);
+		buttonTimeStepMode.setText(Simulation.getInstance().timeStepController.getMode()==TimeStepMode.FIXED ? GUIStrings.TIMESTEP_FIXED : GUIStrings.TIMESTEP_DYNAMIC);
 	}
 
 	public void changeLanguage(Language lang) {
@@ -183,7 +183,7 @@ public class MainWindow extends JFrame {
 
 	public void startSimulationThread() {
 		if (simulationThread == null || !simulationThread.isAlive()) {
-			Simulation.interactionProcessor.recalculateNeighborsNeeded();
+			Simulation.getInstance().interactionProcessor.recalculateNeighborsNeeded();
 			simulationThread = new Thread(simulation);
 			simulationThread.setPriority(3);
 			simulationThread.start();
@@ -191,7 +191,7 @@ public class MainWindow extends JFrame {
 	}
 
 	public void stopSimulationThread() {
-		Simulation.stopSimulation();
+		Simulation.getInstance().stopSimulation();
 	}
 
 	public void startViewportRepaintThread() {
@@ -201,21 +201,21 @@ public class MainWindow extends JFrame {
 	}
 
 	public void setFocusTo(Particle p) {
-		if (Simulation.getSelectedParticles().size() > 0)
-			Simulation.getSelectedParticle(Simulation.getSelectedParticles().size() - 1);
+		if (Simulation.getInstance().getContent().getSelectedParticles().size() > 0)
+			Simulation.getInstance().getContent().getSelectedParticle(Simulation.getInstance().getContent().getSelectedParticles().size() - 1);
 		else {
 		}
 	}
 
 	public void setFocusTo(Spring s) {
-		if (Simulation.getSelectedSprings().size() > 0)
-			Simulation.getSelectedSpring(Simulation.getSelectedSprings().size() - 1);
+		if (Simulation.getInstance().getContent().getSelectedSprings().size() > 0)
+			Simulation.getInstance().getContent().getSelectedSpring(Simulation.getInstance().getContent().getSelectedSprings().size() - 1);
 		System.out.println("Spring angle, rad: " + s.defineAngle());
 	}
 
 	public void clearSelection() {
-		Simulation.clearSelection();
-		setFocusTo(Simulation.getReferenceParticle());
+		Simulation.getInstance().getContent().deselectAll();
+		setFocusTo(Simulation.getInstance().getContent().getReferenceParticle());
 	}
 
 	public void applyReferenceParticleParameters() {
@@ -226,7 +226,7 @@ public class MainWindow extends JFrame {
 
 	public void refreshGUIControls() {
 		menuBar.refreshItems();
-		buttonTimeStepMode.setText(Simulation.timeStepController.getMode()==TimeStepMode.FIXED ? GUIStrings.TIMESTEP_FIXED : GUIStrings.TIMESTEP_DYNAMIC);
+		buttonTimeStepMode.setText(Simulation.getInstance().timeStepController.getMode()==TimeStepMode.FIXED ? GUIStrings.TIMESTEP_FIXED : GUIStrings.TIMESTEP_DYNAMIC);
 		Double.toString(viewport.getGridSize() / cm);
 	}
 
@@ -237,7 +237,7 @@ public class MainWindow extends JFrame {
 	}
 
 	private void refreshTimeStepReserveDisplay() {
-		double r = Simulation.interactionProcessor.getTimeStepReserveRatio();
+		double r = Simulation.getInstance().interactionProcessor.getTimeStepReserveRatio();
 		if (r > 10000)
 			r = 10000;
 	}
@@ -285,14 +285,14 @@ public class MainWindow extends JFrame {
 
 	public void openSceneDialog() {
 		SAXelementParser parser = new SAXelementParser();
-		Simulation.stopSimulation();
+		Simulation.getInstance().stopSimulation();
 		int ret = openSceneChooser.showDialog(null, GUIStrings.OPEN_SCENE_DIALOG);
 		if (ret == JFileChooser.APPROVE_OPTION) {
-			Simulation.clearSimulation();
+			Simulation.getInstance().clearSimulation();
 			File selectedFile = openSceneChooser.getSelectedFile();
 			parser.loadFromFile(selectedFile);
 			setCaption(selectedFile.getName());
-			Simulation.perfomStep(5);
+			Simulation.getInstance().perfomStep(5);
 			refreshGUIControls();
 			viewport.reset();
 			viewport.scaleToAllParticles();
@@ -304,11 +304,11 @@ public class MainWindow extends JFrame {
 	public void setSelectedNextSpring(boolean previous) {
 		if (viewport.getMouseMode() == MouseMode.SPRING_SELECT)
 			if (!previous) {
-				Simulation.addToSelectionNextSpring();
-				setFocusTo(Simulation.getSelectedSpring(0));
+				Simulation.getInstance().getContent().selectNextSpring();
+				setFocusTo(Simulation.getInstance().getContent().getSelectedSpring(0));
 			} else {
-				Simulation.addToSelectionPreviousSpring();
-				setFocusTo(Simulation.getSelectedSpring(0));
+				Simulation.getInstance().getContent().selectPreviousSpring();
+				setFocusTo(Simulation.getInstance().getContent().getSelectedSpring(0));
 			}
 		else {
 			viewport.setMouseMode(MouseMode.SPRING_SELECT);

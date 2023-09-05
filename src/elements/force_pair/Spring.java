@@ -7,8 +7,6 @@ import static evaluation.MyMath.defineReducedMass;
 import static evaluation.MyMath.sqr;
 import static java.lang.Math.PI;
 import static java.lang.Math.sqrt;
-import static simulation.Simulation.interactionProcessor;
-
 import java.awt.geom.Point2D;
 
 import constants.PhysicalConstants;
@@ -86,10 +84,10 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 	public void applyForce() {
 		super.applyForce();
 		defineForce();
-		interactionProcessor.applyForceParallelToDistance(p1, p2, force, distance);
-		interactionProcessor.tryToSetMaxSpringForce(force);
+		Simulation.getInstance().interactionProcessor.applyForceParallelToDistance(p1, p2, force, distance);
+		Simulation.getInstance().interactionProcessor.tryToSetMaxSpringForce(force);
 		if (force >= breakUpTension)
-			Simulation.removeSpringSafety(this);
+			Simulation.getInstance().removeSpringSafety(this);
 	}
 
 	public boolean isVisible() {
@@ -191,7 +189,7 @@ public class Spring extends ForcePair implements Element, Selectable, Interactab
 	}
 
 	public void setDampingCritical() {
-		setDampingRatio(1);
+		setDampingRatio(1.0);
 	}
 
 	public void setDampingRatio(double ksi) {

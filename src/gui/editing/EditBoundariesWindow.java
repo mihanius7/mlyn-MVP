@@ -26,7 +26,7 @@ public class EditBoundariesWindow extends AbstractEditWindow implements ActionLi
 	private static final long serialVersionUID = 1860690546230167889L;
 	private JTextField field1, field2, field3, field4;
 	private JCheckBox checkBox1, checkBox2, checkBox3, checkBox4;
-	private Boundaries boundaries = Simulation.getContent().getBoundaries();
+	private Boundaries boundaries = Simulation.getInstance().getContent().getBoundaries();
 	private Viewport viewport;
 
 	public EditBoundariesWindow(Viewport v) {

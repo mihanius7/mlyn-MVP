@@ -130,7 +130,7 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 	public String toString() {
 		String s = "Size = " + size();
 		for (Particle p : this)
-			s = s.concat(String.format(String.valueOf(Simulation.getIndex(p)) + "\t%.1e\t%.1e\n", p.getX(), p.getY()));
+			s = s.concat(String.format(String.valueOf(Simulation.getInstance().getContent().getIndex(p)) + "\t%.1e\t%.1e\n", p.getX(), p.getY()));
 		return s;
 	}
 	

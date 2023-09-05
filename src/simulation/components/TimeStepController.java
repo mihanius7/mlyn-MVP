@@ -1,7 +1,5 @@
 package simulation.components;
 
-import static simulation.Simulation.interactionProcessor;
-
 import gui.ConsoleWindow;
 import gui.Viewport;
 import gui.lang.GUIStrings;
@@ -37,7 +35,7 @@ public class TimeStepController implements SimulationComponent {
 
 	private void adjustTimeStep() {
 		if (mode == TimeStepMode.DYNAMIC && Simulation.getInstance().isActive()) {
-			targetdt = Simulation.getEvaluationTimeNanos() * 1E-9 * timeScale;
+			targetdt = Simulation.getInstance().getEvaluationTimeNanos() * 1E-9 * timeScale;
 			dt += (targetdt - dt) / 2000;
 		}
 	}
@@ -55,7 +53,7 @@ public class TimeStepController implements SimulationComponent {
 	}
 
 	private void correctTimeStepSize() {
-		double r = interactionProcessor.getTimeStepReserveRatio();
+		double r = Simulation.getInstance().interactionProcessor.getTimeStepReserveRatio();
 		setTimeStepSize(dt * r * TIME_STEP_ALARM_DECREMENT);
 		if (mode == TimeStepMode.DYNAMIC)
 			setTimeScale(timeScale * r * TIME_STEP_ALARM_DECREMENT);
@@ -142,7 +140,7 @@ public class TimeStepController implements SimulationComponent {
 
 	public void measureTimeScale() {
 		if (Simulation.getInstance().isActive()) {
-			double timeMillis = Simulation.getTime() * 1000;
+			double timeMillis = Simulation.getInstance().getTime() * 1000;
 			measuredTimeScale = (timeMillis - lastTimeMillis) / Viewport.REFRESH_MESSAGES_INTERVAL;
 			lastTimeMillis = timeMillis;
 		}

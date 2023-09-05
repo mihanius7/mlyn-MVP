@@ -322,9 +322,9 @@ public class MainWindowMenu extends JMenuBar {
 	}
 
 	public void refreshItems() {
-		itemCollisions1.setSelected(Simulation.interactionProcessor.isUsePPCollisions());
-		itemOuterForces.setSelected(Simulation.interactionProcessor.isUseExternalForces());
-		itemFriction.setSelected(Simulation.interactionProcessor.isUseFriction());
+		itemCollisions1.setSelected(Simulation.getInstance().interactionProcessor.isUsePPCollisions());
+		itemOuterForces.setSelected(Simulation.getInstance().interactionProcessor.isUseExternalForces());
+		itemFriction.setSelected(Simulation.getInstance().interactionProcessor.isUseFriction());
 		itemVelocities.setSelected(ParticleShape.drawVelocities);
 		itemForces.setSelected(ParticleShape.drawForces);
 		itemPretty.setSelected(ParticleShape.drawGradientParticles);

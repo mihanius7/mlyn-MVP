@@ -2,8 +2,6 @@ package elements.force_pair;
 
 import static evaluation.MyMath.defineDistance;
 import static java.lang.Math.min;
-import static simulation.Simulation.timeStepController;
-
 import elements.point_mass.Particle;
 import evaluation.MyMath;
 import simulation.Simulation;
@@ -22,15 +20,15 @@ public abstract class ForcePair implements ForceElement {
 	}
 
 	public ForcePair(Particle i, Particle j) {
-		p1 = Simulation.getParticleWithLesserIndex(i, j);
-		p2 = Simulation.getParticleWithLargerIndex(i, j);
+		p1 = Simulation.getInstance().getContent().getParticleWithLesserIndex(i, j);
+		p2 = Simulation.getInstance().getContent().getParticleWithLargerIndex(i, j);
 		setCriticalShift();
 		distance = lastDistance + criticalShift;
 	}
 
 	public ForcePair(int i, int j) {
-		p1 = Simulation.getParticleWithLesserIndex(Simulation.getParticle(i), Simulation.getParticle(j));
-		p2 = Simulation.getParticleWithLargerIndex(Simulation.getParticle(i), Simulation.getParticle(j));
+		p1 = Simulation.getInstance().getContent().getParticleWithLesserIndex(Simulation.getInstance().getContent().getParticle(i), Simulation.getInstance().getContent().getParticle(j));
+		p2 = Simulation.getInstance().getContent().getParticleWithLargerIndex(Simulation.getInstance().getContent().getParticle(i), Simulation.getInstance().getContent().getParticle(j));
 		setCriticalShift();
 		distance = lastDistance + criticalShift;
 	}
@@ -83,7 +81,7 @@ public abstract class ForcePair implements ForceElement {
 	}
 
 	protected final double defineVelocityProjection() {
-		double p = (lastDistance - distance) / timeStepController.getTimeStepSize();
+		double p = (lastDistance - distance) / Simulation.getInstance().timeStepController.getTimeStepSize();
 		return p;
 	}
 
@@ -100,7 +98,7 @@ public abstract class ForcePair implements ForceElement {
 		distance = defineDistance(p1, p2);
 		refreshTimeStepReserve();
 		if (timeStepReserve < 1) {
-			timeStepController.setTimeStepAlarm();
+			Simulation.getInstance().timeStepController.setTimeStepAlarm();
 		}
 	}
 }
