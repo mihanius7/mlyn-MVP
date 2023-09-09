@@ -141,9 +141,11 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		Object src = e.getSource();
 		if (src == refreshLabelsTimer) {
 			timeString = String.format("t = %.3f c, ", Simulation.getInstance().getTime())
-					+ String.format("dt = %.4f", Simulation.getInstance().timeStepController.getTimeStepSize() * 1000) + " ms, "
-					+ String.format("Vmax = %.2f m/s", Simulation.getInstance().interactionProcessor.defineMaxParticleVelocity()) + ", fps = "
-					+ fps * 1000 / REFRESH_MESSAGES_INTERVAL;
+					+ String.format("dt = %.4f", Simulation.getInstance().timeStepController.getTimeStepSize() * 1000)
+					+ " ms, "
+					+ String.format("Vmax = %.2f m/s",
+							Simulation.getInstance().interactionProcessor.defineMaxParticleVelocity())
+					+ ", fps = " + fps * 1000 / REFRESH_MESSAGES_INTERVAL;
 			double r = Simulation.getInstance().interactionProcessor.getTimeStepReserveRatio();
 			Simulation.getInstance().timeStepController.measureTimeScale();
 			double timeScale = Simulation.getInstance().timeStepController.getMeasuredTimeScale();
@@ -342,12 +344,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.fillPolygon(xpoints, ypoints, 3);
 	}
 
-	public void clearTracksImage() {
-		if (drawTracks) {
-			drawBackgroundOn((Graphics2D) tracksImage.getGraphics());
-		}
-	}
-
 	public double getScale() {
 		return scale;
 	}
@@ -355,6 +351,13 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public void setScale(double newTargetScale) {
 		targetScale = newTargetScale;
 		clearTracksImage();
+	}
+
+	public void clearTracksImage() {
+		if (drawTracks) {
+			scale = targetScale;
+			drawBackgroundOn((Graphics2D) tracksImage.getGraphics());
+		}
 	}
 
 	public void setCrossX(double crossX) {

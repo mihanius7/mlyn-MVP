@@ -22,6 +22,7 @@ public class Camera {
 
 	public void setX(double cameraX) {
 		x = cameraX;
+		viewport.clearTracksImage();
 	}
 
 	public double getY() {
@@ -30,6 +31,7 @@ public class Camera {
 
 	public void setY(double cameraY) {
 		y = cameraY;
+		viewport.clearTracksImage();
 	}
 
 	public Element getFollowong() {
