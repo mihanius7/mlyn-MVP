@@ -78,7 +78,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		camera = new Camera(this);
 		new CoordinateConverter(this);
 		rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
+		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		setBounds(0, 0, initW, initH);
 		setDoubleBuffered(true);
 		initTracksImage();
@@ -172,6 +172,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			if (gridStep >= 15 && gridStep < getWidth() * 2) {
 				BufferedImage bi = new BufferedImage(gridMinorStep, gridMinorStep, BufferedImage.TYPE_INT_RGB);
 				Graphics2D big2d = bi.createGraphics();
+				big2d.setRenderingHints(rh);
 				big2d.setColor(Colors.BACKGROUND);
 				big2d.fillRect(0, 0, gridMinorStep, gridMinorStep);
 				big2d.setColor(Colors.GRID);
