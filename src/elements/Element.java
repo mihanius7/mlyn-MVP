@@ -6,4 +6,5 @@ public interface Element {
 	
 	public Point2D.Double getCenterPoint();
 	
+	
 }
