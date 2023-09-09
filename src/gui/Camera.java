@@ -34,7 +34,7 @@ public class Camera {
 		viewport.clearTracksImage();
 	}
 
-	public Element getFollowong() {
+	public Element getFollowing() {
 		return following;
 	}
 

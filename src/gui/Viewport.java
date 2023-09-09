@@ -48,7 +48,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private ParticleGroup particles;
 	private SpringGroup springs;
 	Camera camera;
-	private Graphics2D globalCanvas;
+	private Graphics2D canvas;
 	public Graphics2D tracksCanvas;
 	private RenderingHints rh;
 	public Font labelsFont;
@@ -110,20 +110,26 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	@Override
 	public void paintComponent(Graphics g) {
 		scale += (targetScale - scale) / 2;
-		globalCanvas = (Graphics2D) g;
-		globalCanvas.setRenderingHints(rh);
-		drawWholeFrameOn(globalCanvas);
+		canvas = (Graphics2D) g;
+		canvas.setRenderingHints(rh);
+		renderFrameOn(canvas);
 	}
 
-	private void drawWholeFrameOn(Graphics2D graphics) {
+	private void renderFrameOn(Graphics2D graphics) {
 		camera.follow();
 		currentFontSize = scaleLabelsFont();
 		drawBackgroundOn(graphics);
 		if (drawTracks)
 			graphics.drawImage(tracksImage, 0, 0, null);
 		drawBoundariesOn(graphics);
-		drawSpringsOn(graphics);
-		drawCirclesOn(graphics);
+		drawSpringShapes(graphics);
+		drawParticleShapes(graphics);
+		if (Simulation.getInstance().getContent().getReferenceParticle().isVisible())
+			Simulation.getInstance().getContent().getReferenceParticle().getShape().paintShape(graphics, this);
+		if (camera.getFollowing() != null) {
+			Element following = camera.getFollowing();
+			drawCrossOn(graphics, following.getCenterPoint().x, following.getCenterPoint().y, false);
+		}
 		graphics.setColor(Colors.FONT_TAGS);
 		graphics.setStroke(arrowStroke);
 		drawCrossOn(graphics, crossX, crossY, true);
@@ -150,7 +156,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			Simulation.getInstance().timeStepController.measureTimeScale();
 			double timeScale = Simulation.getInstance().timeStepController.getMeasuredTimeScale();
 			String displayedTimeScale = "нявызначаны";
-			if (Simulation.getInstance().getInstance().isActive())
+			if (Simulation.getInstance().isActive())
 				if (timeScale > 1000 || timeScale < 1e-3)
 					displayedTimeScale = String.format("%.2e", timeScale);
 				else
@@ -200,7 +206,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	}
 
-	private void drawCirclesOn(Graphics2D targetG2d) {
+	private void drawParticleShapes(Graphics2D targetG2d) {
 		Particle p;
 		for (int i = 0; i < particles.size(); i++) {
 			p = particles.get(i);
@@ -208,22 +214,15 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 				p.getShape().paintShape(targetG2d, this);
 			}
 		}
-		if (Simulation.getInstance().getContent().getReferenceParticle().isVisible())
-			Simulation.getInstance().getContent().getReferenceParticle().getShape().paintShape(targetG2d, this);
-		if (camera.getFollowong() != null) {
-			Element following = camera.getFollowong();
-			drawCrossOn(targetG2d, following.getCenterPoint().x, following.getCenterPoint().y, false);
-		}
 	}
 
-	private void drawSpringsOn(Graphics2D targetG2d) {
+	private void drawSpringShapes(Graphics2D targetG2d) {
 		Spring s;
 		for (int i = 0; i < springs.size(); i++) {
 			s = springs.get(i);
 			if (s.isVisible())
 				s.getShape().paintShape(targetG2d, this);
 		}
-		targetG2d.setStroke(new BasicStroke(1f));
 	}
 
 	private void drawMessagesOn(Graphics2D targetG2d) {
@@ -443,7 +442,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		RenderingHints rhs = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		rhs.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		ig2.setRenderingHints(rhs);
-		drawWholeFrameOn(ig2);
+		renderFrameOn(ig2);
 		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fс.jpg", Simulation.getInstance().getTime());
 		try {
 			if (javax.imageio.ImageIO.write(buffer, "JPEG", new java.io.File(fileName)))
@@ -454,7 +453,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	public Graphics2D getCanvas() {
-		return globalCanvas;
+		return canvas;
 	}
 
 	public Camera getCamera() {
