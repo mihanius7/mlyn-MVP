@@ -6,7 +6,7 @@ import elements.point_mass.Particle;
 import evaluation.MyMath;
 import simulation.Simulation;
 
-public abstract class ForcePair implements ForceElement {
+public abstract class ForcePair implements Force {
 
 	protected final Particle p1, p2;
 	protected double force, oldForceSmoothed;

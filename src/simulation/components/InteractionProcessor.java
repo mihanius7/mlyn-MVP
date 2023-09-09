@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import elements.Boundaries;
-import elements.force_pair.ForceElement;
+import elements.force_pair.ForcePair;
 import elements.force_pair.NeighborPair;
 import elements.force_pair.Spring;
 import elements.groups.ParticleGroup;
@@ -39,7 +39,7 @@ public class InteractionProcessor implements SimulationComponent {
 	private TabulatedFunction forceTable;
 	private ParticleGroup particles;
 	private SpringGroup springs;
-	private ArrayList<ForceElement> forceElements = new ArrayList<ForceElement>();
+	private ArrayList<ForcePair> forcePairs = new ArrayList<ForcePair>();
 	private boolean useExternalForces = false, usePPCollisions = true, recalculateNeighborsNeeded = true,
 			useFriction = true, useInterparticleForces = true;
 	public boolean useFastSpringProjection = true, useBoundaries = true;
@@ -86,8 +86,8 @@ public class InteractionProcessor implements SimulationComponent {
 		maxSpringForce = 0;
 		maxPairForce = 0;
 		double f, maxF = 0, rr = Double.MAX_VALUE;
-		ForceElement fe;
-		Iterator<ForceElement> it = forceElements.iterator();
+		ForcePair fe;
+		Iterator<ForcePair> it = forcePairs.iterator();
 		while (it.hasNext()) {
 			fe = it.next();
 			fe.applyForce();
@@ -97,7 +97,7 @@ public class InteractionProcessor implements SimulationComponent {
 			if (fe.getReserveRatio() < rr)
 				rr = fe.getReserveRatio();
 		}
-		pairInteractionsNumber = forceElements.size();
+		pairInteractionsNumber = forcePairs.size();
 		maxPairForce = maxF;
 		timeStepReserveRatio = rr;
 	}
@@ -112,7 +112,7 @@ public class InteractionProcessor implements SimulationComponent {
 	}
 
 	private void recalculateNeighborsList() {
-		forceElements.clear();
+		forcePairs.clear();
 		double sqDist, maxSqDist;
 		if (usePPCollisions || useInterparticleForces) {
 			for (int i = 0; i < particles.size() - 1; i++) {
@@ -123,12 +123,12 @@ public class InteractionProcessor implements SimulationComponent {
 					maxSqDist *= maxSqDist;
 					sqDist = defineSquaredDistance(i, j);
 					if (sqDist <= maxSqDist)
-						forceElements.add(new NeighborPair(i, j, sqrt(sqDist)));
+						forcePairs.add(new NeighborPair(i, j, sqrt(sqDist)));
 				}
 			}
 			neighborSearchNumber++;
 		}
-		forceElements.addAll(springs);
+		forcePairs.addAll(springs);
 		recalculateNeighborsNeeded = false;
 		neighborSearchCurrentStep = 0;
 	}

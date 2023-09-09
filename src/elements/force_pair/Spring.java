@@ -11,15 +11,13 @@ import java.awt.geom.Point2D;
 
 import constants.PhysicalConstants;
 import elements.Element;
-import elements.Interactable;
-import elements.Selectable;
 import elements.point_mass.Particle;
 import gui.ConsoleWindow;
 import gui.lang.GUIStrings;
 import gui.shapes.SpringShape;
 import simulation.Simulation;
 
-public class Spring extends ForcePair implements Element, Selectable, Interactable {
+public class Spring extends ForcePair implements Element {
 
 	public static double DEFAULT_VISIBLE_WIDTH = 2 * cm;
 	protected double l0 = 0, k = 0, c = 0, u2 = 0, dx = 0;

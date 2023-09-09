@@ -19,14 +19,6 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 
 	private static final long serialVersionUID = 5565999386880014913L;
 
-	public ParticleGroup() {
-		super();
-	}
-
-	public ParticleGroup(int number) {
-		super(number);
-	}
-
 	public double defineMass() {
 		double m = 0;
 		for (Particle p : this)
@@ -125,6 +117,21 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 			p.getShape().setColor(new java.awt.Color(r, g, b));
 		}
 	}
+	
+	public Particle findNearestParticle(double x, double y, double maxDistance) {
+		double minSqDist = Double.MAX_VALUE, sqDist;
+		Particle nearest = null;
+		for (Particle p : this) {
+			sqDist = MyMath.defineSquaredDistance(p, x, y) - MyMath.sqr(p.getRadius());
+			if (sqDist < minSqDist) {
+				minSqDist = sqDist;
+				nearest = p;
+			}
+		}
+		if (minSqDist > MyMath.sqr(maxDistance))
+			nearest = null;
+		return nearest;
+	}
 
 	@Override
 	public String toString() {
@@ -135,7 +142,7 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 	}
 	
 	public ParticleGroup clone() {
-		ParticleGroup clonedList = new ParticleGroup(size());
+		ParticleGroup clonedList = new ParticleGroup();
 		for (int i = 0; i < clonedList.size(); i++) {
 			try {
 				clonedList.add(get(i).clone());

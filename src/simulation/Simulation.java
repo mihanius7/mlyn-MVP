@@ -6,11 +6,9 @@ import elements.force_pair.Spring;
 import elements.groups.ParticleGroup;
 import elements.groups.SpringGroup;
 import elements.point_mass.Particle;
-import evaluation.MyMath;
 import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.lang.GUIStrings;
-import gui.shapes.SpringShape;
 import main.SampleScenes;
 import simulation.components.InteractionProcessor;
 import simulation.components.SimulationComponent;
@@ -177,7 +175,7 @@ public class Simulation implements Runnable {
 
 	public void removeParticleSafety(Particle p) {
 		if (!content.springs.isEmpty())
-			removeSpringsSafety(findAttachedSprings(p));
+			removeSpringsSafety(content.springs.findAttachedSprings(p));
 		if (isRunning) {
 			pForRemove.add(p);
 			refreshContentNeeded = true;
@@ -189,7 +187,7 @@ public class Simulation implements Runnable {
 	private void removeParticles(ParticleGroup pp) {
 		if (!content.springs.isEmpty())
 			for (Particle p : pp)
-				removeSprings(findAttachedSprings(p));
+				removeSprings(content.springs.findAttachedSprings(p));
 		content.particles.removeAll(pp);
 		interactionProcessor.recalculateNeighborsNeeded();
 	}
@@ -197,7 +195,7 @@ public class Simulation implements Runnable {
 	public void removeParticlesSafety(ParticleGroup pp) {
 		if (!content.springs.isEmpty())
 			for (Particle p : pp)
-				removeSpringsSafety(findAttachedSprings(p));
+				removeSpringsSafety(content.springs.findAttachedSprings(p));
 		if (isRunning) {
 			pForRemove.addAll(pp);
 			refreshContentNeeded = true;
@@ -248,49 +246,6 @@ public class Simulation implements Runnable {
 		return content.springs.get(content.springs.size() - 1);
 	}
 
-	public SpringGroup findAttachedSprings(Particle p) {
-		SpringGroup returnList = new SpringGroup();
-		for (int i = 0; i < content.springs.size(); i++) {
-			Spring s = content.springs.get(i);
-			if (s != null) {
-				if (s.isHasParticle(p))
-					returnList.add(s);
-			}
-		}
-		return returnList;
-	}
-
-	public Particle findNearestParticle(double x, double y, double maxDistance) {
-		double minSqDist = Double.MAX_VALUE, sqDist;
-		Particle nearest = null;
-		for (Particle p : content.particles) {
-			sqDist = MyMath.defineSquaredDistance(p, x, y) - MyMath.sqr(p.getRadius());
-			if (sqDist < minSqDist) {
-				minSqDist = sqDist;
-				nearest = p;
-			}
-		}
-		if (minSqDist > MyMath.sqr(maxDistance))
-			nearest = null;
-		return nearest;
-	}
-
-	public Spring findNearestSpring(double x, double y, final double maxDistance) {
-		double dist, margin;
-		Spring nearest = null;
-		for (Spring s : content.springs) {
-			if (s.isLine())
-				margin = maxDistance;
-			else
-				margin = SpringShape.SPRING_ZIGZAG_AMPLITUDE + s.getVisibleWidth() / 2;
-			dist = MyMath.defineDistanceToLineSegment(s, x, y);
-			if (dist < Math.max(s.getVisibleWidth() / 2, margin)) {
-				nearest = s;
-			}
-		}
-		return nearest;
-	}
-
 	private void reset() {
 		content.deselectAll();
 		refreshContentNeeded = false;
@@ -304,8 +259,7 @@ public class Simulation implements Runnable {
 		ConsoleWindow.println(GUIStrings.CLEARED);
 		interactionProcessor.reset();
 		timeStepController.resetTimeStep();
-		SampleScenes sampleScenes = new SampleScenes();
-		sampleScenes.emptyScene();
+		new SampleScenes().emptyScene();
 	}
 
 	private void refreshContent() {
