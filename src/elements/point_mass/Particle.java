@@ -1,15 +1,16 @@
 package elements.point_mass;
 
 import java.awt.Color;
+import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 
-import elements.Interactable;
-import elements.Selectable;
+import elements.Element;
 import evaluation.MyMath;
 import evaluation.Vector;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;
 
-public class Particle extends PointMass implements Cloneable, Selectable, Interactable {
+public class Particle extends PointMass implements Cloneable, Element {
 
 	public static final double PARTICLE_ELASTICITY_DEFAULT = 0.99;
 	protected double r, q;
@@ -17,7 +18,7 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 	protected Vector lastForce = new Vector();
 	protected boolean visible = true, canCollide = true, isSelected = false;
 	protected double frictionForce, stictionForce;
-	protected double elasticity = PARTICLE_ELASTICITY_DEFAULT;	
+	protected double elasticity = PARTICLE_ELASTICITY_DEFAULT;
 	protected ParticleShape shape;
 
 	public Particle(double x, double y, double m, double q, double vx, double vy, double radius, Color c) {
@@ -32,7 +33,7 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 		shape = new ParticleShape(this);
 		shape.setColor(c);
 	}
-	
+
 	public Particle(double x, double y, double vx, double vy, double m, double radius) {
 		this(x, y, m, vx, vy, 0, radius, ParticleShape.PARTICLE_DEFAULT);
 	}
@@ -235,9 +236,14 @@ public class Particle extends PointMass implements Cloneable, Selectable, Intera
 	public void setCanCollide(boolean canCollide) {
 		this.canCollide = canCollide;
 	}
-	
+
 	public ParticleShape getShape() {
 		return shape;
+	}
+
+	@Override
+	public Double getCenterPoint() {
+		return new Point2D.Double(x, y);
 	}
 
 }
