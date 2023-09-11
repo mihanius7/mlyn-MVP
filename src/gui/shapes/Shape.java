@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 
 import gui.Viewport;
 
-public abstract class AbstractShape {
+public abstract class Shape {
 	Color color;
  
     abstract public void paintShape(Graphics2D g, Viewport viewport);

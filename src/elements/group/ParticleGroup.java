@@ -1,4 +1,4 @@
-package elements.groups;
+package elements.group;
 
 import static java.lang.Math.random;
 
@@ -6,14 +6,14 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import elements.point_mass.Particle;
-import evaluation.MyMath;
-import evaluation.Vector;
+import elements.point.Particle;
 import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;
+import simulation.math.MyMath;
+import simulation.math.Vector;
 
 public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 

@@ -5,11 +5,10 @@ import static constants.PhysicalConstants.kg;
 
 import java.util.Iterator;
 
-import elements.Boundaries;
-import elements.force_pair.Spring;
-import elements.groups.ParticleGroup;
-import elements.groups.SpringGroup;
-import elements.point_mass.Particle;
+import elements.group.ParticleGroup;
+import elements.group.SpringGroup;
+import elements.line.Spring;
+import elements.point.Particle;
 
 public class SimulationContent implements Cloneable {
 	

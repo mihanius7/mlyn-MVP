@@ -1,17 +1,18 @@
-package elements.force_pair;
+package elements.line;
 
 import static constants.PhysicalConstants.cm;
-import static evaluation.MyMath.cube;
-import static evaluation.MyMath.defineDistance;
-import static evaluation.MyMath.defineReducedMass;
-import static evaluation.MyMath.sqr;
 import static java.lang.Math.PI;
 import static java.lang.Math.sqrt;
+import static simulation.math.MyMath.cube;
+import static simulation.math.MyMath.defineDistance;
+import static simulation.math.MyMath.defineReducedMass;
+import static simulation.math.MyMath.sqr;
+
 import java.awt.geom.Point2D;
 
 import constants.PhysicalConstants;
 import elements.Element;
-import elements.point_mass.Particle;
+import elements.point.Particle;
 import gui.ConsoleWindow;
 import gui.lang.GUIStrings;
 import gui.shapes.SpringShape;

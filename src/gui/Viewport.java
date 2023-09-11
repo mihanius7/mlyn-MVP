@@ -19,16 +19,16 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import constants.PhysicalConstants;
-import elements.Boundaries;
 import elements.Element;
-import elements.force_pair.Spring;
-import elements.groups.ParticleGroup;
-import elements.groups.SpringGroup;
-import elements.point_mass.Particle;
-import evaluation.Vector;
+import elements.group.ParticleGroup;
+import elements.group.SpringGroup;
+import elements.line.Spring;
+import elements.point.Particle;
 import gui.lang.GUIStrings;
 import gui.shapes.SpringShape;
+import simulation.Boundaries;
 import simulation.Simulation;
+import simulation.math.Vector;
 
 public class Viewport extends JPanel implements ActionListener, Runnable {
 
@@ -238,7 +238,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.setColor(Colors.FONT_TAGS);
 		int xc = Math.min(x1, x2) + (Math.max(x1, x2) - Math.min(x1, x2)) / 2;
 		int yc = Math.min(y1, y2) + (Math.max(y1, y2) - Math.min(y1, y2)) / 2;
-		alpha = evaluation.MyMath.fitAbsAngleRad(alpha);
+		alpha = simulation.math.MyMath.fitAbsAngleRad(alpha);
 		targetG2d.translate(xc, yc);
 		targetG2d.rotate(alpha);
 		targetG2d.drawString(string, -(currentFontSize * string.length()) / 4, -currentFontSize / 2);
@@ -439,13 +439,11 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public void saveScreenshot() {
 		BufferedImage buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
 		Graphics2D ig2 = buffer.createGraphics();
-		RenderingHints rhs = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		rhs.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-		ig2.setRenderingHints(rhs);
+		ig2.setRenderingHints(rh);
 		renderFrameOn(ig2);
-		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fñ.jpg", Simulation.getInstance().getTime());
+		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fñ.png", Simulation.getInstance().getTime());
 		try {
-			if (javax.imageio.ImageIO.write(buffer, "JPEG", new java.io.File(fileName)))
+			if (javax.imageio.ImageIO.write(buffer, "png", new java.io.File(fileName)))
 				ConsoleWindow.println(GUIStrings.IMAGE_SAVED_TO + " " + fileName);
 		} catch (IOException e) {
 			MainWindow.imageWriteErrorMessage(fileName);

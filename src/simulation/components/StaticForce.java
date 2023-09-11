@@ -1,7 +1,6 @@
-package elements;
+package simulation.components;
 
-import elements.point_mass.Particle;
-import simulation.components.SimulationComponent;
+import elements.point.Particle;
 
 public class StaticForce implements SimulationComponent {
 	private Particle p;

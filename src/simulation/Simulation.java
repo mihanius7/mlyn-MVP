@@ -2,17 +2,17 @@ package simulation;
 
 import java.util.ArrayList;
 
-import elements.force_pair.Spring;
-import elements.groups.ParticleGroup;
-import elements.groups.SpringGroup;
-import elements.point_mass.Particle;
+import elements.group.ParticleGroup;
+import elements.group.SpringGroup;
+import elements.line.Spring;
+import elements.point.Particle;
 import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.lang.GUIStrings;
-import main.SampleScenes;
 import simulation.components.InteractionProcessor;
 import simulation.components.SimulationComponent;
 import simulation.components.TimeStepController;
+import test.SampleScenes;
 
 public class Simulation implements Runnable {
 

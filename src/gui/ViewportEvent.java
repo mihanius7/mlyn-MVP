@@ -9,9 +9,9 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
 
-import elements.force_pair.Spring;
-import elements.groups.SpringGroup;
-import elements.point_mass.Particle;
+import elements.group.SpringGroup;
+import elements.line.Spring;
+import elements.point.Particle;
 import simulation.Simulation;
 import simulation.components.TimeStepController;
 

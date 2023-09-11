@@ -1,10 +1,11 @@
-package elements.force_pair;
+package elements.line;
 
-import static evaluation.MyMath.defineDistance;
 import static java.lang.Math.min;
-import elements.point_mass.Particle;
-import evaluation.MyMath;
+import static simulation.math.MyMath.defineDistance;
+
+import elements.point.Particle;
 import simulation.Simulation;
+import simulation.math.MyMath;
 
 public abstract class ForcePair implements Force {
 

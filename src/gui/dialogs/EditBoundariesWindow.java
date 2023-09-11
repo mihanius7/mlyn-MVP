@@ -1,7 +1,8 @@
-package gui.editing;
+package gui.dialogs;
 
 import gui.Viewport;
 import gui.lang.GUIStrings;
+import simulation.Boundaries;
 import simulation.Simulation;
 
 import java.awt.Container;
@@ -18,8 +19,6 @@ import javax.swing.JTextField;
 
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
-
-import elements.Boundaries;
 
 public class EditBoundariesWindow extends AbstractEditWindow implements ActionListener {
 

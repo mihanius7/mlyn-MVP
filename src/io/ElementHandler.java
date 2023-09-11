@@ -1,4 +1,4 @@
-package file;
+package io;
 
 import java.awt.Color;
 
@@ -7,14 +7,14 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
-import elements.Boundaries;
-import elements.force_pair.Spring;
-import elements.point_mass.Particle;
+import elements.line.Spring;
+import elements.point.Particle;
 import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.Viewport;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
+import simulation.Boundaries;
 import simulation.Simulation;
 
 public class ElementHandler implements ContentHandler {

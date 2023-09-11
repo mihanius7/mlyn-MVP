@@ -1,8 +1,9 @@
-package evaluation;
+package simulation.math;
 
 import static java.lang.Math.*;
-import elements.force_pair.Spring;
-import elements.point_mass.Particle;
+
+import elements.line.Spring;
+import elements.point.Particle;
 import simulation.Simulation;
 
 public class MyMath {

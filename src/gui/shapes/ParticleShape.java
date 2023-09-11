@@ -4,13 +4,14 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
-import elements.point_mass.Particle;
+
+import elements.point.Particle;
 import gui.Colors;
 import gui.CoordinateConverter;
 import gui.Viewport;
 import simulation.Simulation;
 
-public class ParticleShape extends AbstractShape {
+public class ParticleShape extends Shape {
 	
 	private Particle p;
 	

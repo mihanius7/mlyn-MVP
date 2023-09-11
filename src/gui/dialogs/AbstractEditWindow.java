@@ -1,4 +1,4 @@
-package gui.editing;
+package gui.dialogs;
 
 import javax.swing.JDialog;
 

@@ -3,13 +3,13 @@ package gui.menu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import evaluation.Vector;
 import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.MouseMode;
 import gui.Viewport;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;
+import simulation.math.Vector;
 
 public class MainWindowMenuEvent implements ActionListener {
 

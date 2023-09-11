@@ -1,10 +1,10 @@
-package elements.point_mass;
+package elements.point;
 
 import java.awt.geom.Point2D;
 
 import elements.Element;
-import evaluation.Vector;
 import simulation.Simulation;
+import simulation.math.Vector;
 
 public class PointMass implements Cloneable  {
 

@@ -1,4 +1,4 @@
-package main;
+package test;
 
 import static constants.PhysicalConstants.cm;
 import static constants.PhysicalConstants.kg;
@@ -6,12 +6,12 @@ import static constants.PhysicalConstants.m;
 
 import java.awt.Color;
 
-import elements.Boundaries;
-import elements.point_mass.Particle;
+import elements.point.Particle;
 import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
+import simulation.Boundaries;
 import simulation.Simulation;
 import simulation.components.TimeStepController.TimeStepMode;
 

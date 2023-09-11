@@ -1,11 +1,11 @@
-package elements.groups;
+package elements.group;
 
 import java.util.ArrayList;
 
-import elements.force_pair.Spring;
-import elements.point_mass.Particle;
-import evaluation.MyMath;
+import elements.line.Spring;
+import elements.point.Particle;
 import gui.shapes.SpringShape;
+import simulation.math.MyMath;
 
 public class SpringGroup extends ArrayList<Spring> {
 
