@@ -7,6 +7,7 @@ import gui.Viewport;
 
 public abstract class Shape {
 	Color color;
+	boolean visible = true;
  
     abstract public void paintShape(Graphics2D g, Viewport viewport);
     
@@ -17,4 +18,12 @@ public abstract class Shape {
     public void setColor(Color newColor) {
 		color = newColor;    	
     }
+
+	public boolean isVisible() {
+		return visible;
+	}
+	
+	public void setVisible(boolean v) {
+		this.visible= v;
+	}
 }
