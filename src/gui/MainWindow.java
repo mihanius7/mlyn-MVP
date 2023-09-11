@@ -16,17 +16,17 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import elements.force_pair.Spring;
-import elements.point_mass.Particle;
-import file.SAXelementParser;
-import gui.editing.EditBoundariesWindow;
+import elements.line.Spring;
+import elements.point.Particle;
+import gui.dialogs.EditBoundariesWindow;
 import gui.lang.GUIStrings;
 import gui.lang.International;
 import gui.lang.Language;
 import gui.menu.MainWindowMenu;
-import main.SampleScenes;
+import io.SAXelementParser;
 import simulation.Simulation;
 import simulation.components.TimeStepController.TimeStepMode;
+import test.SampleScenes;
 
 public class MainWindow extends JFrame {
 

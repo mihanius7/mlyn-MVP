@@ -5,8 +5,9 @@ import java.awt.Graphics2D;
 
 import gui.Viewport;
 
-public abstract class AbstractShape {
+public abstract class Shape {
 	Color color;
+	boolean visible = true;
  
     abstract public void paintShape(Graphics2D g, Viewport viewport);
     
@@ -17,4 +18,12 @@ public abstract class AbstractShape {
     public void setColor(Color newColor) {
 		color = newColor;    	
     }
+
+	public boolean isVisible() {
+		return visible;
+	}
+	
+	public void setVisible(boolean v) {
+		this.visible= v;
+	}
 }

@@ -1,4 +1,4 @@
-package elements.force_pair;
+package elements.line;
 
 public interface Force {
 	public void applyForce();

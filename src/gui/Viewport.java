@@ -1,6 +1,7 @@
 package gui;
 
 import static constants.PhysicalConstants.cm;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -14,24 +15,27 @@ import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import constants.PhysicalConstants;
-import elements.Boundaries;
 import elements.Element;
-import elements.force_pair.Spring;
-import elements.groups.ParticleGroup;
-import elements.groups.SpringGroup;
-import elements.point_mass.Particle;
-import evaluation.Vector;
 import gui.lang.GUIStrings;
+import gui.shapes.Shape;
 import gui.shapes.SpringShape;
+import simulation.Boundaries;
 import simulation.Simulation;
+import simulation.math.Vector;
 
 public class Viewport extends JPanel implements ActionListener, Runnable {
 
+	Camera camera;
+	private Graphics2D canvas;
+	public Graphics2D tracksCanvas;
+	private RenderingHints rh;
+	private ArrayList<Shape> shapes;
 	private final int ARROW_DRAWING_MIN_THRESHOLD = 8;
 	public final float LABELS_MIN_FONT_SIZE = 10;
 	public final int LABELS_FONT_SIZE = 12;
@@ -45,12 +49,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public boolean useGrid = true;
 	private boolean drawTracks = false;
 	private boolean drawHeatMap = false;
-	private ParticleGroup particles;
-	private SpringGroup springs;
-	Camera camera;
-	private Graphics2D canvas;
-	public Graphics2D tracksCanvas;
-	private RenderingHints rh;
 	public Font labelsFont;
 	private Font mainFont;
 	private int fps = 0;
@@ -59,7 +57,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private double gridSize = DEFAULT_GRID_SIZE;
 	private double crossX = 0;
 	private double crossY = 0;
-	private long frameTime, dt;
+	private long renderTime, dt;
 	private String timeString = "N/A", timeStepString = "N/A";
 	private Timer refreshLabelsTimer;
 	private BufferedImage tracksImage;
@@ -68,8 +66,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private ViewportEvent viewportEvent;
 
 	public Viewport(int initW, int initH, MainWindow mw) {
-		particles = Simulation.getInstance().getContent().getParticles();
-		springs = Simulation.getInstance().getContent().getSprings();
+		shapes = new ArrayList<Shape>();
 		viewportEvent = new ViewportEvent(this, mw);
 		addKeyListener(viewportEvent);
 		addMouseListener(viewportEvent);
@@ -90,20 +87,40 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	@Override
 	public void run() {
 		refreshLabelsTimer.start();
-		long sleep;
 		ConsoleWindow.println(GUIStrings.RENDERING_THREAD_STARTED);
 		while (true) {
-			dt = System.currentTimeMillis() - frameTime;
+			dt = System.currentTimeMillis() - renderTime;
+			checkShapesCount();
 			repaint();
-			sleep = FRAME_PAINT_DELAY - dt;
-			if (sleep < 0)
-				sleep = 2;
-			try {
-				Thread.sleep(sleep);
-			} catch (InterruptedException e) {
-				System.out.println(GUIStrings.INTERRUPTED_THREAD + ": " + e.getMessage());
+			waitForNextRender();
+			renderTime = System.currentTimeMillis();
+		}
+	}
+
+	private void waitForNextRender() {
+		long sleep;
+		sleep = FRAME_PAINT_DELAY - dt;
+		if (sleep < 0)
+			sleep = 2;
+		try {
+			Thread.sleep(sleep);
+		} catch (InterruptedException e) {
+			System.out.println(GUIStrings.INTERRUPTED_THREAD + ": " + e.getMessage());
+		}
+	}
+
+	private void checkShapesCount() {
+		if (shapes.size() != Simulation.getInstance().getContent().getParticlesCount()
+				+ Simulation.getInstance().getContent().getSpringsCount()) {
+			shapes.clear();
+			for (int i = 0; i < Simulation.getInstance().getContent().getParticlesCount(); i++) {
+				if (Simulation.getInstance().getContent().getParticle(i) != null)
+					shapes.add(Simulation.getInstance().getContent().getParticle(i).getShape());
 			}
-			frameTime = System.currentTimeMillis();
+			for (int i = 0; i < Simulation.getInstance().getContent().getSpringsCount(); i++) {
+				if (Simulation.getInstance().getContent().getSpring(i) != null)
+					shapes.add(Simulation.getInstance().getContent().getSpring(i).getShape());
+			}
 		}
 	}
 
@@ -122,8 +139,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		if (drawTracks)
 			graphics.drawImage(tracksImage, 0, 0, null);
 		drawBoundariesOn(graphics);
-		drawSpringShapes(graphics);
-		drawParticleShapes(graphics);
+		drawShapes(graphics);
 		if (Simulation.getInstance().getContent().getReferenceParticle().isVisible())
 			Simulation.getInstance().getContent().getReferenceParticle().getShape().paintShape(graphics, this);
 		if (camera.getFollowing() != null) {
@@ -206,22 +222,13 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	}
 
-	private void drawParticleShapes(Graphics2D targetG2d) {
-		Particle p;
-		for (int i = 0; i < particles.size(); i++) {
-			p = particles.get(i);
-			if (p.isVisible()) {
-				p.getShape().paintShape(targetG2d, this);
+	private void drawShapes(Graphics2D targetG2d) {
+		Shape shape;
+		for (int i = 0; i < shapes.size(); i++) {
+			shape = shapes.get(i);
+			if (shape.isVisible()) {
+				shape.paintShape(targetG2d, this);
 			}
-		}
-	}
-
-	private void drawSpringShapes(Graphics2D targetG2d) {
-		Spring s;
-		for (int i = 0; i < springs.size(); i++) {
-			s = springs.get(i);
-			if (s.isVisible())
-				s.getShape().paintShape(targetG2d, this);
 		}
 	}
 
@@ -238,7 +245,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.setColor(Colors.FONT_TAGS);
 		int xc = Math.min(x1, x2) + (Math.max(x1, x2) - Math.min(x1, x2)) / 2;
 		int yc = Math.min(y1, y2) + (Math.max(y1, y2) - Math.min(y1, y2)) / 2;
-		alpha = evaluation.MyMath.fitAbsAngleRad(alpha);
+		alpha = simulation.math.MyMath.fitAbsAngleRad(alpha);
 		targetG2d.translate(xc, yc);
 		targetG2d.rotate(alpha);
 		targetG2d.drawString(string, -(currentFontSize * string.length()) / 4, -currentFontSize / 2);
@@ -257,6 +264,18 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	public float getCurrentFontSize() {
 		return currentFontSize;
+	}
+
+	public boolean addShape(Shape shape) {
+		return shapes.add(shape);
+	}
+
+	public boolean removeShape(Shape shape) {
+		return shapes.remove(shape);
+	}
+
+	public void clearShapes() {
+		shapes.clear();
 	}
 
 	private void drawBoundariesOn(Graphics2D targetG2d) {
@@ -439,13 +458,11 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public void saveScreenshot() {
 		BufferedImage buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
 		Graphics2D ig2 = buffer.createGraphics();
-		RenderingHints rhs = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		rhs.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-		ig2.setRenderingHints(rhs);
+		ig2.setRenderingHints(rh);
 		renderFrameOn(ig2);
-		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fñ.jpg", Simulation.getInstance().getTime());
+		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fñ.png", Simulation.getInstance().getTime());
 		try {
-			if (javax.imageio.ImageIO.write(buffer, "JPEG", new java.io.File(fileName)))
+			if (javax.imageio.ImageIO.write(buffer, "png", new java.io.File(fileName)))
 				ConsoleWindow.println(GUIStrings.IMAGE_SAVED_TO + " " + fileName);
 		} catch (IOException e) {
 			MainWindow.imageWriteErrorMessage(fileName);

@@ -6,29 +6,29 @@ import static constants.PhysicalConstants.cm;
 import static constants.PhysicalConstants.g;
 import static constants.PhysicalConstants.k;
 import static constants.PhysicalConstants.m;
-import static evaluation.MyMath.defineSquaredDistance;
-import static evaluation.MyMath.fastSqrt;
-import static evaluation.MyMath.sqr;
 import static java.lang.Math.abs;
 import static java.lang.Math.sqrt;
+import static simulation.math.MyMath.defineSquaredDistance;
+import static simulation.math.MyMath.fastSqrt;
+import static simulation.math.MyMath.sqr;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import elements.Boundaries;
-import elements.force_pair.ForcePair;
-import elements.force_pair.NeighborPair;
-import elements.force_pair.Spring;
-import elements.groups.ParticleGroup;
-import elements.groups.SpringGroup;
-import elements.point_mass.Particle;
-import evaluation.MyMath;
-import evaluation.TabulatedFunction;
+import elements.group.ParticleGroup;
+import elements.group.SpringGroup;
+import elements.line.ForcePair;
+import elements.line.NeighborPair;
+import elements.line.Spring;
+import elements.point.Particle;
 import gui.ConsoleWindow;
 import gui.lang.GUIStrings;
+import simulation.Boundaries;
 import simulation.Simulation;
 import simulation.SimulationContent;
+import simulation.math.MyMath;
+import simulation.math.TabulatedFunction;
 
 public class InteractionProcessor implements SimulationComponent {
 

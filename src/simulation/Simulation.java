@@ -2,17 +2,17 @@ package simulation;
 
 import java.util.ArrayList;
 
-import elements.force_pair.Spring;
-import elements.groups.ParticleGroup;
-import elements.groups.SpringGroup;
-import elements.point_mass.Particle;
+import elements.group.ParticleGroup;
+import elements.group.SpringGroup;
+import elements.line.Spring;
+import elements.point.Particle;
 import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.lang.GUIStrings;
-import main.SampleScenes;
 import simulation.components.InteractionProcessor;
 import simulation.components.SimulationComponent;
 import simulation.components.TimeStepController;
+import test.SampleScenes;
 
 public class Simulation implements Runnable {
 
@@ -127,8 +127,9 @@ public class Simulation implements Runnable {
 		if (isRunning) {
 			pForAdd.add(p);
 			refreshContentNeeded = true;
-		} else
+		} else {
 			content.particles.add(p);
+		}
 		interactionProcessor.recalculateNeighborsNeeded();
 	}
 
@@ -136,8 +137,9 @@ public class Simulation implements Runnable {
 		if (isRunning) {
 			sForAdd.add(s);
 			refreshContentNeeded = true;
-		} else
+		} else {
 			content.springs.add(s);
+		}
 		interactionProcessor.recalculateNeighborsNeeded();
 	}
 
@@ -145,8 +147,9 @@ public class Simulation implements Runnable {
 		if (isRunning) {
 			pForAdd.addAll(pp);
 			refreshContentNeeded = true;
-		} else
+		} else {
 			content.particles.addAll(pp);
+		}
 		interactionProcessor.recalculateNeighborsNeeded();
 		ConsoleWindow.println(GUIStrings.PARTICLES_ADDED);
 	}
@@ -155,8 +158,9 @@ public class Simulation implements Runnable {
 		if (isRunning) {
 			sForAdd.addAll(ss);
 			refreshContentNeeded = true;
-		} else
+		} else {
 			content.springs.addAll(ss);
+		}
 		interactionProcessor.recalculateNeighborsNeeded();
 		ConsoleWindow.println(GUIStrings.SPRINGS_ADDED);
 	}

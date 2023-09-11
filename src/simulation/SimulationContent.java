@@ -5,11 +5,10 @@ import static constants.PhysicalConstants.kg;
 
 import java.util.Iterator;
 
-import elements.Boundaries;
-import elements.force_pair.Spring;
-import elements.groups.ParticleGroup;
-import elements.groups.SpringGroup;
-import elements.point_mass.Particle;
+import elements.group.ParticleGroup;
+import elements.group.SpringGroup;
+import elements.line.Spring;
+import elements.point.Particle;
 
 public class SimulationContent implements Cloneable {
 	
@@ -109,7 +108,7 @@ public class SimulationContent implements Cloneable {
 			selectedSprings.size();
 			int lastSelectedIndex = getIndex(selectedSprings.get(0));
 			int nextSelectedIndex = lastSelectedIndex + 1;
-			if (nextSelectedIndex > getSpringCount() - 1)
+			if (nextSelectedIndex > getSpringsCount() - 1)
 				nextSelectedIndex = 0;
 			deselectAll();
 			select(getSpring(nextSelectedIndex));
@@ -124,7 +123,7 @@ public class SimulationContent implements Cloneable {
 			int lastSelectedIndex = getIndex(selectedSprings.get(0));
 			int nextSelectedIndex = lastSelectedIndex - 1;
 			if (nextSelectedIndex < 0)
-				nextSelectedIndex = getSpringCount() - 1;
+				nextSelectedIndex = getSpringsCount() - 1;
 			deselectAll();
 			select(getSpring(nextSelectedIndex));
 		}
@@ -201,7 +200,7 @@ public class SimulationContent implements Cloneable {
 		return particles.size();
 	}
 
-	public int getSpringCount() {
+	public int getSpringsCount() {
 		return springs.size();
 	}
 	

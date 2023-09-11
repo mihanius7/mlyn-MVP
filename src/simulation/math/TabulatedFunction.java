@@ -1,4 +1,4 @@
-package evaluation;
+package simulation.math;
 
 import gui.ConsoleWindow;
 

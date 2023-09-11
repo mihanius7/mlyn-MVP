@@ -1,12 +1,12 @@
-package elements;
+package simulation;
 
 import static constants.PhysicalConstants.cm;
 import static constants.PhysicalConstants.m;
 import static java.lang.Math.abs;
-import elements.point_mass.Particle;
+
+import elements.point.Particle;
 import gui.ConsoleWindow;
 import gui.lang.GUIStrings;
-import simulation.Simulation;
 
 public class Boundaries implements Cloneable {
 	private static final double INITIAL_BOTTOM_BORDER = 0 * m;

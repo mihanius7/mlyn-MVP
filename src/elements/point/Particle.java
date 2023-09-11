@@ -1,14 +1,14 @@
-package elements.point_mass;
+package elements.point;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
 
 import elements.Element;
-import evaluation.MyMath;
-import evaluation.Vector;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;
+import simulation.math.MyMath;
+import simulation.math.Vector;
 
 public class Particle extends PointMass implements Cloneable, Element {
 

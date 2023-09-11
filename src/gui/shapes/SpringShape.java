@@ -8,12 +8,12 @@ import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 
 import constants.PhysicalConstants;
-import elements.force_pair.Spring;
-import elements.point_mass.Particle;
+import elements.line.Spring;
+import elements.point.Particle;
 import gui.CoordinateConverter;
 import gui.Viewport;
 
-public class SpringShape extends AbstractShape {
+public class SpringShape extends Shape {
 	
 	private Spring s;
 	
