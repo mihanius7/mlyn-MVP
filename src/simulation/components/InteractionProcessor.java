@@ -25,6 +25,7 @@ import elements.point.Particle;
 import gui.ConsoleWindow;
 import gui.lang.GUIStrings;
 import simulation.Boundaries;
+import simulation.ExternalForce;
 import simulation.Simulation;
 import simulation.SimulationContent;
 import simulation.math.MyMath;
@@ -45,8 +46,7 @@ public class InteractionProcessor implements SimulationComponent {
 	public boolean useFastSpringProjection = true, useBoundaries = true;
 	private boolean isMoveToMouse;
 	private boolean isAccelerateByMouse;
-	private double externalAccelerationX = 0;
-	private double externalAccelerationY = -g;
+	private ExternalForce externalForce;
 	private Point2D.Double particleTargetXY = new Point2D.Double(0, 0);
 	private double spaceFrictionCoefficient = 0.2;
 	private double timeStepReserveRatio;
@@ -59,6 +59,7 @@ public class InteractionProcessor implements SimulationComponent {
 
 	public InteractionProcessor(SimulationContent content) {
 		new MyMath();
+		externalForce = new ExternalForce(0, -g);
 		particles = content.getParticles();
 		springs = content.getSprings();
 		reset();
@@ -105,9 +106,11 @@ public class InteractionProcessor implements SimulationComponent {
 	private void adjustNeighborsListRefreshPeriod() {
 		if (usePPCollisions) {
 			double t1 = getNeighborRangeExtra() / defineMaxParticleVelocity();
-			neighborSearchSkipSteps = (int) Math.round(t1 / Simulation.getInstance().timeStepController.getTimeStepSize() / 100);
+			neighborSearchSkipSteps = (int) Math
+					.round(t1 / Simulation.getInstance().timeStepController.getTimeStepSize() / 100);
 			if (neighborSearchSkipSteps > Simulation.getInstance().timeStepController.getStepsPerSecond() / 2)
-				neighborSearchSkipSteps = Math.round(Simulation.getInstance().timeStepController.getStepsPerSecond() / 2);
+				neighborSearchSkipSteps = Math
+						.round(Simulation.getInstance().timeStepController.getStepsPerSecond() / 2);
 		}
 	}
 
@@ -216,7 +219,8 @@ public class InteractionProcessor implements SimulationComponent {
 			Point2D.Double particleMouseDifferenceXY = new Point2D.Double(
 					particleTargetXY.getX() - Simulation.getInstance().getContent().getSelectedParticle(0).getX(),
 					particleTargetXY.getY() - Simulation.getInstance().getContent().getSelectedParticle(0).getY());
-			double force = PARTICLE_ACCELERATION_BY_MOUSE * Simulation.getInstance().getContent().getSelectedParticle(0).getMass()
+			double force = PARTICLE_ACCELERATION_BY_MOUSE
+					* Simulation.getInstance().getContent().getSelectedParticle(0).getMass()
 					* Math.pow(particleMouseDifferenceXY.distance(0, 0), 3);
 			double angle = Math.atan2(particleMouseDifferenceXY.getY(), particleMouseDifferenceXY.getX());
 			p.addFx(force * Math.cos(angle));
@@ -232,6 +236,8 @@ public class InteractionProcessor implements SimulationComponent {
 		Iterator<Particle> it = particles.iterator();
 		while (it.hasNext()) {
 			p = it.next();
+			if (useExternalForces)
+				externalForce.apply(p);
 			p.applyNewVelocity(dt, useFriction);
 			vel = p.getVelocityVector().normSquared();
 			if (vel > maxVel)
@@ -271,22 +277,6 @@ public class InteractionProcessor implements SimulationComponent {
 
 	public void recalculateNeighborsNeeded() {
 		recalculateNeighborsNeeded = true;
-	}
-
-	public double getExternalAccelerationX() {
-		return externalAccelerationX;
-	}
-
-	public void setExternalAccelerationX(double ax) {
-		externalAccelerationX = ax;
-	}
-
-	public double getExternalAccelerationY() {
-		return externalAccelerationY;
-	}
-
-	public void setExternalAccelerationY(double ay) {
-		externalAccelerationY = ay;
 	}
 
 	public double getAirFrictionCoefficient() {
@@ -344,7 +334,7 @@ public class InteractionProcessor implements SimulationComponent {
 	public void setMoveToMouse(boolean b) {
 		this.isMoveToMouse = b;
 	}
-	
+
 	public void setAccelerateByMouse(boolean b) {
 		this.isAccelerateByMouse = b;
 	}
@@ -400,6 +390,17 @@ public class InteractionProcessor implements SimulationComponent {
 		neighborSearchSkipSteps = DEFAULT_NEIGHBOR_SEARCH_PERIOD;
 		recalculateNeighborsNeeded();
 		ConsoleWindow.println(GUIStrings.INTERACTION_PROCESSOR_RESTARTED);
+	}
+
+	public ExternalForce getExternalForce() {
+		return externalForce;
+	}
+
+	public void setExternalForce(ExternalForce ef) {
+		if (ef != null)
+			this.externalForce = ef;
+		else
+			throw new RuntimeException("Interaction processors external force set to null!");
 	}
 
 	public int getNeighborSearchsNumber() {
