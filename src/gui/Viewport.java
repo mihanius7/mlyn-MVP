@@ -35,7 +35,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private Graphics2D canvas;
 	public Graphics2D tracksCanvas;
 	private RenderingHints rh;
-	private ArrayList<Shape> shapes;
+	private static ArrayList<Shape> shapes;
 	private final int ARROW_DRAWING_MIN_THRESHOLD = 8;
 	public final float LABELS_MIN_FONT_SIZE = 10;
 	public final int LABELS_FONT_SIZE = 12;
@@ -264,18 +264,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	public float getCurrentFontSize() {
 		return currentFontSize;
-	}
-
-	public boolean addShape(Shape shape) {
-		return shapes.add(shape);
-	}
-
-	public boolean removeShape(Shape shape) {
-		return shapes.remove(shape);
-	}
-
-	public void clearShapes() {
-		shapes.clear();
 	}
 
 	private void drawBoundariesOn(Graphics2D targetG2d) {

@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 
 import constants.PhysicalConstants;
+import elements.Element;
 import elements.line.Spring;
 import elements.point.Particle;
 import gui.CoordinateConverter;
@@ -80,6 +81,11 @@ public class SpringShape extends Shape {
 
 	public void setDrawLabel(boolean b) {
 		this.drawLabel = b;
+	}
+	
+	@Override
+	public Element getElement() {
+		return s;
 	}
 
 }
