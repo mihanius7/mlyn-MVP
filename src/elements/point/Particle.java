@@ -162,14 +162,6 @@ public class Particle extends PointMass implements Cloneable, Element {
 		y = MyMath.roundTo(y, 1 / gridSize);
 	}
 
-	public boolean isVisible() {
-		return visible;
-	}
-
-	public void setVisible(boolean v) {
-		this.visible = v;
-	}
-
 	public double getFrictionForce() {
 		return frictionForce;
 	}

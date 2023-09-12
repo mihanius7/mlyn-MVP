@@ -23,7 +23,7 @@ public class SimulationContent implements Cloneable {
 	
 	public SimulationContent() {
 		referenceParticle = new Particle(0, 0, 1 * kg, 6 * cm);
-		referenceParticle.setVisible(false);
+		referenceParticle.getShape().setVisible(false);
 	}
 
 	public ParticleGroup getParticles() {

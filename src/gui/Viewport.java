@@ -140,7 +140,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			graphics.drawImage(tracksImage, 0, 0, null);
 		drawBoundariesOn(graphics);
 		drawShapes(graphics);
-		if (Simulation.getInstance().getContent().getReferenceParticle().isVisible())
+		if (Simulation.getInstance().getContent().getReferenceParticle().getShape().isVisible())
 			Simulation.getInstance().getContent().getReferenceParticle().getShape().paintShape(graphics, this);
 		if (camera.getFollowing() != null) {
 			Element following = camera.getFollowing();
