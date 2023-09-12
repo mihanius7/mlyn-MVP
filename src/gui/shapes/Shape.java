@@ -3,6 +3,7 @@ package gui.shapes;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import elements.Element;
 import gui.Viewport;
 
 public abstract class Shape {
@@ -26,4 +27,6 @@ public abstract class Shape {
 	public void setVisible(boolean v) {
 		this.visible= v;
 	}
+	
+	abstract public Element getElement();
 }

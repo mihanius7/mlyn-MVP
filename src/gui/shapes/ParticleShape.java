@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.GradientPaint;
 import java.awt.Graphics2D;
 
+import elements.Element;
 import elements.point.Particle;
 import gui.Colors;
 import gui.CoordinateConverter;
@@ -90,6 +91,11 @@ public class ParticleShape extends Shape {
 			y += viewport.labelsFont.getSize() * stringsInterval;
 			targetG2d.drawString(String.format("%.2f m/s", p.defineVelocity()), x, y);
 		}
+	}
+
+	@Override
+	public Element getElement() {
+		return p;
 	}
 
 }

@@ -44,7 +44,7 @@ public class SampleScenes {
 
 public void scenePreset() {
 		Simulation.getInstance().timeStepController.setModeAndReset(TimeStepMode.DYNAMIC);
-		Simulation.getInstance().timeStepController.setTimeScale(0.25d);
+		Simulation.getInstance().timeStepController.setTimeScale(0.05);
 		Simulation.getInstance().interactionProcessor.setUsePPCollisions(true);
 		Simulation.getInstance().interactionProcessor.setUseExternalForces(false);
 		Simulation.getInstance().interactionProcessor.setBeta(10 * m, 5 * cm, 1E7, 0.28);

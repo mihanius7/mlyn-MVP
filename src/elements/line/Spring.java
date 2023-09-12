@@ -27,6 +27,7 @@ public class Spring extends ForcePair implements Element {
 	protected double breakUpTension = Double.MAX_VALUE;
 	protected boolean visible = true, isSelected = false, isLine = true, canCollide = false;
 	protected GapType gapType = GapType.NONE;
+	
 	protected SpringShape shape;
 
 	public Spring(Particle i, Particle j, double l0, double k, double c, double u2) {
@@ -87,14 +88,6 @@ public class Spring extends ForcePair implements Element {
 		Simulation.getInstance().interactionProcessor.tryToSetMaxSpringForce(force);
 		if (force >= breakUpTension)
 			Simulation.getInstance().removeSpringSafety(this);
-	}
-
-	public boolean isVisible() {
-		return visible;
-	}
-
-	public void makeVisible(boolean v) {
-		visible = v;
 	}
 
 	public double getVisibleWidth() {

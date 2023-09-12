@@ -63,7 +63,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				Simulation.getInstance();
 				if (viewport.useGrid && !Simulation.getInstance().isActive())
 					Simulation.getInstance().getContent().getReferenceParticle().snapToGrid(viewport.getGridSize());
-				Simulation.getInstance().getContent().getReferenceParticle().setVisible(true);
+				Simulation.getInstance().getContent().getReferenceParticle().getShape().setVisible(true);
 				mainWindow.clearSelection();
 			}
 		} else if (mouseMode == MouseMode.PARTICLE_SELECT) {
@@ -148,7 +148,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				Simulation.getInstance().interactionProcessor.setAccelerateByMouse(true);
 				Simulation.getInstance().interactionProcessor.setParticleTargetXY(new Point2D.Double(
 						CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1)));
-			} else if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getInstance().getContent().getReferenceParticle().isVisible()) {
+			} else if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getInstance().getContent().getReferenceParticle().getShape().isVisible()) {
 				Simulation.getInstance().getContent().getReferenceParticle().setX(CoordinateConverter.fromScreenX(x1));
 				Simulation.getInstance().getContent().getReferenceParticle().setY(CoordinateConverter.fromScreenY(y1));
 				Simulation.getInstance();
@@ -165,8 +165,8 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 		Simulation.getInstance().interactionProcessor.setParticleTargetXY(new Point2D.Double(0, 0));
 		radiusX = 0;
 		radiusY = 0;
-		if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getInstance().getContent().getReferenceParticle().isVisible()) {
-			Simulation.getInstance().getContent().getReferenceParticle().setVisible(false);
+		if (mouseMode == MouseMode.PARTICLE_ADD && Simulation.getInstance().getContent().getReferenceParticle().getShape().isVisible()) {
+			Simulation.getInstance().getContent().getReferenceParticle().getShape().setVisible(false);
 			Particle refP = Simulation.getInstance().getContent().getReferenceParticle();
 			Particle newP = new Particle(refP.getX(), refP.getY(), refP);
 			Simulation.getInstance().addToSimulation(newP);

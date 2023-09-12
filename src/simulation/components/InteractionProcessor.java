@@ -25,6 +25,7 @@ import elements.point.Particle;
 import gui.ConsoleWindow;
 import gui.lang.GUIStrings;
 import simulation.Boundaries;
+import simulation.ExternalForce;
 import simulation.Simulation;
 import simulation.SimulationContent;
 import simulation.math.MyMath;
@@ -45,12 +46,11 @@ public class InteractionProcessor implements SimulationComponent {
 	public boolean useFastSpringProjection = true, useBoundaries = true;
 	private boolean isMoveToMouse;
 	private boolean isAccelerateByMouse;
-	private double externalAccelerationX = 0;
-	private double externalAccelerationY = -g;
+	private ExternalForce externalForce;
 	private Point2D.Double particleTargetXY = new Point2D.Double(0, 0);
 	private double spaceFrictionCoefficient = 0.2;
 	private double timeStepReserveRatio;
-	private double dF, maxSpringForce, maxPairForce, maxParticleSquaredVelocity;
+	private double dF, maxSpringTension, maxPairForce, maxParticleSquaredVelocity;
 	private double minPairInteractionDistance = 1 * ang, maxPairInteractionDistance = 1.5 * m,
 			neighborRange = maxPairInteractionDistance * 1.1;
 	private long pairInteractionsNumber = 0;
@@ -59,6 +59,7 @@ public class InteractionProcessor implements SimulationComponent {
 
 	public InteractionProcessor(SimulationContent content) {
 		new MyMath();
+		externalForce = new ExternalForce(0, -g);
 		particles = content.getParticles();
 		springs = content.getSprings();
 		reset();
@@ -68,7 +69,7 @@ public class InteractionProcessor implements SimulationComponent {
 	public void process() {
 		if (recalculateNeighborsNeeded)
 			recalculateNeighborsList();
-		if (currentStep > skipSteps) {
+		if (currentStep >= skipSteps) {
 			applyNeighborInteractions();
 			accelerateSelectedParticle();
 			currentStep = 0;
@@ -83,7 +84,7 @@ public class InteractionProcessor implements SimulationComponent {
 	}
 
 	private void applyNeighborInteractions() {
-		maxSpringForce = 0;
+		maxSpringTension = 0;
 		maxPairForce = 0;
 		double f, maxF = 0, rr = Double.MAX_VALUE;
 		ForcePair fe;
@@ -105,9 +106,11 @@ public class InteractionProcessor implements SimulationComponent {
 	private void adjustNeighborsListRefreshPeriod() {
 		if (usePPCollisions) {
 			double t1 = getNeighborRangeExtra() / defineMaxParticleVelocity();
-			neighborSearchSkipSteps = (int) Math.round(t1 / Simulation.getInstance().timeStepController.getTimeStepSize() / 100);
+			neighborSearchSkipSteps = (int) Math
+					.round(t1 / Simulation.getInstance().timeStepController.getTimeStepSize() / 100);
 			if (neighborSearchSkipSteps > Simulation.getInstance().timeStepController.getStepsPerSecond() / 2)
-				neighborSearchSkipSteps = Math.round(Simulation.getInstance().timeStepController.getStepsPerSecond() / 2);
+				neighborSearchSkipSteps = Math
+						.round(Simulation.getInstance().timeStepController.getStepsPerSecond() / 2);
 		}
 	}
 
@@ -216,7 +219,8 @@ public class InteractionProcessor implements SimulationComponent {
 			Point2D.Double particleMouseDifferenceXY = new Point2D.Double(
 					particleTargetXY.getX() - Simulation.getInstance().getContent().getSelectedParticle(0).getX(),
 					particleTargetXY.getY() - Simulation.getInstance().getContent().getSelectedParticle(0).getY());
-			double force = PARTICLE_ACCELERATION_BY_MOUSE * Simulation.getInstance().getContent().getSelectedParticle(0).getMass()
+			double force = PARTICLE_ACCELERATION_BY_MOUSE
+					* Simulation.getInstance().getContent().getSelectedParticle(0).getMass()
 					* Math.pow(particleMouseDifferenceXY.distance(0, 0), 3);
 			double angle = Math.atan2(particleMouseDifferenceXY.getY(), particleMouseDifferenceXY.getX());
 			p.addFx(force * Math.cos(angle));
@@ -226,17 +230,18 @@ public class InteractionProcessor implements SimulationComponent {
 	}
 
 	private void moveParticles() {
-		double dt = Simulation.getInstance().timeStepController.getTimeStepSize();
 		double maxVel = 0, vel;
 		Particle p;
 		Iterator<Particle> it = particles.iterator();
 		while (it.hasNext()) {
 			p = it.next();
-			p.applyNewVelocity(dt, useFriction);
+			if (useExternalForces)
+				externalForce.apply(p);
+			p.applyNewVelocity(Simulation.getInstance().timeStepController.getTimeStepSize(), useFriction);
 			vel = p.getVelocityVector().normSquared();
 			if (vel > maxVel)
 				maxVel = vel;
-			p.move(dt);
+			p.move(Simulation.getInstance().timeStepController.getTimeStepSize());
 			if (currentStep == 0)
 				p.clearForce();
 			if (useBoundaries) {
@@ -271,22 +276,6 @@ public class InteractionProcessor implements SimulationComponent {
 
 	public void recalculateNeighborsNeeded() {
 		recalculateNeighborsNeeded = true;
-	}
-
-	public double getExternalAccelerationX() {
-		return externalAccelerationX;
-	}
-
-	public void setExternalAccelerationX(double ax) {
-		externalAccelerationX = ax;
-	}
-
-	public double getExternalAccelerationY() {
-		return externalAccelerationY;
-	}
-
-	public void setExternalAccelerationY(double ay) {
-		externalAccelerationY = ay;
 	}
 
 	public double getAirFrictionCoefficient() {
@@ -344,7 +333,7 @@ public class InteractionProcessor implements SimulationComponent {
 	public void setMoveToMouse(boolean b) {
 		this.isMoveToMouse = b;
 	}
-	
+
 	public void setAccelerateByMouse(boolean b) {
 		this.isAccelerateByMouse = b;
 	}
@@ -377,8 +366,8 @@ public class InteractionProcessor implements SimulationComponent {
 		return -G * m1 / squaredDistance;
 	}
 
-	public double getMaxSpringForce() {
-		return maxSpringForce;
+	public double getMaxSpringTension() {
+		return maxSpringTension;
 	}
 
 	public double defineMaxParticleVelocity() {
@@ -402,6 +391,17 @@ public class InteractionProcessor implements SimulationComponent {
 		ConsoleWindow.println(GUIStrings.INTERACTION_PROCESSOR_RESTARTED);
 	}
 
+	public ExternalForce getExternalForce() {
+		return externalForce;
+	}
+
+	public void setExternalForce(ExternalForce ef) {
+		if (ef != null)
+			this.externalForce = ef;
+		else
+			throw new RuntimeException("Interaction processors external force set to null!");
+	}
+
 	public int getNeighborSearchsNumber() {
 		return neighborSearchNumber;
 	}
@@ -411,8 +411,8 @@ public class InteractionProcessor implements SimulationComponent {
 	}
 
 	public void tryToSetMaxSpringForce(double force) {
-		if (force > maxSpringForce)
-			maxSpringForce = force;
+		if (force > maxSpringTension)
+			maxSpringTension = force;
 	}
 
 	public boolean isUsePPCollisions() {

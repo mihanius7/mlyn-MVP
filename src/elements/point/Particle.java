@@ -53,10 +53,6 @@ public class Particle extends PointMass implements Cloneable, Element {
 	public void applyNewVelocity(double dt, boolean useFriction) {
 		lastVelocity.setX(velocity.X());
 		lastVelocity.setY(velocity.Y());
-		if (Simulation.getInstance().interactionProcessor.isUseExternalForces()) {
-			force.addToX(Simulation.getInstance().interactionProcessor.getExternalAccelerationX() * m);
-			force.addToY(Simulation.getInstance().interactionProcessor.getExternalAccelerationY() * m);
-		}
 		if (isMoving()) {
 			if (useFriction) {
 				double airFriction = Simulation.getInstance().interactionProcessor.getAirFrictionCoefficient();
@@ -166,14 +162,6 @@ public class Particle extends PointMass implements Cloneable, Element {
 		y = MyMath.roundTo(y, 1 / gridSize);
 	}
 
-	public boolean isVisible() {
-		return visible;
-	}
-
-	public void setVisible(boolean v) {
-		this.visible = v;
-	}
-
 	public double getFrictionForce() {
 		return frictionForce;
 	}
@@ -233,8 +221,8 @@ public class Particle extends PointMass implements Cloneable, Element {
 		return canCollide;
 	}
 
-	public void setCanCollide(boolean canCollide) {
-		this.canCollide = canCollide;
+	public void setCanCollide(boolean b) {
+		this.canCollide = b;
 	}
 
 	public ParticleShape getShape() {

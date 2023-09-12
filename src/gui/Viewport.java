@@ -35,17 +35,17 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private Graphics2D canvas;
 	public Graphics2D tracksCanvas;
 	private RenderingHints rh;
-	private ArrayList<Shape> shapes;
+	private static ArrayList<Shape> shapes;
 	private final int ARROW_DRAWING_MIN_THRESHOLD = 8;
 	public final float LABELS_MIN_FONT_SIZE = 10;
 	public final int LABELS_FONT_SIZE = 12;
 	public final float LABELS_MAX_FONT_SIZE = 20;
 	private float currentFontSize = LABELS_FONT_SIZE;
-	public final static int REFRESH_MESSAGES_INTERVAL = 400;
-	final int FRAME_PAINT_DELAY = 18;
+	public final static int REFRESH_MESSAGES_INTERVAL = 500;
+	final int FRAME_PAINT_DELAY = 20;
 	final int AUTOSCALE_MARGIN = 75;
 	public final static double DEFAULT_GRID_SIZE = 20 * cm;
-	private boolean drawMessages = true;
+	private boolean drawInfo = true;
 	public boolean useGrid = true;
 	private boolean drawTracks = false;
 	private boolean drawHeatMap = false;
@@ -140,7 +140,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			graphics.drawImage(tracksImage, 0, 0, null);
 		drawBoundariesOn(graphics);
 		drawShapes(graphics);
-		if (Simulation.getInstance().getContent().getReferenceParticle().isVisible())
+		if (Simulation.getInstance().getContent().getReferenceParticle().getShape().isVisible())
 			Simulation.getInstance().getContent().getReferenceParticle().getShape().paintShape(graphics, this);
 		if (camera.getFollowing() != null) {
 			Element following = camera.getFollowing();
@@ -151,8 +151,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		drawCrossOn(graphics, crossX, crossY, true);
 		drawAxisOn(graphics);
 		drawScaleLineOn(graphics);
-		if (drawMessages)
-			drawMessagesOn(graphics);
+		if (drawInfo)
+			drawInfoStringsOn(graphics);
 		Toolkit.getDefaultToolkit().sync();
 		graphics.dispose();
 		fps++;
@@ -162,31 +162,35 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public void actionPerformed(ActionEvent e) {
 		Object src = e.getSource();
 		if (src == refreshLabelsTimer) {
-			timeString = String.format("t = %.3f c, ", Simulation.getInstance().getTime())
-					+ String.format("dt = %.4f", Simulation.getInstance().timeStepController.getTimeStepSize() * 1000)
-					+ " ms, "
-					+ String.format("Vmax = %.2f m/s",
-							Simulation.getInstance().interactionProcessor.defineMaxParticleVelocity())
-					+ ", fps = " + fps * 1000 / REFRESH_MESSAGES_INTERVAL;
-			double r = Simulation.getInstance().interactionProcessor.getTimeStepReserveRatio();
-			Simulation.getInstance().timeStepController.measureTimeScale();
-			double timeScale = Simulation.getInstance().timeStepController.getMeasuredTimeScale();
-			String displayedTimeScale = "нявызначаны";
-			if (Simulation.getInstance().isActive())
-				if (timeScale > 1000 || timeScale < 1e-3)
-					displayedTimeScale = String.format("%.2e", timeScale);
-				else
-					displayedTimeScale = String.format("%.3f", timeScale);
-			if (r > 100)
-				timeStepString = String.format(
-						GUIStrings.TIMESTEP_RESERVE + " > 100 " + GUIStrings.TIME_SCALE + " " + displayedTimeScale, r);
-			else
-				timeStepString = String.format(
-						GUIStrings.TIMESTEP_RESERVE + " = %.1f " + GUIStrings.TIME_SCALE + " " + displayedTimeScale, r);
+			updateInfoStrings();
 			MainWindow.getInstance().refreshGUIDisplays();
 			Simulation.getInstance().timeStepController.clearStepsPerSecond();
 			fps = 0;
 		}
+	}
+
+	private void updateInfoStrings() {
+		timeString = String.format("t = %.3f c, ", Simulation.getInstance().getTime())
+				+ String.format("dt = %.4f", Simulation.getInstance().timeStepController.getTimeStepSize() * 1000)
+				+ " ms, "
+				+ String.format("Vmax = %.2f m/s",
+						Simulation.getInstance().interactionProcessor.defineMaxParticleVelocity())
+				+ ", fps = " + fps * 1000.0 / REFRESH_MESSAGES_INTERVAL;
+		double r = Simulation.getInstance().interactionProcessor.getTimeStepReserveRatio();
+		Simulation.getInstance().timeStepController.measureTimeScale();
+		double timeScale = Simulation.getInstance().timeStepController.getMeasuredTimeScale();
+		String displayedTimeScale = "нявызначаны";
+		if (Simulation.getInstance().isActive())
+			if (timeScale > 1000 || timeScale < 1e-3)
+				displayedTimeScale = String.format("%.2e", timeScale);
+			else
+				displayedTimeScale = String.format("%.3f", timeScale);
+		if (r > 100)
+			timeStepString = String.format(
+					GUIStrings.TIMESTEP_RESERVE + " > 100 " + GUIStrings.TIME_SCALE + " " + displayedTimeScale, r);
+		else
+			timeStepString = String.format(
+					GUIStrings.TIMESTEP_RESERVE + " = %.1f " + GUIStrings.TIME_SCALE + " " + displayedTimeScale, r);
 	}
 
 	void drawBackgroundOn(Graphics2D targetG2d) {
@@ -232,7 +236,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		}
 	}
 
-	private void drawMessagesOn(Graphics2D targetG2d) {
+	private void drawInfoStringsOn(Graphics2D targetG2d) {
 		targetG2d.setColor(Color.BLACK);
 		targetG2d.setFont(mainFont);
 		targetG2d.drawString(timeString, 2, 12);
@@ -264,18 +268,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	public float getCurrentFontSize() {
 		return currentFontSize;
-	}
-
-	public boolean addShape(Shape shape) {
-		return shapes.add(shape);
-	}
-
-	public boolean removeShape(Shape shape) {
-		return shapes.remove(shape);
-	}
-
-	public void clearShapes() {
-		shapes.clear();
 	}
 
 	private void drawBoundariesOn(Graphics2D targetG2d) {
