@@ -221,8 +221,8 @@ public class Particle extends PointMass implements Cloneable, Element {
 		return canCollide;
 	}
 
-	public void setCanCollide(boolean canCollide) {
-		this.canCollide = canCollide;
+	public void setCanCollide(boolean b) {
+		this.canCollide = b;
 	}
 
 	public ParticleShape getShape() {
