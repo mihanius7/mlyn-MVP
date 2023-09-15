@@ -1,10 +1,9 @@
 package elements.point;
 
 import simulation.Simulation;
-import simulation.math.Functions;
 import simulation.math.Vector;
 
-public class PointMass implements Cloneable  {
+public class PointMass implements Cloneable {
 
 	protected double m;
 	protected double x, y, lastx, lasty;
@@ -13,7 +12,7 @@ public class PointMass implements Cloneable  {
 	protected Vector lastVelocity = new Vector();
 	protected Vector force = new Vector();
 	protected Vector lastForce = new Vector();
-	protected int movableX = 1, movableY = 1;
+	protected byte movableX = 1, movableY = 1;
 
 	public PointMass(double x, double y, double m) {
 		this.x = x;
@@ -126,7 +125,7 @@ public class PointMass implements Cloneable  {
 		double dt = Simulation.getInstance().timeStepController.getTimeStepSize();
 		return (velocity.Y() - lastVelocity.Y()) / dt;
 	}
-	
+
 	public double getFx() {
 		return force.X();
 	}
@@ -171,7 +170,6 @@ public class PointMass implements Cloneable  {
 		velocity.addToY(dvy);
 	}
 
-
 	public double defineSquaredVelocity() {
 		return velocity.normSquared();
 	}
@@ -194,8 +192,17 @@ public class PointMass implements Cloneable  {
 	}
 
 	public void setVelocityVector(Vector v) {
-		v.setX(v.X());
-		v.setY(v.Y());
+		velocity.setX(v.X());
+		velocity.setY(v.Y());
+	}
+
+	public Vector getLastVelocityVector() {
+		return lastVelocity;
+	}
+
+	public void setLastVelocityVector(Vector v) {
+		lastVelocity.setX(v.X());
+		lastVelocity.setY(v.Y());
 	}
 
 	public Vector measureVelocity() {
@@ -209,14 +216,14 @@ public class PointMass implements Cloneable  {
 	public double measureKineticEnergy() {
 		return m * measureVelocity().normSquared() / 2;
 	}
-	
+
 	public void calculateNextLocation(double dt) {
 		lastx = x;
 		x += movableX * velocity.X() * dt + movableX * (force.X() * dt * dt) / (2 * m);
 		lasty = y;
 		y += movableY * velocity.Y() * dt + movableY * (force.Y() * dt * dt) / (2 * m);
 	}
-	
+
 	public void clearForce() {
 		lastForce.setXY(force.X(), force.Y());
 		force.setXY(0, 0);
@@ -234,32 +241,20 @@ public class PointMass implements Cloneable  {
 			velocity.setXY(0, 0);
 	}
 
-	public boolean isMovableX() {
-		if (movableX > 0)
-			return true;
-		else
-			return false;
+	public byte isMovableX() {
+		return (byte) (movableX > 0 ? 1 : 0);
 	}
 
 	public void setMovableX(boolean b) {
-		if (b == true)
-			this.movableX = 1;
-		else
-			this.movableX = 0;
+		this.movableX = (byte) (b ? 1 : 0);
 	}
 
-	public boolean isMovableY() {
-		if (movableY > 0)
-			return true;
-		else
-			return false;
+	public byte isMovableY() {
+		return (byte) (movableY > 0 ? 1 : 0);
 	}
 
 	public void setMovableY(boolean b) {
-		if (b == true)
-			this.movableY = 1;
-		else
-			this.movableY = 0;
+		this.movableY = (byte) (b ? 1 : 0);
 	}
 
 	public boolean isMovable() {

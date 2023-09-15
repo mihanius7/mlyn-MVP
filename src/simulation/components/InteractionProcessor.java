@@ -30,6 +30,7 @@ import simulation.Simulation;
 import simulation.SimulationContent;
 import simulation.math.Functions;
 import simulation.math.TabulatedFunction;
+import simulation.math.TrajectoryIntegrator;
 
 public class InteractionProcessor implements SimulationComponent {
 
@@ -37,6 +38,7 @@ public class InteractionProcessor implements SimulationComponent {
 	private static final int PARTICLE_BY_MOUSE_MOVING_SMOOTH = 500;
 	private static final int PARTICLE_ACCELERATION_BY_MOUSE = 2;
 	private InteractionType interactionType = InteractionType.COULOMB;
+	private TrajectoryIntegrator integrator;
 	private TabulatedFunction forceTable;
 	private ParticleGroup particles;
 	private SpringGroup springs;
@@ -48,7 +50,7 @@ public class InteractionProcessor implements SimulationComponent {
 	private boolean isAccelerateByMouse;
 	private ExternalForce externalForce;
 	private Point2D.Double particleTargetXY = new Point2D.Double(0, 0);
-	private double spaceFrictionCoefficient = 0.2;
+	private double spaceFrictionCoefficient = 0.1;
 	private double timeStepReserveRatio;
 	private double dF, maxSpringTension, maxPairForce, maxParticleSquaredVelocity;
 	private double minPairInteractionDistance = 1 * ang, maxPairInteractionDistance = 1.5 * m,
@@ -59,6 +61,7 @@ public class InteractionProcessor implements SimulationComponent {
 
 	public InteractionProcessor(SimulationContent content) {
 		new Functions();
+		integrator = new TrajectoryIntegrator();
 		externalForce = new ExternalForce(0, -g);
 		particles = content.getParticles();
 		springs = content.getSprings();
@@ -237,7 +240,8 @@ public class InteractionProcessor implements SimulationComponent {
 			p = it.next();
 			if (useExternalForces)
 				externalForce.apply(p);
-			p.calculateNextVelocity(Simulation.getInstance().timeStepController.getTimeStepSize(), useFriction);
+			integrator.calculateNextVelocity(p, Simulation.getInstance().timeStepController.getTimeStepSize(),
+					useFriction);
 			vel = p.getVelocityVector().normSquared();
 			if (vel > maxVel)
 				maxVel = vel;

@@ -6,7 +6,6 @@ import java.awt.geom.Point2D.Double;
 
 import elements.Element;
 import gui.shapes.ParticleShape;
-import simulation.Simulation;
 import simulation.math.Functions;
 
 public class Particle extends PointMass implements Cloneable, Element {
@@ -16,6 +15,7 @@ public class Particle extends PointMass implements Cloneable, Element {
 	protected boolean visible = true, canCollide = true, isSelected = false;
 	protected double frictionForce, stictionForce;
 	protected double elasticity = PARTICLE_ELASTICITY_DEFAULT;
+
 	protected ParticleShape shape;
 
 	public Particle(double x, double y, double m, double q, double vx, double vy, double radius, Color c) {
@@ -42,34 +42,9 @@ public class Particle extends PointMass implements Cloneable, Element {
 	public Particle(double x, double y, Particle referenceParticle) {
 		this(x, y, referenceParticle.getMass(), referenceParticle.getCharge(), referenceParticle.getVx(),
 				referenceParticle.getVy(), referenceParticle.getRadius(), referenceParticle.getShape().getColor());
-		this.movableX = (referenceParticle.isMovableX() == true) ? 1 : 0;
-		this.movableY = (referenceParticle.isMovableY() == true) ? 1 : 0;
+		this.movableX = referenceParticle.isMovableX();
+		this.movableY = referenceParticle.isMovableY();
 		this.elasticity = referenceParticle.getElasticity();
-	}
-
-	public void calculateNextVelocity(double dt, boolean useFriction) {
-		lastVelocity.setX(velocity.X());
-		lastVelocity.setY(velocity.Y());
-		if (isMoving()) {
-			if (useFriction) {
-				double airFriction = Simulation.getInstance().interactionProcessor.getAirFrictionCoefficient();
-				force.addToXY(-velocity.X() * airFriction, -velocity.Y() * airFriction);
-				double ffx = -velocity.defineCos() * frictionForce;
-				double ffy = -velocity.defineSin() * frictionForce;
-				force.addToXY(ffx, ffy);
-			}
-			calculateByVerlet(dt);
-		} else {
-			if (useFriction && isStictionReached())
-				calculateByVerlet(dt);
-			else
-				calculateByVerlet(dt);
-		}
-	}
-
-	private void calculateByVerlet(double dt) {
-		velocity.addToX(movableX * (dt * (lastForce.X() + force.X()) / (2 * m)));
-		velocity.addToY(movableY * (dt * (lastForce.Y() + force.Y()) / (2 * m)));
 	}
 
 	public double getCharge() {
@@ -103,9 +78,7 @@ public class Particle extends PointMass implements Cloneable, Element {
 	}
 
 	public void setFrictionForce(double fr) {
-		if (fr < 0)
-			fr = 0;
-		frictionForce = fr;
+		this.stictionForce = (fr < 0) ? 0 : fr;
 	}
 
 	public double getStictionForce() {
@@ -113,9 +86,7 @@ public class Particle extends PointMass implements Cloneable, Element {
 	}
 
 	public void setStictionForce(double sff) {
-		if (sff < 0)
-			sff = 0;
-		this.stictionForce = sff;
+		this.stictionForce = (sff < 0) ? 0 : sff;
 	}
 
 	public double getElasticity() {
@@ -123,11 +94,7 @@ public class Particle extends PointMass implements Cloneable, Element {
 	}
 
 	public void setElasticity(double e) {
-		if (e > 1)
-			e = 1;
-		else if (e < 0)
-			e = 0;
-		this.elasticity = e;
+		this.elasticity = (e > 1) ? 1 : (e < 0) ? 0 : e;
 	}
 
 	public Particle clone() throws CloneNotSupportedException {
