@@ -249,7 +249,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.setColor(Colors.FONT_TAGS);
 		int xc = Math.min(x1, x2) + (Math.max(x1, x2) - Math.min(x1, x2)) / 2;
 		int yc = Math.min(y1, y2) + (Math.max(y1, y2) - Math.min(y1, y2)) / 2;
-		alpha = simulation.math.MyMath.fitAbsAngleRad(alpha);
+		alpha = simulation.math.Functions.fitAbsAngleRad(alpha);
 		targetG2d.translate(xc, yc);
 		targetG2d.rotate(alpha);
 		targetG2d.drawString(string, -(currentFontSize * string.length()) / 4, -currentFontSize / 2);

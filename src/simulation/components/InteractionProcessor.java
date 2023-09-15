@@ -8,9 +8,9 @@ import static constants.PhysicalConstants.k;
 import static constants.PhysicalConstants.m;
 import static java.lang.Math.abs;
 import static java.lang.Math.sqrt;
-import static simulation.math.MyMath.defineSquaredDistance;
-import static simulation.math.MyMath.fastSqrt;
-import static simulation.math.MyMath.sqr;
+import static simulation.math.Functions.defineSquaredDistance;
+import static simulation.math.Functions.fastSqrt;
+import static simulation.math.Functions.sqr;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import simulation.Boundaries;
 import simulation.ExternalForce;
 import simulation.Simulation;
 import simulation.SimulationContent;
-import simulation.math.MyMath;
+import simulation.math.Functions;
 import simulation.math.TabulatedFunction;
 
 public class InteractionProcessor implements SimulationComponent {
@@ -58,7 +58,7 @@ public class InteractionProcessor implements SimulationComponent {
 	private double beta = (2 * 1E6 * sqrt(5 * cm * 5 * cm / (5 * cm + 5 * cm))) / (3 * (1 - 0.28 * 0.28));
 
 	public InteractionProcessor(SimulationContent content) {
-		new MyMath();
+		new Functions();
 		externalForce = new ExternalForce(0, -g);
 		particles = content.getParticles();
 		springs = content.getSprings();
@@ -237,11 +237,11 @@ public class InteractionProcessor implements SimulationComponent {
 			p = it.next();
 			if (useExternalForces)
 				externalForce.apply(p);
-			p.applyNewVelocity(Simulation.getInstance().timeStepController.getTimeStepSize(), useFriction);
+			p.calculateNextVelocity(Simulation.getInstance().timeStepController.getTimeStepSize(), useFriction);
 			vel = p.getVelocityVector().normSquared();
 			if (vel > maxVel)
 				maxVel = vel;
-			p.move(Simulation.getInstance().timeStepController.getTimeStepSize());
+			p.calculateNextLocation(Simulation.getInstance().timeStepController.getTimeStepSize());
 			if (currentStep == 0)
 				p.clearForce();
 			if (useBoundaries) {

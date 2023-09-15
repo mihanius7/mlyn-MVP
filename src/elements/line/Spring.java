@@ -3,10 +3,10 @@ package elements.line;
 import static constants.PhysicalConstants.cm;
 import static java.lang.Math.PI;
 import static java.lang.Math.sqrt;
-import static simulation.math.MyMath.cube;
-import static simulation.math.MyMath.defineDistance;
-import static simulation.math.MyMath.defineReducedMass;
-import static simulation.math.MyMath.sqr;
+import static simulation.math.Functions.cube;
+import static simulation.math.Functions.defineDistance;
+import static simulation.math.Functions.defineReducedMass;
+import static simulation.math.Functions.sqr;
 
 import java.awt.geom.Point2D;
 

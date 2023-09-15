@@ -1,11 +1,11 @@
 package elements.line;
 
 import static java.lang.Math.min;
-import static simulation.math.MyMath.defineDistance;
+import static simulation.math.Functions.defineDistance;
 
 import elements.point.Particle;
 import simulation.Simulation;
-import simulation.math.MyMath;
+import simulation.math.Functions;
 
 public abstract class ForcePair implements Force {
 
@@ -73,7 +73,7 @@ public abstract class ForcePair implements Force {
 	}
 
 	public double defineAngle() {
-		angle = MyMath.angle(p1.getX() - p2.getX(), p1.getY() - p2.getY());
+		angle = Functions.angle(p1.getX() - p2.getX(), p1.getY() - p2.getY());
 		return angle;
 	}
 
