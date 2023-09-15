@@ -7,15 +7,12 @@ import java.awt.geom.Point2D.Double;
 import elements.Element;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;
-import simulation.math.MyMath;
-import simulation.math.Vector;
+import simulation.math.Functions;
 
 public class Particle extends PointMass implements Cloneable, Element {
 
 	public static final double PARTICLE_ELASTICITY_DEFAULT = 0.99;
 	protected double r, q;
-	protected Vector force = new Vector();
-	protected Vector lastForce = new Vector();
 	protected boolean visible = true, canCollide = true, isSelected = false;
 	protected double frictionForce, stictionForce;
 	protected double elasticity = PARTICLE_ELASTICITY_DEFAULT;
@@ -50,7 +47,7 @@ public class Particle extends PointMass implements Cloneable, Element {
 		this.elasticity = referenceParticle.getElasticity();
 	}
 
-	public void applyNewVelocity(double dt, boolean useFriction) {
+	public void calculateNextVelocity(double dt, boolean useFriction) {
 		lastVelocity.setX(velocity.X());
 		lastVelocity.setY(velocity.Y());
 		if (isMoving()) {
@@ -61,35 +58,18 @@ public class Particle extends PointMass implements Cloneable, Element {
 				double ffy = -velocity.defineSin() * frictionForce;
 				force.addToXY(ffx, ffy);
 			}
-			velocityVerlet(dt);
+			calculateByVerlet(dt);
 		} else {
 			if (useFriction && isStictionReached())
-				velocityVerlet(dt);
+				calculateByVerlet(dt);
 			else
-				velocityVerlet(dt);
+				calculateByVerlet(dt);
 		}
 	}
 
-	private void velocityVerlet(double dt) {
+	private void calculateByVerlet(double dt) {
 		velocity.addToX(movableX * (dt * (lastForce.X() + force.X()) / (2 * m)));
 		velocity.addToY(movableY * (dt * (lastForce.Y() + force.Y()) / (2 * m)));
-	}
-
-	public void move(double dt) {
-		lastx = x;
-		x += movableX * velocity.X() * dt + movableX * (force.X() * dt * dt) / (2 * m);
-		lasty = y;
-		y += movableY * velocity.Y() * dt + movableY * (force.Y() * dt * dt) / (2 * m);
-	}
-
-	public void clearForce() {
-		lastForce.setXY(force.X(), force.Y());
-		force.setXY(0, 0);
-	}
-
-	public void clearForcesAndHistory() {
-		lastForce.setXY(0, 0);
-		force.setXY(0, 0);
 	}
 
 	public double getCharge() {
@@ -109,57 +89,13 @@ public class Particle extends PointMass implements Cloneable, Element {
 			r = newRadius;
 	}
 
-	public double getFx() {
-		return force.X();
-	}
-
-	public double getFy() {
-		return force.Y();
-	}
-
-	public Vector getForceVector() {
-		return force;
-	}
-
-	public Vector getLastForceVector() {
-		return lastForce;
-	}
-
-	public void setFx(double newFx) {
-		lastForce.setX(force.X());
-		force.setX(newFx);
-	}
-
-	public void setFy(double newFy) {
-		lastForce.setY(force.Y());
-		force.setY(newFy);
-	}
-
-	public void addFx(double dfx) {
-		force.addToX(dfx);
-	}
-
-	public void addFy(double dfy) {
-		force.addToY(dfy);
-	}
-
-	public void addVx(double dvx) {
-		lastVelocity.setX(velocity.X());
-		velocity.addToX(dvx);
-	}
-
-	public void addVy(double dvy) {
-		lastVelocity.setY(velocity.Y());
-		velocity.addToY(dvy);
-	}
-
 	public boolean isStictionReached() {
 		return lastForce.normSquared() > stictionForce * stictionForce;
 	}
 
 	public void snapToGrid(double gridSize) {
-		x = MyMath.roundTo(x, 1 / gridSize);
-		y = MyMath.roundTo(y, 1 / gridSize);
+		x = Functions.roundTo(x, 1 / gridSize);
+		y = Functions.roundTo(y, 1 / gridSize);
 	}
 
 	public double getFrictionForce() {

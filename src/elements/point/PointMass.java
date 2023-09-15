@@ -1,9 +1,7 @@
 package elements.point;
 
-import java.awt.geom.Point2D;
-
-import elements.Element;
 import simulation.Simulation;
+import simulation.math.Functions;
 import simulation.math.Vector;
 
 public class PointMass implements Cloneable  {
@@ -13,6 +11,8 @@ public class PointMass implements Cloneable  {
 	protected double oldVelocitySmoothed;
 	protected Vector velocity = new Vector();
 	protected Vector lastVelocity = new Vector();
+	protected Vector force = new Vector();
+	protected Vector lastForce = new Vector();
 	protected int movableX = 1, movableY = 1;
 
 	public PointMass(double x, double y, double m) {
@@ -126,6 +126,51 @@ public class PointMass implements Cloneable  {
 		double dt = Simulation.getInstance().timeStepController.getTimeStepSize();
 		return (velocity.Y() - lastVelocity.Y()) / dt;
 	}
+	
+	public double getFx() {
+		return force.X();
+	}
+
+	public double getFy() {
+		return force.Y();
+	}
+
+	public Vector getForceVector() {
+		return force;
+	}
+
+	public Vector getLastForceVector() {
+		return lastForce;
+	}
+
+	public void setFx(double newFx) {
+		lastForce.setX(force.X());
+		force.setX(newFx);
+	}
+
+	public void setFy(double newFy) {
+		lastForce.setY(force.Y());
+		force.setY(newFy);
+	}
+
+	public void addFx(double dfx) {
+		force.addToX(dfx);
+	}
+
+	public void addFy(double dfy) {
+		force.addToY(dfy);
+	}
+
+	public void addVx(double dvx) {
+		lastVelocity.setX(velocity.X());
+		velocity.addToX(dvx);
+	}
+
+	public void addVy(double dvy) {
+		lastVelocity.setY(velocity.Y());
+		velocity.addToY(dvy);
+	}
+
 
 	public double defineSquaredVelocity() {
 		return velocity.normSquared();
@@ -163,6 +208,23 @@ public class PointMass implements Cloneable  {
 
 	public double measureKineticEnergy() {
 		return m * measureVelocity().normSquared() / 2;
+	}
+	
+	public void calculateNextLocation(double dt) {
+		lastx = x;
+		x += movableX * velocity.X() * dt + movableX * (force.X() * dt * dt) / (2 * m);
+		lasty = y;
+		y += movableY * velocity.Y() * dt + movableY * (force.Y() * dt * dt) / (2 * m);
+	}
+	
+	public void clearForce() {
+		lastForce.setXY(force.X(), force.Y());
+		force.setXY(0, 0);
+	}
+
+	public void clearForcesAndHistory() {
+		lastForce.setXY(0, 0);
+		force.setXY(0, 0);
 	}
 
 	public void setMovable(boolean b) {
