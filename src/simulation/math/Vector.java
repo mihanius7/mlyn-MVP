@@ -68,7 +68,7 @@ public class Vector implements Cloneable {
 	}
 
 	public double defineAngle() {
-		return MyMath.angle(x, y);
+		return Functions.angle(x, y);
 	}
 
 	public Vector add(Vector v) {

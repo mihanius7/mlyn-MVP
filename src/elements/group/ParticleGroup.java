@@ -12,7 +12,7 @@ import gui.MainWindow;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;
-import simulation.math.MyMath;
+import simulation.math.Functions;
 import simulation.math.Vector;
 
 public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
@@ -76,7 +76,7 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 	}
 
 	public Vector defineCenterOfMass() {
-		Vector v = MyMath.centreOfMass(toArray(new Particle[] {}));
+		Vector v = Functions.centreOfMass(toArray(new Particle[] {}));
 		ConsoleWindow.println("Xc = " + v.X() + ", Yc = " + v.Y());
 		return v;
 	}
@@ -122,13 +122,13 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 		double minSqDist = Double.MAX_VALUE, sqDist;
 		Particle nearest = null;
 		for (Particle p : this) {
-			sqDist = MyMath.defineSquaredDistance(p, x, y) - MyMath.sqr(p.getRadius());
+			sqDist = Functions.defineSquaredDistance(p, x, y) - Functions.sqr(p.getRadius());
 			if (sqDist < minSqDist) {
 				minSqDist = sqDist;
 				nearest = p;
 			}
 		}
-		if (minSqDist > MyMath.sqr(maxDistance))
+		if (minSqDist > Functions.sqr(maxDistance))
 			nearest = null;
 		return nearest;
 	}

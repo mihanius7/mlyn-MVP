@@ -1,13 +1,13 @@
 package elements.line;
 
 import static java.lang.Math.min;
-import static simulation.math.MyMath.defineDistance;
+import static simulation.math.Functions.defineDistance;
 
 import elements.point.Particle;
 import simulation.Simulation;
-import simulation.math.MyMath;
+import simulation.math.Functions;
 
-public abstract class ForcePair implements Force {
+public abstract class Pair {
 
 	protected final Particle p1, p2;
 	protected double force, oldForceSmoothed;
@@ -15,19 +15,19 @@ public abstract class ForcePair implements Force {
 	protected double criticalShift, angle;
 	private double timeStepReserve;
 
-	public ForcePair() {
+	public Pair() {
 		p1 = null;
 		p2 = null;
 	}
 
-	public ForcePair(Particle i, Particle j) {
+	public Pair(Particle i, Particle j) {
 		p1 = Simulation.getInstance().getContent().getParticleWithLesserIndex(i, j);
 		p2 = Simulation.getInstance().getContent().getParticleWithLargerIndex(i, j);
 		setCriticalShift();
 		distance = lastDistance + criticalShift;
 	}
 
-	public ForcePair(int i, int j) {
+	public Pair(int i, int j) {
 		p1 = Simulation.getInstance().getContent().getParticleWithLesserIndex(Simulation.getInstance().getContent().getParticle(i), Simulation.getInstance().getContent().getParticle(j));
 		p2 = Simulation.getInstance().getContent().getParticleWithLargerIndex(Simulation.getInstance().getContent().getParticle(i), Simulation.getInstance().getContent().getParticle(j));
 		setCriticalShift();
@@ -73,7 +73,7 @@ public abstract class ForcePair implements Force {
 	}
 
 	public double defineAngle() {
-		angle = MyMath.angle(p1.getX() - p2.getX(), p1.getY() - p2.getY());
+		angle = Functions.angle(p1.getX() - p2.getX(), p1.getY() - p2.getY());
 		return angle;
 	}
 

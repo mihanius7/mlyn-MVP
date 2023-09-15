@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import elements.line.Spring;
 import elements.point.Particle;
 import gui.shapes.SpringShape;
-import simulation.math.MyMath;
+import simulation.math.Functions;
 
 public class SpringGroup extends ArrayList<Spring> {
 
@@ -19,7 +19,7 @@ public class SpringGroup extends ArrayList<Spring> {
 				margin = maxDistance;
 			else
 				margin = SpringShape.SPRING_ZIGZAG_AMPLITUDE + s.getVisibleWidth() / 2;
-			dist = MyMath.defineDistanceToLineSegment(s, x, y);
+			dist = Functions.defineDistanceToLineSegment(s, x, y);
 			if (dist < Math.max(s.getVisibleWidth() / 2, margin)) {
 				nearest = s;
 			}

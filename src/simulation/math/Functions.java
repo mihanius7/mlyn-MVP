@@ -6,17 +6,13 @@ import elements.line.Spring;
 import elements.point.Particle;
 import simulation.Simulation;
 
-public class MyMath {
+public class Functions {
 
 	private static Vector result;
 
-	public MyMath() {
+	public Functions() {
 		result = new Vector();
 	}
-
-	public enum Axis {
-		X, Y;
-	};
 
 	public static double sqr(double x) {
 		return x * x;

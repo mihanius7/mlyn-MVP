@@ -2,7 +2,7 @@ package elements.line;
 
 import simulation.Simulation;
 
-public class NeighborPair extends ForcePair {
+public class NeighborPair extends Pair {
 
 	public NeighborPair(int i, int j, double currentDistance) {
 		super(i, j);

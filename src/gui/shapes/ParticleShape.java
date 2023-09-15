@@ -13,22 +13,22 @@ import gui.Viewport;
 import simulation.Simulation;
 
 public class ParticleShape extends Shape {
-	
+
 	private Particle p;
-	
+
 	public static final Color PARTICLE_DEFAULT = new Color(100, 100, 100);
 	public static final Color PARTICLE_BORDER = Color.DARK_GRAY;
 	public static final Color PARTICLE_FIXED = Color.BLACK;
 	public static final Color PARTICLE_CROSS = Color.ORANGE;
 	public static final Color PARTICLE_SELECTED = Color.YELLOW;
-	
+
 	public static boolean drawParticleBorders = true;
 	public static boolean drawGradientParticles = false;
 	public static boolean drawVelocities = false;
 	public static boolean drawForces = false;
 	public static boolean drawNeighbourRadius = false;
 	public static boolean drawTags = false;
-	
+
 	public static BasicStroke particleBorder = new BasicStroke(0.5f);
 
 	public ParticleShape(Particle p) {
@@ -43,9 +43,10 @@ public class ParticleShape extends Shape {
 		int y = CoordinateConverter.toScreenY(p.getY());
 		int r = (int) Math.ceil(CoordinateConverter.getScale() * p.getRadius());
 		if (!drawGradientParticles)
-			targetG2d.setPaint(p.isSelected()? PARTICLE_SELECTED : color);
+			targetG2d.setPaint(p.isSelected() ? PARTICLE_SELECTED : color);
 		else
-			targetG2d.setPaint(new GradientPaint(x, y - r, Color.WHITE, x + r, y + r, p.isSelected()? PARTICLE_SELECTED : color, false));
+			targetG2d.setPaint(new GradientPaint(x, y - r, Color.WHITE, x + r, y + r,
+					p.isSelected() ? PARTICLE_SELECTED : color, false));
 		targetG2d.fillOval(x - r, y - r, r * 2, r * 2);
 		if (viewport.isDrawTracks()) {
 			int x0 = CoordinateConverter.toScreenX(p.getLastX());
@@ -58,18 +59,19 @@ public class ParticleShape extends Shape {
 			targetG2d.setStroke(particleBorder);
 			targetG2d.drawOval(x - r, y - r, r * 2, r * 2);
 		}
-		if (!p.isMovableX()) {
+		if (p.isMovableX() == 0) {
 			targetG2d.setColor(PARTICLE_CROSS);
 			targetG2d.setStroke(viewport.crossStroke);
 			targetG2d.drawLine(x, y + r + 3, x, y - r - 3);
 		}
-		if (!p.isMovableY()) {
+		if (p.isMovableY() == 0) {
 			targetG2d.setColor(PARTICLE_CROSS);
 			targetG2d.setStroke(viewport.crossStroke);
 			targetG2d.drawLine(x - r - 3, y, x + r + 3, y);
 		}
 		if (drawNeighbourRadius) {
-			int nradius = (int) (0.5 * viewport.getScale() * (Simulation.getInstance().interactionProcessor.getNeighborRangeExtra()));
+			int nradius = (int) (0.5 * viewport.getScale()
+					* (Simulation.getInstance().interactionProcessor.getNeighborRangeExtra()));
 			targetG2d.drawOval(x - nradius, y - nradius, nradius * 2, nradius * 2);
 		}
 		if (drawForces || p.isSelected())
