@@ -27,7 +27,6 @@ public class SampleScenes {
 		Simulation.getInstance().timeStepController.setTimeScale(1d);
 		Simulation.getInstance().interactionProcessor.setUseExternalForces(true);
 		Simulation.getInstance().interactionProcessor.setUsePPCollisions(true);
-		Simulation.getInstance().interactionProcessor.setBeta(10 * cm, 10 * cm, 1E7, 0.28);
 		ParticleShape.drawNeighbourRadius = false;
 		ParticleShape.drawForces = false;
 		ParticleShape.drawTags = false;
@@ -47,7 +46,6 @@ public void scenePreset() {
 		Simulation.getInstance().timeStepController.setTimeScale(0.05);
 		Simulation.getInstance().interactionProcessor.setUsePPCollisions(true);
 		Simulation.getInstance().interactionProcessor.setUseExternalForces(false);
-		Simulation.getInstance().interactionProcessor.setBeta(10 * m, 5 * cm, 1E7, 0.28);
 		Boundaries b = Simulation.getInstance().getContent().getBoundaries();
 		b.setBounds(0, 9.2, 4.2, 0);
 		Simulation.getInstance().addToSimulation(new Particle(301 * cm, 90 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
