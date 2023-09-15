@@ -10,8 +10,7 @@ public class TrajectoryIntegrator {
 		p.getLastVelocityVector().setY(p.getVelocityVector().Y());
 		if (p.isMoving()) {
 			if (useFriction) {
-				double airFriction = Simulation.getInstance().interactionProcessor.getAirFrictionCoefficient();
-				p.getForceVector().addToXY(-p.getVelocityVector().X() * airFriction, -p.getVelocityVector().Y() * airFriction);
+				p.getForceVector().addToXY(-p.getVelocityVector().X() * Simulation.getInstance().interactionProcessor.getAirFrictionCoefficient(), -p.getVelocityVector().Y() * Simulation.getInstance().interactionProcessor.getAirFrictionCoefficient());
 				p.getForceVector().addToXY(-p.getVelocityVector().defineCos() * p.getFrictionForce(), -p.getVelocityVector().defineSin() * p.getFrictionForce());
 			}
 			velocityVerlet(p, dt);
