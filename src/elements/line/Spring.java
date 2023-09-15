@@ -18,7 +18,7 @@ import gui.lang.GUIStrings;
 import gui.shapes.SpringShape;
 import simulation.Simulation;
 
-public class Spring extends ForcePair implements Element {
+public class Spring extends Pair implements Element {
 
 	public static double DEFAULT_VISIBLE_WIDTH = 2 * cm;
 	protected double l0 = 0, k = 0, c = 0, u2 = 0, dx = 0;
