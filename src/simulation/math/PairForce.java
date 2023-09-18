@@ -52,4 +52,8 @@ public class PairForce {
 		this.beta = beta;
 		ConsoleWindow.println(String.format(GUIStrings.RECOIL_BY_HERTZ + ", beta = %.3e", beta));
 	}
+	
+	public double LennardJones(double r, double a, double d) {
+		return 12 * d / a * (Math.pow(a / r, 10) - Math.pow(a / r, 7));
+	}
 }

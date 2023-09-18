@@ -1,6 +1,8 @@
 package simulation.components;
 
 import static constants.PhysicalConstants.ang;
+import static constants.PhysicalConstants.cm;
+import static constants.PhysicalConstants.dj;
 import static constants.PhysicalConstants.g;
 import static constants.PhysicalConstants.m;
 import static java.lang.Math.abs;
@@ -26,6 +28,7 @@ import simulation.ExternalForce;
 import simulation.Simulation;
 import simulation.SimulationContent;
 import simulation.math.Functions;
+import simulation.math.LennardJonesFunction;
 import simulation.math.PairForce;
 import simulation.math.TabulatedFunction;
 import simulation.math.TrajectoryIntegrator;
@@ -65,6 +68,12 @@ public class InteractionProcessor implements SimulationComponent {
 		externalForce = new ExternalForce(0, -g);
 		particles = content.getParticles();
 		springs = content.getSprings();
+		if (interactionType==InteractionType.LENNARDJONES) {
+			forceTable = new LennardJonesFunction(minPairInteractionDistance, 150 * cm, 0.1 * cm);
+			forceTable.setParam1(20 * cm);
+			forceTable.setParam2(40 * dj);
+			forceTable.calculateTable();
+		}
 		reset();
 	}
 
@@ -144,7 +153,7 @@ public class InteractionProcessor implements SimulationComponent {
 		if (useInterparticleForces) {
 			if (interactionType == InteractionType.COULOMB)
 				df = pairForce.defineCoulombForce(i, j, distance);
-			else if (interactionType == InteractionType.TABULATED)
+			else if (interactionType == InteractionType.LENNARDJONES)
 				df = forceTable.getFromTable(distance);
 			else if (interactionType == InteractionType.GRAVITATION)
 				df = pairForce.defineGravitationForce(i, j, distance);
@@ -346,6 +355,30 @@ public class InteractionProcessor implements SimulationComponent {
 		neighborSearchSkipSteps = DEFAULT_NEIGHBOR_SEARCH_PERIOD;
 		recalculateNeighborsNeeded();
 		ConsoleWindow.println(GUIStrings.INTERACTION_PROCESSOR_RESTARTED);
+	}
+	
+	public void setInteractionType(InteractionType interactionType, TabulatedFunction potentialTable) {
+		if (interactionType == InteractionType.LENNARDJONES) {
+			if (potentialTable != null) {
+				forceTable = potentialTable;
+				System.out.println("Potential table is confirmed");
+			} else if (forceTable == null) {
+				System.out.println("Potential table is null!");
+				forceTable = new LennardJonesFunction(minPairInteractionDistance, 150 * cm, 0.1 * cm);
+				forceTable.setParam1(20 * cm);
+				forceTable.setParam2(0.004 * dj);
+				forceTable.calculateTable();
+			}
+			maxPairInteractionDistance = forceTable.getParam1() * 2.5;
+		} else if (interactionType == InteractionType.COULOMB) {
+			maxPairInteractionDistance = 15 * m;
+		} else if (interactionType == InteractionType.GRAVITATION
+				|| interactionType == InteractionType.COULOMB_AND_GRAVITATION) {
+			maxPairInteractionDistance = Double.MAX_VALUE;
+		}
+		this.interactionType = interactionType;
+		neighborRange = maxPairInteractionDistance * 1.1;
+		message();
 	}
 
 	public ExternalForce getExternalForce() {
