@@ -15,4 +15,5 @@ public interface Element {
 	public void deselect();
 	
 	public boolean isSelected();
+	
 }

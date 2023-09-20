@@ -13,7 +13,6 @@ public class Particle extends PointMass implements Cloneable, Element {
 	public static final double PARTICLE_ELASTICITY_DEFAULT = 0.99;
 	protected double r, q;
 	protected boolean visible = true, canCollide = true, isSelected = false;
-	protected double frictionForce, stictionForce;
 	protected double elasticity = PARTICLE_ELASTICITY_DEFAULT;
 
 	protected ParticleShape shape;
@@ -64,29 +63,9 @@ public class Particle extends PointMass implements Cloneable, Element {
 			r = newRadius;
 	}
 
-	public boolean isStictionReached() {
-		return lastForce.normSquared() > stictionForce * stictionForce;
-	}
-
 	public void snapToGrid(double gridSize) {
 		x = Functions.roundTo(x, 1 / gridSize);
 		y = Functions.roundTo(y, 1 / gridSize);
-	}
-
-	public double getFrictionForce() {
-		return frictionForce;
-	}
-
-	public void setFrictionForce(double fr) {
-		this.stictionForce = (fr < 0) ? 0 : fr;
-	}
-
-	public double getStictionForce() {
-		return stictionForce;
-	}
-
-	public void setStictionForce(double sff) {
-		this.stictionForce = (sff < 0) ? 0 : sff;
 	}
 
 	public double getElasticity() {

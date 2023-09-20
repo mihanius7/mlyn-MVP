@@ -39,12 +39,11 @@ public class InteractionProcessor implements SimulationComponent {
 	private static final int PARTICLE_BY_MOUSE_MOVING_SMOOTH = 500;
 	private static final int PARTICLE_ACCELERATION_BY_MOUSE = 2;
 	private static InteractionType interactionType = InteractionType.COULOMB;
-	private static TrajectoryIntegrator integrator;
 	private static PairForce pairForce;
 	private static TabulatedFunction forceTable;
 	private static ParticleGroup particles;
 	private static SpringGroup springs;
-	
+
 	private ArrayList<Pair> forcePairs = new ArrayList<Pair>();
 	private boolean useExternalForces = false, usePPCollisions = true, recalculateNeighborsNeeded = true,
 			useFriction = true, useInterparticleForces = true;
@@ -63,12 +62,12 @@ public class InteractionProcessor implements SimulationComponent {
 
 	public InteractionProcessor(SimulationContent content) {
 		new Functions();
-		integrator = new TrajectoryIntegrator();
+		new TrajectoryIntegrator();
 		pairForce = new PairForce();
 		externalForce = new ExternalForce(0, -g);
 		particles = content.getParticles();
 		springs = content.getSprings();
-		if (interactionType==InteractionType.LENNARDJONES) {
+		if (interactionType == InteractionType.LENNARDJONES) {
 			forceTable = new LennardJonesFunction(minPairInteractionDistance, 150 * cm, 0.1 * cm);
 			forceTable.setParam1(20 * cm);
 			forceTable.setParam2(40 * dj);
@@ -211,12 +210,10 @@ public class InteractionProcessor implements SimulationComponent {
 			p = it.next();
 			if (useExternalForces)
 				externalForce.apply(p);
-			integrator.calculateNextVelocity(p, Simulation.getInstance().timeStepController.getTimeStepSize(),
-					useFriction);
+			p.doMovement();
 			vel = p.getVelocityVector().normSquared();
 			if (vel > maxVel)
 				maxVel = vel;
-			p.calculateNextLocation(Simulation.getInstance().timeStepController.getTimeStepSize());
 			if (currentStep == 0)
 				p.clearForce();
 			if (useBoundaries) {
@@ -322,7 +319,7 @@ public class InteractionProcessor implements SimulationComponent {
 		recalculateNeighborsNeeded();
 		ConsoleWindow.println(GUIStrings.INTERACTION_PROCESSOR_RESTARTED);
 	}
-	
+
 	public void setInteractionType(InteractionType interactionType, TabulatedFunction potentialTable) {
 		if (interactionType == InteractionType.LENNARDJONES) {
 			if (potentialTable != null) {
