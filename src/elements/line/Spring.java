@@ -17,6 +17,7 @@ import gui.ConsoleWindow;
 import gui.lang.GUIStrings;
 import gui.shapes.SpringShape;
 import simulation.Simulation;
+import simulation.math.Functions;
 
 public class Spring extends Pair implements Element {
 
@@ -84,8 +85,8 @@ public class Spring extends Pair implements Element {
 	public void applyForce() {
 		super.applyForce();
 		defineForce();
-		Simulation.getInstance().interactionProcessor.applyForceParallelToDistance(p1, p2, force, distance);
-		Simulation.getInstance().interactionProcessor.tryToSetMaxSpringForce(force);
+		Functions.addForce(p1, p2, force, distance);
+		Simulation.getInstance().interactionProcessor.setMaxSpringForceCandidate(force);
 		if (force >= breakUpTension)
 			Simulation.getInstance().removeSpringSafety(this);
 	}

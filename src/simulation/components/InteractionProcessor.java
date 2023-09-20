@@ -159,7 +159,7 @@ public class InteractionProcessor implements SimulationComponent {
 				df = pairForce.defineGravitationForce(i, j, distance);
 			else if (interactionType == InteractionType.COULOMB_AND_GRAVITATION)
 				df = pairForce.defineCoulombForce(i, j, distance) + pairForce.defineGravitationForce(i, j, distance);
-			applyForceParallelToDistance(i, j, df, distance);
+			Functions.addForce(i, j, df, distance);
 		}
 		if (usePPCollisions) {
 			if (i.isCanCollide() && j.isCanCollide()) {
@@ -171,44 +171,10 @@ public class InteractionProcessor implements SimulationComponent {
 		return df;
 	}
 
-	public void applyForceParallelToDistance(Particle i, Particle j, double force, double distance) {
-		double forceX = force * (j.getX() - i.getX()) / distance;
-		double forceY = force * (j.getY() - i.getY()) / distance;
-		i.addFx(-forceX);
-		j.addFx(forceX);
-		i.addFy(-forceY);
-		j.addFy(forceY);
-	}
-
-	public void applyForcePerpendicularToDistance(Particle i, Particle j, double force, double distance) {
-		double forceX = force * (j.getY() - i.getY()) / distance;
-		double forceY = force * (j.getX() - i.getX()) / distance;
-		i.addFx(forceX);
-		j.addFx(-forceX);
-		i.addFy(-forceY);
-		j.addFy(forceY);
-	}
-
-	public void applyForceByAngle(Particle i, Particle j, double force, double angle) {
-		double forceX = force * Math.cos(angle);
-		double forceY = force * Math.sin(angle);
-		i.addFx(forceX);
-		j.addFx(-forceX);
-		i.addFy(-forceY);
-		j.addFy(forceY);
-	}
-
 	private void recoilByHertz(Particle p1, Particle p2, double distance) {
 		df = pairForce.defineHertzForce(p1.getRadius() + p2.getRadius() - distance);
-		applyForceParallelToDistance(p1, p2, df, distance);
+		Functions.addForce(p1, p2, df, distance);
 	}
-
-	// private void recoilByAcceleration(Particle p1, Particle p2, double
-	// distance) {
-	// double x = p1.getRadius() + p2.getRadius() - distance;
-	// dF = 500 * g * x * (p1.getMass() + p2.getMass());
-	// applyForceParallelToDistance(p1, p2, dF, distance);
-	// }
 
 	private void moveSelectedParticle() {
 		Particle p = Simulation.getInstance().getContent().getSelectedParticle(0);
@@ -376,7 +342,7 @@ public class InteractionProcessor implements SimulationComponent {
 				|| interactionType == InteractionType.COULOMB_AND_GRAVITATION) {
 			maxPairInteractionDistance = Double.MAX_VALUE;
 		}
-		this.interactionType = interactionType;
+		InteractionProcessor.interactionType = interactionType;
 		neighborRange = maxPairInteractionDistance * 1.1;
 		message();
 	}
@@ -400,7 +366,7 @@ public class InteractionProcessor implements SimulationComponent {
 		return neighborSearchSkipSteps;
 	}
 
-	public void tryToSetMaxSpringForce(double force) {
+	public void setMaxSpringForceCandidate(double force) {
 		if (force > maxSpringTension)
 			maxSpringTension = force;
 	}

@@ -176,6 +176,33 @@ public class Functions {
 			a = a + Math.PI;
 		return a;
 	}
+	
+	public static void addForce(Particle i, Particle j, double force, double distance) {
+		double forceX = force * (j.getX() - i.getX()) / distance;
+		double forceY = force * (j.getY() - i.getY()) / distance;
+		i.addFx(-forceX);
+		j.addFx(forceX);
+		i.addFy(-forceY);
+		j.addFy(forceY);
+	}
+
+	public static void addForceTangential(Particle i, Particle j, double force, double distance) {
+		double forceX = force * (j.getY() - i.getY()) / distance;
+		double forceY = force * (j.getX() - i.getX()) / distance;
+		i.addFx(forceX);
+		j.addFx(-forceX);
+		i.addFy(-forceY);
+		j.addFy(forceY);
+	}
+
+	public static void addForceAngled(Particle i, Particle j, double force, double angle) {
+		double forceX = force * Math.cos(angle);
+		double forceY = force * Math.sin(angle);
+		i.addFx(forceX);
+		j.addFx(-forceX);
+		i.addFy(-forceY);
+		j.addFy(forceY);
+	}
 
 	public static Vector centreOfMass(Particle[] pp) {
 		double mass = 0;
