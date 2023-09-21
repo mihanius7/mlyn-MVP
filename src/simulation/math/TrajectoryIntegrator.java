@@ -1,29 +1,51 @@
 package simulation.math;
 
-import elements.point.Particle;
+import elements.point.PointMass;
 import simulation.Simulation;
 
 public class TrajectoryIntegrator {
-	
-	public void calculateNextVelocity(Particle p, double dt, boolean useFriction) {
-		p.getLastVelocityVector().setX(p.getVelocityVector().X());
-		p.getLastVelocityVector().setY(p.getVelocityVector().Y());
-		if (p.isMoving()) {
-			if (useFriction) {
-				p.getForceVector().addToXY(-p.getVelocityVector().X() * Simulation.getInstance().interactionProcessor.getAirFrictionCoefficient(), -p.getVelocityVector().Y() * Simulation.getInstance().interactionProcessor.getAirFrictionCoefficient());
-				p.getForceVector().addToXY(-p.getVelocityVector().defineCos() * p.getFrictionForce(), -p.getVelocityVector().defineSin() * p.getFrictionForce());
+
+	public void calculateNextLocation(PointMass pm) {
+		pm.addX(pm.isMovableX() * pm.getVelocityVector().X()
+				* Simulation.getInstance().timeStepController.getTimeStepSize()
+				+ pm.isMovableX()
+						* (pm.getForceVector().X() * Simulation.getInstance().timeStepController.getTimeStepSize()
+								* Simulation.getInstance().timeStepController.getTimeStepSize())
+						/ (2 * pm.getMass()));
+		pm.addY(pm.isMovableY() * pm.getVelocityVector().Y()
+				* Simulation.getInstance().timeStepController.getTimeStepSize()
+				+ pm.isMovableY()
+						* (pm.getForceVector().Y() * Simulation.getInstance().timeStepController.getTimeStepSize()
+								* Simulation.getInstance().timeStepController.getTimeStepSize())
+						/ (2 * pm.getMass()));
+	}
+
+	public void calculateNextVelocity(PointMass pm) {
+		pm.getLastVelocityVector().setX(pm.getVelocityVector().X());
+		pm.getLastVelocityVector().setY(pm.getVelocityVector().Y());
+		if (pm.isMoving()) {
+			if (Simulation.getInstance().interactionProcessor.isUseFriction()) {
+				pm.getForceVector().addToXY(
+						-pm.getVelocityVector().X()
+								* Simulation.getInstance().interactionProcessor.getAirFrictionCoefficient(),
+						-pm.getVelocityVector().Y()
+								* Simulation.getInstance().interactionProcessor.getAirFrictionCoefficient());
+				pm.getForceVector().addToXY(-pm.getVelocityVector().defineCos() * pm.getFrictionForce(),
+						-pm.getVelocityVector().defineSin() * pm.getFrictionForce());
 			}
-			velocityVerlet(p, dt);
+			velocityVerlet(pm, Simulation.getInstance().timeStepController.getTimeStepSize());
 		} else {
-			if (useFriction && p.isStictionReached())
-				velocityVerlet(p, dt);
+			if (Simulation.getInstance().interactionProcessor.isUseFriction() && pm.isStictionReached())
+				velocityVerlet(pm, Simulation.getInstance().timeStepController.getTimeStepSize());
 			else
-				velocityVerlet(p, dt);
+				velocityVerlet(pm, Simulation.getInstance().timeStepController.getTimeStepSize());
 		}
 	}
 
-	private void velocityVerlet(Particle p, double dt) {
-		p.getVelocityVector().addToX(p.isMovableX() * (dt * (p.getLastForceVector().X() + p.getForceVector().X()) / (2.0 * p.getMass())));
-		p.getVelocityVector().addToY(p.isMovableY() * (dt * (p.getLastForceVector().Y() + p.getForceVector().Y()) / (2.0 * p.getMass())));
+	private void velocityVerlet(PointMass pm, double dt) {
+		pm.getVelocityVector().addToX(
+				pm.isMovableX() * (dt * (pm.getLastForceVector().X() + pm.getForceVector().X()) / (2.0 * pm.getMass())));
+		pm.getVelocityVector().addToY(
+				pm.isMovableY() * (dt * (pm.getLastForceVector().Y() + pm.getForceVector().Y()) / (2.0 * pm.getMass())));
 	}
 }

@@ -1,6 +1,8 @@
 package simulation.components;
 
 import static constants.PhysicalConstants.ang;
+import static constants.PhysicalConstants.cm;
+import static constants.PhysicalConstants.dj;
 import static constants.PhysicalConstants.g;
 import static constants.PhysicalConstants.m;
 import static java.lang.Math.abs;
@@ -26,6 +28,7 @@ import simulation.ExternalForce;
 import simulation.Simulation;
 import simulation.SimulationContent;
 import simulation.math.Functions;
+import simulation.math.LennardJonesFunction;
 import simulation.math.PairForce;
 import simulation.math.TabulatedFunction;
 import simulation.math.TrajectoryIntegrator;
@@ -36,12 +39,11 @@ public class InteractionProcessor implements SimulationComponent {
 	private static final int PARTICLE_BY_MOUSE_MOVING_SMOOTH = 500;
 	private static final int PARTICLE_ACCELERATION_BY_MOUSE = 2;
 	private static InteractionType interactionType = InteractionType.COULOMB;
-	private static TrajectoryIntegrator integrator;
 	private static PairForce pairForce;
 	private static TabulatedFunction forceTable;
 	private static ParticleGroup particles;
 	private static SpringGroup springs;
-	
+
 	private ArrayList<Pair> forcePairs = new ArrayList<Pair>();
 	private boolean useExternalForces = false, usePPCollisions = true, recalculateNeighborsNeeded = true,
 			useFriction = true, useInterparticleForces = true;
@@ -60,11 +62,17 @@ public class InteractionProcessor implements SimulationComponent {
 
 	public InteractionProcessor(SimulationContent content) {
 		new Functions();
-		integrator = new TrajectoryIntegrator();
+		new TrajectoryIntegrator();
 		pairForce = new PairForce();
 		externalForce = new ExternalForce(0, -g);
 		particles = content.getParticles();
 		springs = content.getSprings();
+		if (interactionType == InteractionType.LENNARDJONES) {
+			forceTable = new LennardJonesFunction(minPairInteractionDistance, 150 * cm, 0.1 * cm);
+			forceTable.setParam1(20 * cm);
+			forceTable.setParam2(40 * dj);
+			forceTable.calculateTable();
+		}
 		reset();
 	}
 
@@ -144,13 +152,13 @@ public class InteractionProcessor implements SimulationComponent {
 		if (useInterparticleForces) {
 			if (interactionType == InteractionType.COULOMB)
 				df = pairForce.defineCoulombForce(i, j, distance);
-			else if (interactionType == InteractionType.TABULATED)
+			else if (interactionType == InteractionType.LENNARDJONES)
 				df = forceTable.getFromTable(distance);
 			else if (interactionType == InteractionType.GRAVITATION)
 				df = pairForce.defineGravitationForce(i, j, distance);
 			else if (interactionType == InteractionType.COULOMB_AND_GRAVITATION)
 				df = pairForce.defineCoulombForce(i, j, distance) + pairForce.defineGravitationForce(i, j, distance);
-			applyForceParallelToDistance(i, j, df, distance);
+			Functions.addForce(i, j, df, distance);
 		}
 		if (usePPCollisions) {
 			if (i.isCanCollide() && j.isCanCollide()) {
@@ -162,44 +170,10 @@ public class InteractionProcessor implements SimulationComponent {
 		return df;
 	}
 
-	public void applyForceParallelToDistance(Particle i, Particle j, double force, double distance) {
-		double forceX = force * (j.getX() - i.getX()) / distance;
-		double forceY = force * (j.getY() - i.getY()) / distance;
-		i.addFx(-forceX);
-		j.addFx(forceX);
-		i.addFy(-forceY);
-		j.addFy(forceY);
-	}
-
-	public void applyForcePerpendicularToDistance(Particle i, Particle j, double force, double distance) {
-		double forceX = force * (j.getY() - i.getY()) / distance;
-		double forceY = force * (j.getX() - i.getX()) / distance;
-		i.addFx(forceX);
-		j.addFx(-forceX);
-		i.addFy(-forceY);
-		j.addFy(forceY);
-	}
-
-	public void applyForceByAngle(Particle i, Particle j, double force, double angle) {
-		double forceX = force * Math.cos(angle);
-		double forceY = force * Math.sin(angle);
-		i.addFx(forceX);
-		j.addFx(-forceX);
-		i.addFy(-forceY);
-		j.addFy(forceY);
-	}
-
 	private void recoilByHertz(Particle p1, Particle p2, double distance) {
 		df = pairForce.defineHertzForce(p1.getRadius() + p2.getRadius() - distance);
-		applyForceParallelToDistance(p1, p2, df, distance);
+		Functions.addForce(p1, p2, df, distance);
 	}
-
-	// private void recoilByAcceleration(Particle p1, Particle p2, double
-	// distance) {
-	// double x = p1.getRadius() + p2.getRadius() - distance;
-	// dF = 500 * g * x * (p1.getMass() + p2.getMass());
-	// applyForceParallelToDistance(p1, p2, dF, distance);
-	// }
 
 	private void moveSelectedParticle() {
 		Particle p = Simulation.getInstance().getContent().getSelectedParticle(0);
@@ -236,12 +210,10 @@ public class InteractionProcessor implements SimulationComponent {
 			p = it.next();
 			if (useExternalForces)
 				externalForce.apply(p);
-			integrator.calculateNextVelocity(p, Simulation.getInstance().timeStepController.getTimeStepSize(),
-					useFriction);
+			p.doMovement();
 			vel = p.getVelocityVector().normSquared();
 			if (vel > maxVel)
 				maxVel = vel;
-			p.calculateNextLocation(Simulation.getInstance().timeStepController.getTimeStepSize());
 			if (currentStep == 0)
 				p.clearForce();
 			if (useBoundaries) {
@@ -348,6 +320,30 @@ public class InteractionProcessor implements SimulationComponent {
 		ConsoleWindow.println(GUIStrings.INTERACTION_PROCESSOR_RESTARTED);
 	}
 
+	public void setInteractionType(InteractionType interactionType, TabulatedFunction potentialTable) {
+		if (interactionType == InteractionType.LENNARDJONES) {
+			if (potentialTable != null) {
+				forceTable = potentialTable;
+				System.out.println("Potential table is confirmed");
+			} else if (forceTable == null) {
+				System.out.println("Potential table is null!");
+				forceTable = new LennardJonesFunction(minPairInteractionDistance, 150 * cm, 0.1 * cm);
+				forceTable.setParam1(20 * cm);
+				forceTable.setParam2(0.004 * dj);
+				forceTable.calculateTable();
+			}
+			maxPairInteractionDistance = forceTable.getParam1() * 2.5;
+		} else if (interactionType == InteractionType.COULOMB) {
+			maxPairInteractionDistance = 15 * m;
+		} else if (interactionType == InteractionType.GRAVITATION
+				|| interactionType == InteractionType.COULOMB_AND_GRAVITATION) {
+			maxPairInteractionDistance = Double.MAX_VALUE;
+		}
+		InteractionProcessor.interactionType = interactionType;
+		neighborRange = maxPairInteractionDistance * 1.1;
+		message();
+	}
+
 	public ExternalForce getExternalForce() {
 		return externalForce;
 	}
@@ -367,7 +363,7 @@ public class InteractionProcessor implements SimulationComponent {
 		return neighborSearchSkipSteps;
 	}
 
-	public void tryToSetMaxSpringForce(double force) {
+	public void setMaxSpringForceCandidate(double force) {
 		if (force > maxSpringTension)
 			maxSpringTension = force;
 	}

@@ -1,9 +1,11 @@
 package elements.point;
 
+import elements.Movable;
 import simulation.Simulation;
+import simulation.math.TrajectoryIntegrator;
 import simulation.math.Vector;
 
-public class PointMass implements Cloneable {
+public class PointMass implements Cloneable, Movable {
 
 	protected double m;
 	protected double x, y, lastx, lasty;
@@ -12,12 +14,16 @@ public class PointMass implements Cloneable {
 	protected Vector lastVelocity = new Vector();
 	protected Vector force = new Vector();
 	protected Vector lastForce = new Vector();
+	protected double frictionForce, stictionForce;
 	protected byte movableX = 1, movableY = 1;
+	
+	protected static TrajectoryIntegrator integrator;
 
 	public PointMass(double x, double y, double m) {
 		this.x = x;
 		this.y = y;
 		this.setMass(m);
+		integrator = new TrajectoryIntegrator();
 	}
 
 	public double getMass() {
@@ -217,11 +223,10 @@ public class PointMass implements Cloneable {
 		return m * measureVelocity().normSquared() / 2;
 	}
 
-	public void calculateNextLocation(double dt) {
-		lastx = x;
-		x += movableX * velocity.X() * dt + movableX * (force.X() * dt * dt) / (2 * m);
-		lasty = y;
-		y += movableY * velocity.Y() * dt + movableY * (force.Y() * dt * dt) / (2 * m);
+	@Override
+	public void doMovement() {
+		integrator.calculateNextVelocity(this);
+		integrator.calculateNextLocation(this);
 	}
 
 	public void clearForce() {
@@ -266,6 +271,26 @@ public class PointMass implements Cloneable {
 
 	public boolean isMoving() {
 		return velocity.normSquared() > 1e-15;
+	}
+	
+	public double getFrictionForce() {
+		return frictionForce;
+	}
+
+	public void setFrictionForce(double fr) {
+		this.stictionForce = (fr < 0) ? 0 : fr;
+	}
+
+	public double getStictionForce() {
+		return stictionForce;
+	}
+
+	public void setStictionForce(double sff) {
+		this.stictionForce = (sff < 0) ? 0 : sff;
+	}
+	
+	public boolean isStictionReached() {
+		return lastForce.normSquared() > stictionForce * stictionForce;
 	}
 
 }
