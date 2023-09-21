@@ -10,8 +10,6 @@ import org.xml.sax.SAXException;
 import elements.line.Spring;
 import elements.point.Particle;
 import gui.ConsoleWindow;
-import gui.MainWindow;
-import gui.Viewport;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
 import simulation.Boundaries;
@@ -88,7 +86,7 @@ public class ElementHandler implements ContentHandler {
 			j = Integer.parseInt(attrs.getValue("s2"));
 			k = Double.parseDouble(attrs.getValue("ak"));
 			c = Double.parseDouble(attrs.getValue("ac"));
-			l0 = Double.parseDouble(attrs.getValue("a0"));			
+			l0 = Double.parseDouble(attrs.getValue("a0"));
 		} else if (qName.equalsIgnoreCase("boundaries")) {
 			Boundaries b = Simulation.getInstance().getContent().getBoundaries();
 			b.setUseLeft(Boolean.parseBoolean(attrs.getValue("use_left")));
@@ -98,10 +96,14 @@ public class ElementHandler implements ContentHandler {
 			b.setBounds(Double.parseDouble(attrs.getValue("left")), Double.parseDouble(attrs.getValue("right")),
 					Double.parseDouble(attrs.getValue("upper")), Double.parseDouble(attrs.getValue("bottom")));
 		} else if (qName.equalsIgnoreCase("elements")) {
-			Simulation.getInstance().interactionProcessor.setUseFriction(Boolean.parseBoolean(attrs.getValue("friction_forces")));
-			Simulation.getInstance().interactionProcessor.setUsePPCollisions(Boolean.parseBoolean(attrs.getValue("collisions")));
+			Simulation.getInstance().interactionProcessor
+					.setUseFriction(Boolean.parseBoolean(attrs.getValue("friction_forces")));
+			Simulation.getInstance().interactionProcessor
+					.setUsePPCollisions(Boolean.parseBoolean(attrs.getValue("collisions")));
 			Simulation.getInstance().interactionProcessor
 					.setUseExternalForces(Boolean.parseBoolean(attrs.getValue("external_forces")));
+			Simulation.getInstance().interactionProcessor
+					.setUseInterparticleForces(Boolean.parseBoolean(attrs.getValue("interparticle_forces")));
 		}
 	}
 
