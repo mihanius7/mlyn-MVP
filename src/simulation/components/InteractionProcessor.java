@@ -15,6 +15,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import elements.Movable;
 import elements.group.ParticleGroup;
 import elements.group.SpringGroup;
 import elements.line.NeighborPair;
@@ -44,7 +45,8 @@ public class InteractionProcessor implements SimulationComponent {
 	private static ParticleGroup particles;
 	private static SpringGroup springs;
 
-	private ArrayList<Pair> forcePairs = new ArrayList<Pair>();
+	private ArrayList<Movable> movables = new ArrayList<Movable>();
+	
 	private boolean useExternalForces = false, usePPCollisions = true, recalculateNeighborsNeeded = true,
 			useFriction = true, useInterparticleForces = true;
 	public boolean useFastSpringProjection = true, useBoundaries = true;
@@ -97,21 +99,21 @@ public class InteractionProcessor implements SimulationComponent {
 	private void calculateForces() {
 		maxSpringTension = 0;
 		maxPairForce = 0;
-		double f, maxF = 0, rr = Double.MAX_VALUE;
-		Pair pair;
-		Iterator<Pair> it = forcePairs.iterator();
+		double currentForce, maxForce = 0, reserve = Double.MAX_VALUE;
+		Movable movable;
+		Iterator<Movable> it = movables.iterator();
 		while (it.hasNext()) {
-			pair = it.next();
-			pair.applyForce();
-			f = abs(pair.getForce());
-			if (f > maxF)
-				maxF = f;
-			if (pair.getReserveRatio() < rr)
-				rr = pair.getReserveRatio();
+			movable = it.next();
+			movable.doMovement();
+			currentForce = abs(movable.getForceValue());
+			if (currentForce > maxForce)
+				maxForce = currentForce;
+			if (movable.getSafetyReserve() < reserve)
+				reserve = movable.getSafetyReserve();
 		}
-		pairInteractionsNumber = forcePairs.size();
-		maxPairForce = maxF;
-		timeStepReserveRatio = rr;
+		pairInteractionsNumber = movables.size();
+		maxPairForce = maxForce;
+		timeStepReserveRatio = reserve;
 	}
 
 	private void adjustNeighborsListRefreshPeriod() {
@@ -126,7 +128,7 @@ public class InteractionProcessor implements SimulationComponent {
 	}
 
 	private void recalculateNeighborsList() {
-		forcePairs.clear();
+		movables.clear();
 		double sqDist, maxSqDist;
 		if (usePPCollisions || useInterparticleForces) {
 			for (int i = 0; i < particles.size() - 1; i++) {
@@ -137,12 +139,12 @@ public class InteractionProcessor implements SimulationComponent {
 					maxSqDist *= maxSqDist;
 					sqDist = defineSquaredDistance(i, j);
 					if (sqDist <= maxSqDist)
-						forcePairs.add(new NeighborPair(i, j, sqrt(sqDist)));
+						movables.add(new NeighborPair(i, j, sqrt(sqDist)));
 				}
 			}
 			neighborSearchNumber++;
 		}
-		forcePairs.addAll(springs);
+		movables.addAll(springs);
 		recalculateNeighborsNeeded = false;
 		neighborSearchCurrentStep = 0;
 	}

@@ -9,9 +9,10 @@ public class NeighborPair extends Pair {
 		distance = currentDistance;
 		lastDistance = distance;
 	}
-
-	public void applyForce() {
-		super.applyForce();
+	
+	@Override
+	public void doMovement() {
+		super.doMovement();
 		force = Simulation.getInstance().interactionProcessor.applyPairInteraction(p1, p2, distance);
 	}
 

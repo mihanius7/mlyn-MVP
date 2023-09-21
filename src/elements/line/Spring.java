@@ -82,8 +82,8 @@ public class Spring extends Pair implements Element {
 	}
 
 	@Override
-	public void applyForce() {
-		super.applyForce();
+	public void doMovement() {
+		super.doMovement();
 		defineForce();
 		Functions.addForce(p1, p2, force, distance);
 		Simulation.getInstance().interactionProcessor.setMaxSpringForceCandidate(force);
