@@ -1,6 +1,5 @@
 package simulation.components;
 
-import static constants.PhysicalConstants.ang;
 import static constants.PhysicalConstants.cm;
 import static constants.PhysicalConstants.dj;
 import static constants.PhysicalConstants.g;
@@ -19,7 +18,6 @@ import elements.Movable;
 import elements.group.ParticleGroup;
 import elements.group.SpringGroup;
 import elements.line.NeighborPair;
-import elements.line.Pair;
 import elements.line.Spring;
 import elements.point.Particle;
 import gui.ConsoleWindow;
@@ -36,31 +34,42 @@ import simulation.math.TrajectoryIntegrator;
 
 public class InteractionProcessor implements SimulationComponent {
 
-	public static final int DEFAULT_NEIGHBOR_SEARCH_PERIOD = 25;
-	private static final int PARTICLE_BY_MOUSE_MOVING_SMOOTH = 500;
-	private static final int PARTICLE_ACCELERATION_BY_MOUSE = 2;
+	public static final int NEIGHBORS_SEARCH_INITIAL_PERIOD = 25;
+	public static final int NEIGHBORS_SEARCHES_AUTOADJUST_SAFETY = 10;
+	public static final int PARTICLE_BY_MOUSE_MOVING_SMOOTH = 500;
+	public static final int PARTICLE_ACCELERATION_BY_MOUSE = 2;
+
+	private ArrayList<Movable> movables = new ArrayList<Movable>();
+
 	private static InteractionType interactionType = InteractionType.COULOMB;
 	private static PairForce pairForce;
 	private static TabulatedFunction forceTable;
 	private static ParticleGroup particles;
 	private static SpringGroup springs;
-
-	private ArrayList<Movable> movables = new ArrayList<Movable>();
-	
-	private boolean useExternalForces = false, usePPCollisions = true, recalculateNeighborsNeeded = true,
-			useFriction = true, useInterparticleForces = true;
-	public boolean useFastSpringProjection = true, useBoundaries = true;
-	private boolean isMoveToMouse;
-	private boolean isAccelerateByMouse;
 	private ExternalForce externalForce;
 	private Point2D.Double particleTargetXY = new Point2D.Double(0, 0);
+	
+	private boolean useExternalForces = false;
+	private boolean usePPCollisions = true;
+	private boolean recalculateNeighborsNeeded = true;
+	private boolean useFriction = true;
+	private boolean useInterparticleForces = true;
+	public boolean useFastSpringProjection = true;
+	private boolean useBoundaries = true;
+	private boolean isMoveToMouse;
+	private boolean isAccelerateByMouse;
 	private double spaceFrictionCoefficient = 0.1;
 	private double timeStepReserveRatio;
 	private double df, maxSpringTension, maxPairForce, maxParticleSquaredVelocity;
-	private double minPairInteractionDistance = 1 * ang, maxPairInteractionDistance = 1.5 * m,
-			neighborRange = maxPairInteractionDistance * 1.1;
+	private double pairInteractionMinDistance = 1E-9;
+	private double pairInteractionMaxDistance = 1.5 * m;
+	private double neighborRange = pairInteractionMaxDistance * 1.1;
 	private long pairInteractionsNumber = 0;
-	private int skipSteps = 0, currentStep, neighborSearchCurrentStep, neighborSearchSkipSteps, neighborSearchNumber;
+	private int skipSteps = 0;
+	private int currentStep;
+	private int neighborSearchCurrentStep;
+	private int neighborSearchSkipSteps;
+	private int neighborSearchesNumber;
 
 	public InteractionProcessor(SimulationContent content) {
 		new Functions();
@@ -69,13 +78,8 @@ public class InteractionProcessor implements SimulationComponent {
 		externalForce = new ExternalForce(0, -g);
 		particles = content.getParticles();
 		springs = content.getSprings();
-		if (interactionType == InteractionType.LENNARDJONES) {
-			forceTable = new LennardJonesFunction(minPairInteractionDistance, 150 * cm, 0.1 * cm);
-			forceTable.setParam1(20 * cm);
-			forceTable.setParam2(40 * dj);
-			forceTable.calculateTable();
-		}
 		reset();
+		setInteractionType(InteractionType.COULOMB, forceTable);
 	}
 
 	@Override
@@ -90,8 +94,8 @@ public class InteractionProcessor implements SimulationComponent {
 		calculateLocations();
 		if (neighborSearchCurrentStep > neighborSearchSkipSteps) {
 			recalculateNeighborsNeeded();
-			adjustNeighborsListRefreshPeriod();
 		}
+		adjustNeighborsSearchPeriod();
 		currentStep++;
 		neighborSearchCurrentStep++;
 	}
@@ -116,14 +120,11 @@ public class InteractionProcessor implements SimulationComponent {
 		timeStepReserveRatio = reserve;
 	}
 
-	private void adjustNeighborsListRefreshPeriod() {
-		if (usePPCollisions) {
+	private void adjustNeighborsSearchPeriod() {
+		if (usePPCollisions || useInterparticleForces) {
 			double t1 = getNeighborRangeExtra() / defineMaxParticleVelocity();
 			neighborSearchSkipSteps = (int) Math
-					.round(t1 / Simulation.getInstance().timeStepController.getTimeStepSize() / 100);
-			if (neighborSearchSkipSteps > Simulation.getInstance().timeStepController.getStepsPerSecond() / 2)
-				neighborSearchSkipSteps = Math
-						.round(Simulation.getInstance().timeStepController.getStepsPerSecond() / 2);
+					.round(t1 / Simulation.getInstance().timeStepController.getTimeStepSize() / NEIGHBORS_SEARCHES_AUTOADJUST_SAFETY);
 		}
 	}
 
@@ -142,7 +143,7 @@ public class InteractionProcessor implements SimulationComponent {
 						movables.add(new NeighborPair(i, j, sqrt(sqDist)));
 				}
 			}
-			neighborSearchNumber++;
+			neighborSearchesNumber++;
 		}
 		movables.addAll(springs);
 		recalculateNeighborsNeeded = false;
@@ -245,7 +246,7 @@ public class InteractionProcessor implements SimulationComponent {
 	}
 
 	public double getNeighborRangeExtra() {
-		return neighborRange - maxPairInteractionDistance;
+		return neighborRange - pairInteractionMaxDistance;
 	}
 
 	public void recalculateNeighborsNeeded() {
@@ -261,19 +262,19 @@ public class InteractionProcessor implements SimulationComponent {
 	}
 
 	public double getMinPairInteractionDistance() {
-		return minPairInteractionDistance;
+		return pairInteractionMinDistance;
 	}
 
 	public void setMinPairInteractionDistance(double minPairInteractionDistance) {
-		this.minPairInteractionDistance = minPairInteractionDistance;
+		this.pairInteractionMinDistance = minPairInteractionDistance;
 	}
 
 	public double getMaxPairInteractionDistance() {
-		return maxPairInteractionDistance;
+		return pairInteractionMaxDistance;
 	}
 
 	public void setMaxPairInteractionDistance(double maxPairInteractionDistance) {
-		this.maxPairInteractionDistance = maxPairInteractionDistance;
+		this.pairInteractionMaxDistance = maxPairInteractionDistance;
 	}
 
 	public boolean isUseExternalForces() {
@@ -316,8 +317,8 @@ public class InteractionProcessor implements SimulationComponent {
 	public void reset() {
 		currentStep = 0;
 		neighborSearchCurrentStep = 0;
-		neighborSearchNumber = 0;
-		neighborSearchSkipSteps = DEFAULT_NEIGHBOR_SEARCH_PERIOD;
+		neighborSearchesNumber = 0;
+		neighborSearchSkipSteps = NEIGHBORS_SEARCH_INITIAL_PERIOD;
 		recalculateNeighborsNeeded();
 		ConsoleWindow.println(GUIStrings.INTERACTION_PROCESSOR_RESTARTED);
 	}
@@ -329,20 +330,20 @@ public class InteractionProcessor implements SimulationComponent {
 				System.out.println("Potential table is confirmed");
 			} else if (forceTable == null) {
 				System.out.println("Potential table is null!");
-				forceTable = new LennardJonesFunction(minPairInteractionDistance, 150 * cm, 0.1 * cm);
+				forceTable = new LennardJonesFunction(pairInteractionMinDistance, 150 * cm, 0.1 * cm);
 				forceTable.setParam1(20 * cm);
-				forceTable.setParam2(0.004 * dj);
+				forceTable.setParam2(40 * dj);
 				forceTable.calculateTable();
 			}
-			maxPairInteractionDistance = forceTable.getParam1() * 2.5;
+			pairInteractionMaxDistance = forceTable.getParam1() * 2.5;
 		} else if (interactionType == InteractionType.COULOMB) {
-			maxPairInteractionDistance = 15 * m;
+			pairInteractionMaxDistance = 15 * m;
 		} else if (interactionType == InteractionType.GRAVITATION
 				|| interactionType == InteractionType.COULOMB_AND_GRAVITATION) {
-			maxPairInteractionDistance = Double.MAX_VALUE;
+			pairInteractionMaxDistance = Double.MAX_VALUE;
 		}
 		InteractionProcessor.interactionType = interactionType;
-		neighborRange = maxPairInteractionDistance * 1.1;
+		neighborRange = pairInteractionMaxDistance * 1.1;
 		message();
 	}
 
@@ -358,7 +359,7 @@ public class InteractionProcessor implements SimulationComponent {
 	}
 
 	public int getNeighborSearchsNumber() {
-		return neighborSearchNumber;
+		return neighborSearchesNumber;
 	}
 
 	public int getNeighborSearchsSkipStepsNumber() {
@@ -400,6 +401,16 @@ public class InteractionProcessor implements SimulationComponent {
 	public void setUseFriction(boolean useFriction) {
 		this.useFriction = useFriction;
 	}
+	
+	public boolean isUseInterparticleForces() {
+		return useInterparticleForces;
+	}
+
+	public void setUseInterparticleForces(boolean useInterparticleForces) {
+		this.useInterparticleForces = useInterparticleForces;
+		recalculateNeighborsNeeded();
+		ConsoleWindow.println(GUIStrings.INTERPARTICLE_FORCES + ": " + this.useInterparticleForces);
+	}
 
 	public double getMaxPairForce() {
 		return maxPairForce;
@@ -411,7 +422,7 @@ public class InteractionProcessor implements SimulationComponent {
 
 	public void message() {
 		ConsoleWindow.println(
-				String.format(GUIStrings.MAX_INTERACTION_DEFINING_DISTANCE + ": %.1e m", maxPairInteractionDistance));
+				String.format(GUIStrings.MAX_INTERACTION_DEFINING_DISTANCE + ": %.1e m", pairInteractionMaxDistance));
 	}
 
 }
