@@ -293,4 +293,14 @@ public class PointMass implements Cloneable, Movable {
 		return lastForce.normSquared() > stictionForce * stictionForce;
 	}
 
+	@Override
+	public double getForceValue() {
+		return 0;
+	}
+
+	@Override
+	public double getSafetyReserve() {
+		return Double.MAX_VALUE;
+	}
+
 }

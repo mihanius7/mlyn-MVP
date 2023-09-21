@@ -6,11 +6,15 @@ import gui.lang.GUIStrings;
 import simulation.Simulation;
 
 public class TimeStepController implements SimulationComponent {
-	private static final int TIME_STEP_ADJUSTING_SMOOTH = 2000;
+	private static final int TIME_STEP_ADJUSTING_SMOOTH = 1000;
 	public static final double INITIAL_STEP_SIZE = 1e-20;
 	public static final double TIME_STEP_ALARM_DECREMENT = 0.75;
-	public static final double TIME_STEP_CHANGE_COEFFICIENT = 1.25;
-	private double dt, targetdt, timeScale = 1, lastTimeMillis, measuredTimeScale;
+	public static final double TIME_STEP_CHANGE_COEFFICIENT = 1.333;
+	private double dt;
+	private double targetdt;
+	private double timeScale = 1.0;
+	private double lastTimeMillis;
+	private double measuredTimeScale;
 	private long stepsPerSecond = 0;
 	private boolean timeStepAlarm = false;
 	private static TimeStepMode mode;
@@ -139,7 +143,7 @@ public class TimeStepController implements SimulationComponent {
 		return timeStepAlarm;
 	}
 
-	public void measureTimeScale() {
+	public void updateTimeScale() {
 		if (Simulation.getInstance().isActive()) {
 			double timeMillis = Simulation.getInstance().getTime() * 1000;
 			measuredTimeScale = (timeMillis - lastTimeMillis) / Viewport.REFRESH_MESSAGES_INTERVAL;

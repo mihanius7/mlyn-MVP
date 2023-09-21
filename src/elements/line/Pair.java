@@ -3,11 +3,12 @@ package elements.line;
 import static java.lang.Math.min;
 import static simulation.math.Functions.defineDistance;
 
+import elements.Movable;
 import elements.point.Particle;
 import simulation.Simulation;
 import simulation.math.Functions;
 
-public abstract class Pair {
+public class Pair implements Movable {
 
 	protected final Particle p1, p2;
 	protected double force, oldForceSmoothed;
@@ -40,10 +41,6 @@ public abstract class Pair {
 
 	private void refreshTimeStepReserve() {
 		timeStepReserve = criticalShift / Math.abs(lastDistance - distance);
-	}
-
-	public final double getForce() {
-		return force;
 	}
 
 	public double getForceSmoothed() {
@@ -86,20 +83,27 @@ public abstract class Pair {
 		return p;
 	}
 
-	public double getReserveRatio() {
-		return timeStepReserve;
-	}
-
 	public double getCriticalShift() {
 		return criticalShift;
 	}
 
-	public void applyForce() {
+	@Override
+	public void doMovement() {
 		lastDistance = distance;
 		distance = defineDistance(p1, p2);
 		refreshTimeStepReserve();
 		if (timeStepReserve < 1) {
 			Simulation.getInstance().timeStepController.setTimeStepAlarm();
 		}
+	}
+
+	@Override
+	public double getForceValue() {
+		return force;
+	}
+
+	@Override
+	public double getSafetyReserve() {
+		return timeStepReserve;
 	}
 }
