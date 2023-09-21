@@ -139,7 +139,7 @@ public class TimeStepController implements SimulationComponent {
 		return timeStepAlarm;
 	}
 
-	public void measureTimeScale() {
+	public void updateTimeScale() {
 		if (Simulation.getInstance().isActive()) {
 			double timeMillis = Simulation.getInstance().getTime() * 1000;
 			measuredTimeScale = (timeMillis - lastTimeMillis) / Viewport.REFRESH_MESSAGES_INTERVAL;

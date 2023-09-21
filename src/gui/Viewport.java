@@ -31,20 +31,25 @@ import simulation.math.Vector;
 
 public class Viewport extends JPanel implements ActionListener, Runnable {
 
+	public static final double ARROW_LENGTH_COEFFICIENT = 0.25;
+	public static final  int REFRESH_MESSAGES_INTERVAL = 500;
+	public final int ARROW_DRAWING_MIN_THRESHOLD = 8;
+	public final float LABELS_MIN_FONT_SIZE = 10;
+	public final int LABELS_FONT_SIZE = 12;
+	public final float LABELS_MAX_FONT_SIZE = 20;
+	public final static double DEFAULT_GRID_SIZE = 20 * cm;
+	public final int FRAME_PAINT_DELAY = 20;
+	public final int AUTOSCALE_MARGIN = 75;
+	
 	Camera camera;
 	private Graphics2D canvas;
 	public Graphics2D tracksCanvas;
 	private RenderingHints rh;
+	
 	private static ArrayList<Shape> shapes;
-	private final int ARROW_DRAWING_MIN_THRESHOLD = 8;
-	public final float LABELS_MIN_FONT_SIZE = 10;
-	public final int LABELS_FONT_SIZE = 12;
-	public final float LABELS_MAX_FONT_SIZE = 20;
+
 	private float currentFontSize = LABELS_FONT_SIZE;
-	public final static int REFRESH_MESSAGES_INTERVAL = 500;
-	final int FRAME_PAINT_DELAY = 20;
-	final int AUTOSCALE_MARGIN = 75;
-	public final static double DEFAULT_GRID_SIZE = 20 * cm;
+	
 	private boolean drawInfo = true;
 	public boolean useGrid = true;
 	private boolean drawTracks = false;
@@ -170,16 +175,17 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	private void updateInfoStrings() {
+		Simulation.getInstance().timeStepController.updateTimeScale();
+		double r = Simulation.getInstance().interactionProcessor.getTimeStepReserveRatio();
+		double timeScale = Simulation.getInstance().timeStepController.getMeasuredTimeScale();
+		String displayedTimeScale = "нявызначаны";
 		timeString = String.format("t = %.3f c, ", Simulation.getInstance().getTime())
 				+ String.format("dt = %.4f", Simulation.getInstance().timeStepController.getTimeStepSize() * 1000)
 				+ " ms, "
 				+ String.format("Vmax = %.2f m/s",
 						Simulation.getInstance().interactionProcessor.defineMaxParticleVelocity())
-				+ ", fps = " + fps * 1000.0 / REFRESH_MESSAGES_INTERVAL;
-		double r = Simulation.getInstance().interactionProcessor.getTimeStepReserveRatio();
-		Simulation.getInstance().timeStepController.measureTimeScale();
-		double timeScale = Simulation.getInstance().timeStepController.getMeasuredTimeScale();
-		String displayedTimeScale = "нявызначаны";
+				+ ", fps = " + fps * 1000.0 / REFRESH_MESSAGES_INTERVAL
+				+ ", sps = " + Simulation.getInstance().timeStepController.getStepsPerSecond() / (REFRESH_MESSAGES_INTERVAL / 1000.0) / 1000.0 + "k";
 		if (Simulation.getInstance().isActive())
 			if (timeScale > 1000 || timeScale < 1e-3)
 				displayedTimeScale = String.format("%.2e", timeScale);
@@ -320,7 +326,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	public void drawArrowLine(Graphics2D targetG2d, int x1, int y1, Vector v, Color arrowColor, String label) {
-		double length = Math.log10(v.norm() + 1) / 2;
+		double length = Math.log10(v.norm() + 1) * ARROW_LENGTH_COEFFICIENT;
 		int dx = CoordinateConverter.toScreen(length * v.defineCos());
 		int dy = CoordinateConverter.toScreen(length * v.defineSin());
 		if (length > CoordinateConverter.fromScreen(ARROW_DRAWING_MIN_THRESHOLD)) {
