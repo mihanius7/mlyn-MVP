@@ -2,7 +2,6 @@ package test;
 
 import static constants.PhysicalConstants.cm;
 import static constants.PhysicalConstants.kg;
-import static constants.PhysicalConstants.m;
 
 import java.awt.Color;
 
@@ -43,7 +42,7 @@ public class SampleScenes {
 
 public void scenePreset() {
 		Simulation.getInstance().timeStepController.setModeAndReset(TimeStepMode.DYNAMIC);
-		Simulation.getInstance().timeStepController.setTimeScale(0.05);
+		Simulation.getInstance().timeStepController.setTimeScale(0.001);
 		Simulation.getInstance().interactionProcessor.setUsePPCollisions(true);
 		Simulation.getInstance().interactionProcessor.setUseExternalForces(false);
 		Boundaries b = Simulation.getInstance().getContent().getBoundaries();
