@@ -99,6 +99,7 @@ public class GUIStrings {
 	public static String COLLISIONS_PP = "Particle-particle Collisions";
 	public static String EXTERNAL_FORCES = "External forces";
 	public static String RECOIL_BY_HERTZ = "Collisions by Hertz model";
+	public static String INTERPARTICLE_FORCES = "Interparticle forces";
 
 	public static String BOTTOM_BOUNDARY = "Lower boundary";
 	public static String UPPER_BOUNDARY = "Upper boundary";
