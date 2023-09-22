@@ -82,15 +82,17 @@ public class InteractionProcessor implements SimulationComponent {
 
 	@Override
 	public void process() {
-		if (recalculateNeighborsNeeded)
+		if (recalculateNeighborsNeeded) {
 			recalculateNeighborsList();
+			neighborSearchCurrentStep = 0;
+		}
 		if (currentStep >= skipSteps) {
 			currentStep = 0;
 			calculateForcesAndLocations();
 			accelerateSelectedParticle();
 		}
 		moveSelectedParticle();
-		if (neighborSearchCurrentStep > neighborSearchSkipSteps) {
+		if (neighborSearchCurrentStep >= neighborSearchSkipSteps) {
 			recalculateNeighborsNeeded();
 		}
 		adjustNeighborsSearchPeriod();
@@ -150,7 +152,6 @@ public class InteractionProcessor implements SimulationComponent {
 		pairInteractionsNumber = movables.size();
 		movables.addAll(particles);
 		recalculateNeighborsNeeded = false;
-		neighborSearchCurrentStep = 0;
 	}
 
 	public double applyPairInteraction(Particle i, Particle j, double distance) {
