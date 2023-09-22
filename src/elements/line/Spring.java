@@ -70,7 +70,7 @@ public class Spring extends Pair implements Element {
 		return dx;
 	}
 
-	private void defineForce() {
+	private void defineSpringForce() {
 		dx = distance - l0;
 		double fd = defineVelocityProjection() * c;
 		double fs;
@@ -84,7 +84,7 @@ public class Spring extends Pair implements Element {
 	@Override
 	public void doMovement() {
 		super.doMovement();
-		defineForce();
+		defineSpringForce();
 		Functions.addForce(p1, p2, force, distance);
 		Simulation.getInstance().interactionProcessor.setMaxSpringForceCandidate(force);
 		if (force >= breakUpTension)

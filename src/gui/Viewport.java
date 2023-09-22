@@ -22,6 +22,7 @@ import javax.swing.Timer;
 
 import constants.PhysicalConstants;
 import elements.Element;
+import elements.point.PointMass;
 import gui.lang.GUIStrings;
 import gui.shapes.Shape;
 import gui.shapes.SpringShape;
@@ -183,7 +184,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 				+ String.format("dt = %.4f", Simulation.getInstance().timeStepController.getTimeStepSize() * 1000)
 				+ " ms, "
 				+ String.format("Vmax = %.2f m/s",
-						Simulation.getInstance().interactionProcessor.defineMaxParticleVelocity())
+						PointMass.maxVelocity)
 				+ ", fps = " + fps * 1000.0 / REFRESH_MESSAGES_INTERVAL
 				+ ", sps = " + Simulation.getInstance().timeStepController.getStepsPerSecond() / (REFRESH_MESSAGES_INTERVAL / 1000.0) / 1000.0 + "k";
 		if (Simulation.getInstance().isActive())

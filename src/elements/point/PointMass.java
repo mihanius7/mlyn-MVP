@@ -17,6 +17,9 @@ public class PointMass implements Cloneable, Movable {
 	protected double frictionForce, stictionForce;
 	protected byte movableX = 1, movableY = 1;
 	
+	public static double maxVelocity;
+	public static double maxSquaredVelocityCandidate;
+	
 	protected static TrajectoryIntegrator integrator;
 
 	public PointMass(double x, double y, double m) {
@@ -225,8 +228,12 @@ public class PointMass implements Cloneable, Movable {
 
 	@Override
 	public void doMovement() {
+		if (Simulation.getInstance().interactionProcessor.isUseExternalForces())
+			Simulation.getInstance().interactionProcessor.getExternalForce().apply(this);
 		integrator.calculateNextVelocity(this);
 		integrator.calculateNextLocation(this);
+		if (velocity.normSquared() > maxSquaredVelocityCandidate)
+			maxSquaredVelocityCandidate = velocity.normSquared();
 	}
 
 	public void clearForce() {

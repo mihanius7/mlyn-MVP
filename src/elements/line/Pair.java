@@ -106,4 +106,7 @@ public class Pair implements Movable {
 	public double getSafetyReserve() {
 		return timeStepReserve;
 	}
+
+	@Override
+	public void clearForce() {}
 }

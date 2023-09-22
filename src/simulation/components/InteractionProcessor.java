@@ -7,7 +7,6 @@ import static constants.PhysicalConstants.m;
 import static java.lang.Math.abs;
 import static java.lang.Math.sqrt;
 import static simulation.math.Functions.defineSquaredDistance;
-import static simulation.math.Functions.fastSqrt;
 import static simulation.math.Functions.sqr;
 
 import java.awt.geom.Point2D;
@@ -20,9 +19,9 @@ import elements.group.SpringGroup;
 import elements.line.NeighborPair;
 import elements.line.Spring;
 import elements.point.Particle;
+import elements.point.PointMass;
 import gui.ConsoleWindow;
 import gui.lang.GUIStrings;
-import simulation.Boundaries;
 import simulation.ExternalForce;
 import simulation.Simulation;
 import simulation.SimulationContent;
@@ -55,12 +54,11 @@ public class InteractionProcessor implements SimulationComponent {
 	private boolean useFriction = true;
 	private boolean useInterparticleForces = true;
 	public boolean useFastSpringProjection = true;
-	private boolean useBoundaries = true;
 	private boolean isMoveToMouse;
 	private boolean isAccelerateByMouse;
 	private double spaceFrictionCoefficient = 0.1;
 	private double timeStepReserveRatio;
-	private double df, maxSpringTension, maxPairForce, maxParticleSquaredVelocity;
+	private double df, maxSpringTension, maxPairForce;
 	private double pairInteractionMinDistance = 1E-9;
 	private double pairInteractionMaxDistance = 1.5 * m;
 	private double neighborRange = pairInteractionMaxDistance * 1.1;
@@ -79,7 +77,7 @@ public class InteractionProcessor implements SimulationComponent {
 		particles = content.getParticles();
 		springs = content.getSprings();
 		reset();
-		setInteractionType(InteractionType.COULOMB, forceTable);
+		setInteractionType(InteractionType.LENNARDJONES, forceTable);
 	}
 
 	@Override
@@ -87,11 +85,11 @@ public class InteractionProcessor implements SimulationComponent {
 		if (recalculateNeighborsNeeded)
 			recalculateNeighborsList();
 		if (currentStep >= skipSteps) {
-			calculateForces();
-			accelerateSelectedParticle();
 			currentStep = 0;
+			calculateForcesAndLocations();
+			accelerateSelectedParticle();
 		}
-		calculateLocations();
+		moveSelectedParticle();
 		if (neighborSearchCurrentStep > neighborSearchSkipSteps) {
 			recalculateNeighborsNeeded();
 		}
@@ -100,9 +98,10 @@ public class InteractionProcessor implements SimulationComponent {
 		neighborSearchCurrentStep++;
 	}
 
-	private void calculateForces() {
+	private void calculateForcesAndLocations() {
 		maxSpringTension = 0;
 		maxPairForce = 0;
+		PointMass.maxSquaredVelocityCandidate = 0;
 		double currentForce, maxForce = 0, reserve = Double.MAX_VALUE;
 		Movable movable;
 		Iterator<Movable> it = movables.iterator();
@@ -114,15 +113,17 @@ public class InteractionProcessor implements SimulationComponent {
 				maxForce = currentForce;
 			if (movable.getSafetyReserve() < reserve)
 				reserve = movable.getSafetyReserve();
+			if (currentStep == 0)
+				movable.clearForce();
 		}
-		pairInteractionsNumber = movables.size();
+		PointMass.maxVelocity = Math.sqrt(PointMass.maxSquaredVelocityCandidate);
 		maxPairForce = maxForce;
 		timeStepReserveRatio = reserve;
 	}
 
 	private void adjustNeighborsSearchPeriod() {
 		if (usePPCollisions || useInterparticleForces) {
-			double t1 = getNeighborRangeExtra() / defineMaxParticleVelocity();
+			double t1 = getNeighborRangeExtra() / PointMass.maxVelocity;
 			neighborSearchSkipSteps = (int) Math
 					.round(t1 / Simulation.getInstance().timeStepController.getTimeStepSize() / NEIGHBORS_SEARCHES_AUTOADJUST_SAFETY);
 		}
@@ -146,6 +147,8 @@ public class InteractionProcessor implements SimulationComponent {
 			neighborSearchesNumber++;
 		}
 		movables.addAll(springs);
+		pairInteractionsNumber = movables.size();
+		movables.addAll(particles);
 		recalculateNeighborsNeeded = false;
 		neighborSearchCurrentStep = 0;
 	}
@@ -203,29 +206,6 @@ public class InteractionProcessor implements SimulationComponent {
 			p.addFy(force * Math.sin(angle));
 		}
 
-	}
-
-	private void calculateLocations() {
-		double maxVel = 0, vel;
-		Particle p;
-		Iterator<Particle> it = particles.iterator();
-		while (it.hasNext()) {
-			p = it.next();
-			if (useExternalForces)
-				externalForce.apply(p);
-			p.doMovement();
-			vel = p.getVelocityVector().normSquared();
-			if (vel > maxVel)
-				maxVel = vel;
-			if (currentStep == 0)
-				p.clearForce();
-			if (useBoundaries) {
-				Boundaries b = Simulation.getInstance().getContent().getBoundaries();
-				b.applyBoundaryConditions(p);
-			}
-		}
-		moveSelectedParticle();
-		maxParticleSquaredVelocity = maxVel;
 	}
 
 	public void moveBackParticles() {
@@ -300,14 +280,6 @@ public class InteractionProcessor implements SimulationComponent {
 
 	public double getMaxSpringTension() {
 		return maxSpringTension;
-	}
-
-	public double defineMaxParticleVelocity() {
-		return fastSqrt(maxParticleSquaredVelocity);
-	}
-
-	public double getMaxParticleSquaredVelocity() {
-		return maxParticleSquaredVelocity;
 	}
 
 	public long getPairInteractionCount() {

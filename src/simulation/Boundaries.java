@@ -165,29 +165,27 @@ public class Boundaries implements Cloneable {
 
 	public void applyBoundaryConditions(Particle p) {
 
-		Boundaries b = Simulation.getInstance().getContent().getBoundaries();
-
-		if (b.isUseRight() && p.getX() + p.getRadius() > b.getRight()) {
+		if (isUseRight() && p.getX() + p.getRadius() > getRight()) {
 			p.getVelocityVector().multiplyX(-p.getElasticity());
-			p.setX(b.getRight() - p.getRadius());
+			p.setX(getRight() - p.getRadius());
 			p.getVelocityVector().multiplyY(0.95);
-		} else if (b.isUseLeft() && p.getX() - p.getRadius() < b.getLeft()) {
+		} else if (isUseLeft() && p.getX() - p.getRadius() < getLeft()) {
 			p.getVelocityVector().multiplyX(-p.getElasticity());
-			p.setX(b.getLeft() + p.getRadius());
+			p.setX(getLeft() + p.getRadius());
 			p.getVelocityVector().multiplyY(0.95);
 		}
 
-		if (b.isUseBottom() && b.getBottom() > p.getY() - p.getRadius()) {
+		if (isUseBottom() && getBottom() > p.getY() - p.getRadius()) {
 			double newvy = -p.getVelocityVector().Y() * p.getElasticity();
 			if (p.getVelocityVector().Y() < -1E-6)
 				p.setVy(newvy);
 			else
 				p.setVy(0);
-			p.setY(b.getBottom() + p.getRadius());
+			p.setY(getBottom() + p.getRadius());
 			p.getVelocityVector().multiplyX(0.95);
-		} else if (b.isUseUpper() && p.getY() + p.getRadius() > b.getUpper()) {
+		} else if (isUseUpper() && p.getY() + p.getRadius() > getUpper()) {
 			p.getVelocityVector().multiplyY(-p.getElasticity());
-			p.setY(b.getUpper() - p.getRadius());
+			p.setY(getUpper() - p.getRadius());
 			p.getVelocityVector().multiplyX(0.95);
 		}
 	}

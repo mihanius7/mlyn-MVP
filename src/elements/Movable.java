@@ -7,5 +7,7 @@ public interface Movable {
 	public double getForceValue();
 	
 	public double getSafetyReserve();
+
+	public void clearForce();
 	
 }
