@@ -77,7 +77,7 @@ public class InteractionProcessor implements SimulationComponent {
 		particles = content.getParticles();
 		springs = content.getSprings();
 		reset();
-		setInteractionType(InteractionType.LENNARDJONES, forceTable);
+		setInteractionType(InteractionType.COULOMB, forceTable);
 	}
 
 	@Override
