@@ -13,10 +13,10 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import elements.Movable;
 import elements.group.ParticleGroup;
 import elements.group.SpringGroup;
 import elements.line.NeighborPair;
+import elements.line.Pair;
 import elements.line.Spring;
 import elements.point.Particle;
 import elements.point.PointMass;
@@ -38,7 +38,7 @@ public class InteractionProcessor implements SimulationComponent {
 	public static final int PARTICLE_BY_MOUSE_MOVING_SMOOTH = 500;
 	public static final int PARTICLE_ACCELERATION_BY_MOUSE = 2;
 
-	private ArrayList<Movable> movables = new ArrayList<Movable>();
+	private ArrayList<Pair> pairs = new ArrayList<Pair>();
 
 	private static InteractionType interactionType = InteractionType.COULOMB;
 	private static PairForce pairForce;
@@ -47,7 +47,7 @@ public class InteractionProcessor implements SimulationComponent {
 	private static SpringGroup springs;
 	private ExternalForce externalForce;
 	private Point2D.Double particleTargetXY = new Point2D.Double(0, 0);
-	
+
 	private boolean useExternalForces = false;
 	private boolean usePPCollisions = true;
 	private boolean recalculateNeighborsNeeded = true;
@@ -61,10 +61,9 @@ public class InteractionProcessor implements SimulationComponent {
 	private double df, maxSpringTension, maxPairForce;
 	private double pairInteractionMinDistance = 1E-9;
 	private double pairInteractionMaxDistance = 1.5 * m;
-	private double neighborRange = pairInteractionMaxDistance * 1.1;
+	private double neighborRangeExtra = 1.1;
+	private double neighborRange = pairInteractionMaxDistance * neighborRangeExtra;
 	private long pairInteractionsNumber = 0;
-	private int skipSteps = 0;
-	private int currentStep;
 	private int neighborSearchCurrentStep;
 	private int neighborSearchSkipSteps;
 	private int neighborSearchesNumber;
@@ -84,74 +83,79 @@ public class InteractionProcessor implements SimulationComponent {
 	public void process() {
 		if (recalculateNeighborsNeeded) {
 			recalculateNeighborsList();
-			neighborSearchCurrentStep = 0;
 		}
-		if (currentStep >= skipSteps) {
-			currentStep = 0;
-			calculateForcesAndLocations();
-			accelerateSelectedParticle();
-		}
+		calculateForces();
+		accelerateSelectedParticle();
+		calculateLocations();
 		moveSelectedParticle();
 		if (neighborSearchCurrentStep >= neighborSearchSkipSteps) {
 			recalculateNeighborsNeeded();
 		}
 		adjustNeighborsSearchPeriod();
-		currentStep++;
 		neighborSearchCurrentStep++;
 	}
 
-	private void calculateForcesAndLocations() {
+	private void calculateForces() {
 		maxSpringTension = 0;
 		maxPairForce = 0;
-		PointMass.maxSquaredVelocityCandidate = 0;
 		double currentForce, maxForce = 0, reserve = Double.MAX_VALUE;
-		Movable movable;
-		Iterator<Movable> it = movables.iterator();
+		Pair pair;
+		Iterator<Pair> it = pairs.iterator();
 		while (it.hasNext()) {
-			movable = it.next();
-			movable.doMovement();
-			currentForce = abs(movable.getForceValue());
+			pair = it.next();
+			pair.doForce();
+			currentForce = abs(pair.getForceValue());
 			if (currentForce > maxForce)
 				maxForce = currentForce;
-			if (movable.getSafetyReserve() < reserve)
-				reserve = movable.getSafetyReserve();
-			if (currentStep == 0)
-				movable.clearForce();
+			if (pair.getSafetyReserve() < reserve)
+				reserve = pair.getSafetyReserve();
 		}
-		PointMass.maxVelocity = Math.sqrt(PointMass.maxSquaredVelocityCandidate);
 		maxPairForce = maxForce;
 		timeStepReserveRatio = reserve;
+	}
+
+	private void calculateLocations() {
+		PointMass.maxSquaredVelocityCandidate = 0;
+		PointMass pm;
+		Iterator<Particle> it = particles.iterator();
+		while (it.hasNext()) {
+			pm = it.next();
+			pm.doMovement();
+			pm.clearForce();
+		}
+		PointMass.maxVelocity = Math.sqrt(PointMass.maxSquaredVelocityCandidate);
 	}
 
 	private void adjustNeighborsSearchPeriod() {
 		if (usePPCollisions || useInterparticleForces) {
 			double t1 = getNeighborRangeExtra() / PointMass.maxVelocity;
 			neighborSearchSkipSteps = (int) Math
-					.round(t1 / Simulation.getInstance().timeStepController.getTimeStepSize() / NEIGHBORS_SEARCHES_AUTOADJUST_SAFETY);
+					.round(t1 / Simulation.getInstance().timeStepController.getTimeStepSize()
+							/ NEIGHBORS_SEARCHES_AUTOADJUST_SAFETY);
 		}
 	}
 
 	private void recalculateNeighborsList() {
-		movables.clear();
+		pairs.clear();
 		double sqDist, maxSqDist;
 		if (usePPCollisions || useInterparticleForces) {
 			for (int i = 0; i < particles.size() - 1; i++) {
 				for (int j = i + 1; j < particles.size(); j++) {
 					maxSqDist = (useInterparticleForces)
 							? neighborRange + particles.get(i).getRadius() + particles.get(j).getRadius()
-							: 1.1 * (particles.get(i).getRadius() + particles.get(j).getRadius());
+							: neighborRangeExtra * (particles.get(i).getRadius() + particles.get(j).getRadius());
 					maxSqDist *= maxSqDist;
 					sqDist = defineSquaredDistance(i, j);
 					if (sqDist <= maxSqDist)
-						movables.add(new NeighborPair(i, j, sqrt(sqDist)));
+						pairs.add(new NeighborPair(i, j, sqrt(sqDist)));
 				}
 			}
 			neighborSearchesNumber++;
 		}
-		movables.addAll(springs);
-		pairInteractionsNumber = movables.size();
-		movables.addAll(particles);
+		pairs.addAll(springs);
+		pairInteractionsNumber = pairs.size();
 		recalculateNeighborsNeeded = false;
+		neighborSearchCurrentStep = 0;
 	}
 
 	public double applyPairInteraction(Particle i, Particle j, double distance) {
@@ -223,7 +227,6 @@ public class InteractionProcessor implements SimulationComponent {
 
 	@Override
 	public void setSkipStepsNumber(int skip) {
-		skipSteps = skip;
 	}
 
 	public double getNeighborRangeExtra() {
@@ -288,7 +291,6 @@ public class InteractionProcessor implements SimulationComponent {
 	}
 
 	public void reset() {
-		currentStep = 0;
 		neighborSearchCurrentStep = 0;
 		neighborSearchesNumber = 0;
 		neighborSearchSkipSteps = NEIGHBORS_SEARCH_INITIAL_PERIOD;
@@ -374,7 +376,7 @@ public class InteractionProcessor implements SimulationComponent {
 	public void setUseFriction(boolean useFriction) {
 		this.useFriction = useFriction;
 	}
-	
+
 	public boolean isUseInterparticleForces() {
 		return useInterparticleForces;
 	}
