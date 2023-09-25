@@ -11,8 +11,8 @@ public class NeighborPair extends Pair {
 	}
 	
 	@Override
-	public void doMovement() {
-		super.doMovement();
+	public void doForce() {
+		super.doForce();
 		force = Simulation.getInstance().interactionProcessor.applyPairInteraction(p1, p2, distance);
 	}
 
