@@ -6,9 +6,9 @@ import gui.lang.GUIStrings;
 import simulation.Simulation;
 
 public class TimeStepController implements SimulationComponent {
-	private static final int TIME_STEP_ADJUSTING_SMOOTH = 1000;
+	private static final int TIME_STEP_ADJUSTING_SMOOTH = 200;
 	public static final double INITIAL_STEP_SIZE = 1e-20;
-	public static final double TIME_STEP_ALARM_DECREMENT = 0.75;
+	public static final double TIME_STEP_ALARM_DECREMENT = 0.5;
 	public static final double TIME_STEP_CHANGE_COEFFICIENT = 1.333;
 	private double dt;
 	private double targetdt;

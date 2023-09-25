@@ -1,6 +1,6 @@
 package simulation;
 
-import elements.point.Particle;
+import elements.point.PointMass;
 
 public class ExternalForce {
 	private double fx, fy;
@@ -11,7 +11,7 @@ public class ExternalForce {
 		this.fy = fy;
 	}
 
-	public void apply(Particle p) {
+	public void apply(PointMass p) {
 		p.addFx(fx);
 		p.addFy(fy);
 	}

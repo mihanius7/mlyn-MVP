@@ -1,11 +1,10 @@
 package elements.point;
 
-import elements.Movable;
 import simulation.Simulation;
 import simulation.math.TrajectoryIntegrator;
 import simulation.math.Vector;
 
-public class PointMass implements Cloneable, Movable {
+public class PointMass implements Cloneable {
 
 	protected double m;
 	protected double x, y, lastx, lasty;
@@ -16,6 +15,9 @@ public class PointMass implements Cloneable, Movable {
 	protected Vector lastForce = new Vector();
 	protected double frictionForce, stictionForce;
 	protected byte movableX = 1, movableY = 1;
+	
+	public static double maxVelocity;
+	public static double maxSquaredVelocityCandidate;
 	
 	protected static TrajectoryIntegrator integrator;
 
@@ -223,10 +225,13 @@ public class PointMass implements Cloneable, Movable {
 		return m * measureVelocity().normSquared() / 2;
 	}
 
-	@Override
 	public void doMovement() {
+		if (Simulation.getInstance().interactionProcessor.isUseExternalForces())
+			Simulation.getInstance().interactionProcessor.getExternalForce().apply(this);
 		integrator.calculateNextVelocity(this);
 		integrator.calculateNextLocation(this);
+		if (velocity.normSquared() > maxSquaredVelocityCandidate)
+			maxSquaredVelocityCandidate = velocity.normSquared();
 	}
 
 	public void clearForce() {
@@ -291,16 +296,6 @@ public class PointMass implements Cloneable, Movable {
 	
 	public boolean isStictionReached() {
 		return lastForce.normSquared() > stictionForce * stictionForce;
-	}
-
-	@Override
-	public double getForceValue() {
-		return 0;
-	}
-
-	@Override
-	public double getSafetyReserve() {
-		return Double.MAX_VALUE;
 	}
 
 }
