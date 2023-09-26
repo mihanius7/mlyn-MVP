@@ -36,7 +36,7 @@ public class Functions {
 	}
 
 	public static double defineDistance(double x1, double x2, double y1, double y2) {
-		return pow(x2 - x1, 2) + pow(y2 - y1, 2);
+		return fastSqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 	}
 
 	public static double defineDistance(Particle i, Particle j) {

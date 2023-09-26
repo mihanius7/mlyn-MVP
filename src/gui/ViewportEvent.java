@@ -96,7 +96,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				meter.setY1(y1);
 				meter.setX2(x1);
 				meter.setY2(y1);
-				System.out.println("Shape added: " + viewport.addShape(meter));
+				viewport.addShape(meter);
 			}
 		} else if (mouseMode == MouseMode.SPRING_SELECT) {
 			s = Simulation.getInstance().getContent().getSprings().findNearestSpring(
@@ -225,7 +225,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				|| mouseMode == MouseMode.PARTICLE_MANIPULATION_COORDINATE) {
 			mainWindow.clearSelection();
 		} else if (mouseMode == MouseMode.PARTICLE_SELECT && meter != null) {
-			System.out.println("Shape removed: " + viewport.removeShape(meter));
+			viewport.removeShape(meter);
 			meter = null;
 		}
 	}
