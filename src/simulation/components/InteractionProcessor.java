@@ -4,7 +4,6 @@ import static constants.PhysicalConstants.cm;
 import static constants.PhysicalConstants.dj;
 import static constants.PhysicalConstants.g;
 import static constants.PhysicalConstants.m;
-import static java.lang.Math.abs;
 import static java.lang.Math.sqrt;
 import static simulation.math.Functions.defineSquaredDistance;
 import static simulation.math.Functions.sqr;
@@ -34,7 +33,7 @@ import simulation.math.TrajectoryIntegrator;
 public class InteractionProcessor implements SimulationComponent {
 
 	public static final int NEIGHBORS_SEARCH_INITIAL_PERIOD = 25;
-	public static final int NEIGHBORS_SEARCHES_AUTOADJUST_SAFETY = 10;
+	public static final int NEIGHBORS_SEARCHES_AUTOADJUST_SAFETY = 50;
 	public static final int PARTICLE_BY_MOUSE_MOVING_SMOOTH = 500;
 	public static final int PARTICLE_ACCELERATION_BY_MOUSE = 2;
 
@@ -91,7 +90,7 @@ public class InteractionProcessor implements SimulationComponent {
 		if (neighborSearchCurrentStep >= neighborSearchSkipSteps) {
 			recalculateNeighborsNeeded();
 		}
-		adjustNeighborsSearchPeriod();
+	    adjustNeighborsSearchPeriod();
 		neighborSearchCurrentStep++;
 	}
 
@@ -160,28 +159,24 @@ public class InteractionProcessor implements SimulationComponent {
 		df = 0;
 		if (useInterparticleForces) {
 			if (interactionType == InteractionType.COULOMB)
-				df = pairForce.defineCoulombForce(i, j, distance);
+				df += pairForce.defineCoulombForce(i, j, distance);
 			else if (interactionType == InteractionType.LENNARDJONES)
-				df = forceTable.getFromTable(distance);
+				df += forceTable.getFromTable(distance);
 			else if (interactionType == InteractionType.GRAVITATION)
-				df = pairForce.defineGravitationForce(i, j, distance);
+				df += pairForce.defineGravitationForce(i, j, distance);
 			else if (interactionType == InteractionType.COULOMB_AND_GRAVITATION)
-				df = pairForce.defineCoulombForce(i, j, distance) + pairForce.defineGravitationForce(i, j, distance);
-			Functions.addForce(i, j, df, distance);
+				df += pairForce.defineCoulombForce(i, j, distance) + pairForce.defineGravitationForce(i, j, distance);
 		}
 		if (usePPCollisions) {
 			if (i.isCanCollide() && j.isCanCollide()) {
 				double collisionEventSquaredDistance = sqr(i.getRadius() + j.getRadius());
-				if (sqr(distance) < collisionEventSquaredDistance)
-					recoilByHertz(i, j, distance);
+				if (sqr(distance) < collisionEventSquaredDistance) {
+					df += pairForce.defineHertzForce(i.getRadius() + j.getRadius() - distance);
+				}
 			}
 		}
+		Functions.addForce(i, j, df, distance);
 		return df;
-	}
-
-	private void recoilByHertz(Particle p1, Particle p2, double distance) {
-		df = pairForce.defineHertzForce(p1.getRadius() + p2.getRadius() - distance);
-		Functions.addForce(p1, p2, df, distance);
 	}
 
 	private void moveSelectedParticle() {
