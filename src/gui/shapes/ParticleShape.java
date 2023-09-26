@@ -22,7 +22,7 @@ public class ParticleShape extends Shape {
 	public static final Color PARTICLE_CROSS = Color.ORANGE;
 	public static final Color PARTICLE_SELECTED = Color.YELLOW;
 
-	public static boolean drawParticleBorders = true;
+	public static boolean drawParticleBorders = false;
 	public static boolean drawGradientParticles = false;
 	public static boolean drawVelocities = false;
 	public static boolean drawForces = false;
@@ -87,7 +87,7 @@ public class ParticleShape extends Shape {
 			x = (int) (CoordinateConverter.toScreenX(p.getX()) + r * 1);
 			y = (int) (CoordinateConverter.toScreenY(p.getY()) - r * 2);
 			y -= viewport.labelsFont.getSize() * stringsInterval;
-			targetG2d.drawString(String.format("%.1e kg", p.getMass()), x, y);
+			targetG2d.drawString(String.format("%.1f kg, %.1e C", p.getMass(), p.getCharge()), x, y);
 			y += viewport.labelsFont.getSize() * stringsInterval;
 			targetG2d.drawString(String.format("(%.2f; %.2f) m", p.getX(), p.getY(), p.defineVelocity()), x, y);
 			y += viewport.labelsFont.getSize() * stringsInterval;
