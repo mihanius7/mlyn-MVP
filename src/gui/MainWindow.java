@@ -203,14 +203,11 @@ public class MainWindow extends JFrame {
 	public void setFocusTo(Particle p) {
 		if (Simulation.getInstance().getContent().getSelectedParticles().size() > 0)
 			Simulation.getInstance().getContent().getSelectedParticle(Simulation.getInstance().getContent().getSelectedParticles().size() - 1);
-		else {
-		}
 	}
 
 	public void setFocusTo(Spring s) {
 		if (Simulation.getInstance().getContent().getSelectedSprings().size() > 0)
 			Simulation.getInstance().getContent().getSelectedSpring(Simulation.getInstance().getContent().getSelectedSprings().size() - 1);
-		System.out.println("Spring angle, rad: " + s.defineAngle());
 	}
 
 	public void clearSelection() {
