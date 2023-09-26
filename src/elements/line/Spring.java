@@ -29,6 +29,9 @@ public class Spring extends Pair implements Element {
 	protected boolean visible = true, isSelected = false, isLine = true, canCollide = false;
 	protected GapType gapType = GapType.NONE;
 	
+	public static double maxSpringForce;
+	public static double maxSpringForceCandidate;
+	
 	protected SpringShape shape;
 
 	public Spring(Particle i, Particle j, double l0, double k, double c, double u2) {
@@ -86,7 +89,8 @@ public class Spring extends Pair implements Element {
 		super.doForce();
 		defineSpringForce();
 		Functions.addForce(p1, p2, force, distance);
-		Simulation.getInstance().interactionProcessor.setMaxSpringForceCandidate(force);
+		if (Math.abs(force) > maxSpringForceCandidate)
+			maxSpringForceCandidate = Math.abs(force);
 		if (force >= breakUpTension)
 			Simulation.getInstance().removeSpringSafety(this);
 	}
@@ -135,12 +139,12 @@ public class Spring extends Pair implements Element {
 		ConsoleWindow.println(GUIStrings.SPRING_HARDENING_COEFFICIENT + " " + u);
 	}
 
-	public double getMaxStress() {
+	public double getBreakUpTension() {
 		return breakUpTension;
 	}
 
-	public void setMaxStress(double maxStress) {
-		this.breakUpTension = maxStress;
+	public void setBreakUpTension(double maxTension) {
+		this.breakUpTension = maxTension;
 	}
 
 	public double refreshResonantFrequency() {

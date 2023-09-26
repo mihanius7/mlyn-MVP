@@ -58,7 +58,7 @@ public class InteractionProcessor implements SimulationComponent {
 	private boolean isAccelerateByMouse;
 	private double spaceFrictionCoefficient = 0.1;
 	private double timeStepReserveRatio;
-	private double df, maxSpringTension, maxPairForce;
+	private double df;
 	private double pairInteractionMinDistance = 1E-9;
 	private double pairInteractionMaxDistance = 1.5 * m;
 	private double neighborRangeExtra = 1.1;
@@ -96,21 +96,19 @@ public class InteractionProcessor implements SimulationComponent {
 	}
 
 	private void calculateForces() {
-		maxSpringTension = 0;
-		maxPairForce = 0;
-		double currentForce, maxForce = 0, reserve = Double.MAX_VALUE;
+		NeighborPair.maxPairForceCandidate = 0;
+		Spring.maxSpringForceCandidate = 0;
+		double reserve = Double.MAX_VALUE;
 		Pair pair;
 		Iterator<Pair> it = pairs.iterator();
 		while (it.hasNext()) {
 			pair = it.next();
 			pair.doForce();
-			currentForce = abs(pair.getForceValue());
-			if (currentForce > maxForce)
-				maxForce = currentForce;
 			if (pair.getSafetyReserve() < reserve)
 				reserve = pair.getSafetyReserve();
 		}
-		maxPairForce = maxForce;
+		NeighborPair.maxPairForce = Math.abs(NeighborPair.maxPairForceCandidate);
+		Spring.maxSpringForce = Math.abs(Spring.maxSpringForceCandidate);
 		timeStepReserveRatio = reserve;
 	}
 
@@ -282,10 +280,6 @@ public class InteractionProcessor implements SimulationComponent {
 		this.isAccelerateByMouse = b;
 	}
 
-	public double getMaxSpringTension() {
-		return maxSpringTension;
-	}
-
 	public long getPairInteractionCount() {
 		return pairInteractionsNumber;
 	}
@@ -341,11 +335,6 @@ public class InteractionProcessor implements SimulationComponent {
 		return neighborSearchSkipSteps;
 	}
 
-	public void setMaxSpringForceCandidate(double force) {
-		if (force > maxSpringTension)
-			maxSpringTension = force;
-	}
-
 	public boolean isUsePPCollisions() {
 		return usePPCollisions;
 	}
@@ -385,10 +374,6 @@ public class InteractionProcessor implements SimulationComponent {
 		this.useInterparticleForces = useInterparticleForces;
 		recalculateNeighborsNeeded();
 		ConsoleWindow.println(GUIStrings.INTERPARTICLE_FORCES + ": " + this.useInterparticleForces);
-	}
-
-	public double getMaxPairForce() {
-		return maxPairForce;
 	}
 
 	public double getTimeStepReserveRatio() {

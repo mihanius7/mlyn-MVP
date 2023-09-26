@@ -6,7 +6,6 @@ import java.awt.geom.Point2D.Double;
 
 import elements.Element;
 import gui.shapes.ParticleShape;
-import simulation.Boundaries;
 import simulation.Simulation;
 import simulation.math.Functions;
 
