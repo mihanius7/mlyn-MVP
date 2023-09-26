@@ -79,7 +79,7 @@ public class ElementHandler implements ContentHandler {
 			asLine = Boolean.parseBoolean(attrs.getValue("as_line"));
 			s = new Spring(i, j, l0, k, c, 0);
 			s.setCanCollide(collidableS);
-			s.setMaxStress(maxStress);
+			s.setBreakUpTension(maxStress);
 			s.setIsLine(asLine);
 		} else if (qName.equalsIgnoreCase("bspring")) {
 			i = Integer.parseInt(attrs.getValue("s1"));
