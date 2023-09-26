@@ -6,9 +6,9 @@ import gui.lang.GUIStrings;
 import simulation.Simulation;
 
 public class TimeStepController implements SimulationComponent {
-	private static final int TIME_STEP_ADJUSTING_SMOOTH = 200;
+	private static final int TIME_STEP_ADJUSTING_SMOOTH = 50;
 	public static final double INITIAL_STEP_SIZE = 1e-20;
-	public static final double TIME_STEP_ALARM_DECREMENT = 0.5;
+	public static final double TIME_STEP_ALARM_DECREMENT = 0.75;
 	public static final double TIME_STEP_CHANGE_COEFFICIENT = 1.333;
 	private double dt;
 	private double targetdt;
@@ -60,8 +60,6 @@ public class TimeStepController implements SimulationComponent {
 	private void correctTimeStepSize() {
 		double r = Simulation.getInstance().interactionProcessor.getTimeStepReserveRatio();
 		setTimeStepSize(dt * r * TIME_STEP_ALARM_DECREMENT);
-		if (mode == TimeStepMode.DYNAMIC)
-			setTimeScale(timeScale * r * TIME_STEP_ALARM_DECREMENT);
 		ConsoleWindow.println(String.format(GUIStrings.TIMESTEP_CORRECTION_DONE + " -> ", dt, r));
 	}
 
