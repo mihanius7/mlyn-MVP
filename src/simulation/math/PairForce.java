@@ -12,7 +12,7 @@ import gui.lang.GUIStrings;
 
 public class PairForce {
 	
-	private double beta = (2 * 1E6 * sqrt(5 * cm * 5 * cm / (5 * cm + 5 * cm))) / (3 * (1 - 0.28 * 0.28));
+	private double beta = (2.0 * 1E6 * sqrt(5 * cm * 5 * cm / (5 * cm + 5 * cm))) / (3 * (1 - 0.28 * 0.28));
 	
 	public double defineCoulombForce(Particle particle1, Particle particle2, double distance) {
 		return k * particle1.getCharge() * particle2.getCharge() / sqr(distance);
