@@ -14,7 +14,7 @@ public class Pair {
 	protected double distance, lastDistance = 0;
 	protected double criticalShift, angle;
 	private double timeStepReserve;
-
+	
 	public Pair() {
 		p1 = null;
 		p2 = null;

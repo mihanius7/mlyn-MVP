@@ -6,7 +6,6 @@ import java.awt.geom.Point2D.Double;
 
 import elements.Element;
 import gui.shapes.ParticleShape;
-import simulation.Boundaries;
 import simulation.Simulation;
 import simulation.math.Functions;
 
@@ -116,7 +115,7 @@ public class Particle extends PointMass implements Cloneable, Element {
 	@Override
 	public void doMovement() {
 		super.doMovement();
-		Simulation.getInstance().getContent().getBoundaries().applyBoundaryConditions(this);
+		Simulation.getInstance().getContent().getBoundaries().applyTo(this);
 	}
 
 	@Override

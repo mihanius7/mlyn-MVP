@@ -14,7 +14,7 @@ public class Boundaries implements Cloneable {
 	private static final double INITIAL_RIGHT_BORDER = 8.5 * m;
 	private static final double INITIAL_LEFT_BORDER = 0 * m;
 	private double left, right, upper, bottom;
-	private double leftEffective, rightEffective, upperEffective, bottomEffective;
+	private double leftContent, rightContent, upperContent, bottomContent;
 	private double autosizeMargin = 10 * cm;
 	private boolean useLeft, useRight, useUpper, useBottom;
 
@@ -118,20 +118,20 @@ public class Boundaries implements Cloneable {
 			return false;
 	}
 
-	public void refreshEffectiveBoundaries() {
-		leftEffective = Double.MAX_VALUE;
-		bottomEffective = Double.MAX_VALUE;
-		rightEffective = Double.MIN_VALUE;
-		upperEffective = Double.MIN_VALUE;
+	public void refreshContentBoundaries() {
+		leftContent = Double.MAX_VALUE;
+		bottomContent = Double.MAX_VALUE;
+		rightContent = Double.MIN_VALUE;
+		upperContent = Double.MIN_VALUE;
 		for (int i = 0; i < Simulation.getInstance().getContent().getParticlesCount(); i++) {
-			if (Simulation.getInstance().getContent().getParticle(i).getX() - Simulation.getInstance().getContent().getParticle(i).getRadius() < leftEffective)
-				leftEffective = Simulation.getInstance().getContent().getParticle(i).getX() - Simulation.getInstance().getContent().getParticle(i).getRadius();
-			if (Simulation.getInstance().getContent().getParticle(i).getX() + Simulation.getInstance().getContent().getParticle(i).getRadius() > rightEffective)
-				rightEffective = Simulation.getInstance().getContent().getParticle(i).getX() + Simulation.getInstance().getContent().getParticle(i).getRadius();
-			if (Simulation.getInstance().getContent().getParticle(i).getY() - Simulation.getInstance().getContent().getParticle(i).getRadius() < bottomEffective)
-				bottomEffective = Simulation.getInstance().getContent().getParticle(i).getY() - Simulation.getInstance().getContent().getParticle(i).getRadius();
-			if (Simulation.getInstance().getContent().getParticle(i).getY() + Simulation.getInstance().getContent().getParticle(i).getRadius() > upperEffective)
-				upperEffective = Simulation.getInstance().getContent().getParticle(i).getY() + Simulation.getInstance().getContent().getParticle(i).getRadius();
+			if (Simulation.getInstance().getContent().getParticle(i).getX() - Simulation.getInstance().getContent().getParticle(i).getRadius() < leftContent)
+				leftContent = Simulation.getInstance().getContent().getParticle(i).getX() - Simulation.getInstance().getContent().getParticle(i).getRadius();
+			if (Simulation.getInstance().getContent().getParticle(i).getX() + Simulation.getInstance().getContent().getParticle(i).getRadius() > rightContent)
+				rightContent = Simulation.getInstance().getContent().getParticle(i).getX() + Simulation.getInstance().getContent().getParticle(i).getRadius();
+			if (Simulation.getInstance().getContent().getParticle(i).getY() - Simulation.getInstance().getContent().getParticle(i).getRadius() < bottomContent)
+				bottomContent = Simulation.getInstance().getContent().getParticle(i).getY() - Simulation.getInstance().getContent().getParticle(i).getRadius();
+			if (Simulation.getInstance().getContent().getParticle(i).getY() + Simulation.getInstance().getContent().getParticle(i).getRadius() > upperContent)
+				upperContent = Simulation.getInstance().getContent().getParticle(i).getY() + Simulation.getInstance().getContent().getParticle(i).getRadius();
 		}
 	}
 
@@ -140,30 +140,30 @@ public class Boundaries implements Cloneable {
 		return clone;
 	}
 
-	public void autosize() {
-		refreshEffectiveBoundaries();
-		setBounds(leftEffective - autosizeMargin, rightEffective + autosizeMargin, upperEffective + autosizeMargin,
-				bottomEffective - autosizeMargin);
+	public void cropToContent() {
+		refreshContentBoundaries();
+		setBounds(leftContent - autosizeMargin, rightContent + autosizeMargin, upperContent + autosizeMargin,
+				bottomContent - autosizeMargin);
 	}
 
-	public double getEffectiveWidth() {
-		return abs(rightEffective - leftEffective);
+	public double getContentWidth() {
+		return rightContent - leftContent;
 	}
 
-	public double getEffectiveHeight() {
-		return abs(upperEffective - bottomEffective);
+	public double getContentHeight() {
+		return upperContent - bottomContent;
 	}
 
-	public double getEffectiveCenterX() {
-		return leftEffective + 0.5 * getEffectiveWidth();
+	public double getContentCenterX() {
+		return leftContent + 0.5 * getContentWidth();
 	}
 
-	public double getEffectiveCenterY() {
-		return bottomEffective + 0.5 * getEffectiveHeight();
+	public double getContentCenterY() {
+		return bottomContent + 0.5 * getContentHeight();
 	}
 
 
-	public void applyBoundaryConditions(Particle p) {
+	public void applyTo(Particle p) {
 
 		if (isUseRight() && p.getX() + p.getRadius() > getRight()) {
 			p.getVelocityVector().multiplyX(-p.getElasticity());

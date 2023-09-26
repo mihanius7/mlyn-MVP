@@ -64,7 +64,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private double crossX = 0;
 	private double crossY = 0;
 	private long renderTime, dt;
-	private String timeString = "N/A", timeStepString = "N/A";
+	private String infoString1 = "N/A", infoString2 = "N/A";
 	private Timer refreshLabelsTimer;
 	private BufferedImage tracksImage;
 	private BasicStroke arrowStroke = new BasicStroke(2f);
@@ -160,7 +160,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		if (drawInfo)
 			drawInfoStringsOn(graphics);
 		Toolkit.getDefaultToolkit().sync();
-		graphics.dispose();
+		//graphics.dispose();
 		fps++;
 	}
 
@@ -180,7 +180,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		double r = Simulation.getInstance().interactionProcessor.getTimeStepReserveRatio();
 		double timeScale = Simulation.getInstance().timeStepController.getMeasuredTimeScale();
 		String displayedTimeScale = "нявызначаны";
-		timeString = String.format("t = %.3f c, ", Simulation.getInstance().getTime())
+		infoString1 = String.format("t = %.3f c, ", Simulation.getInstance().getTime())
 				+ String.format("dt = %.4f", Simulation.getInstance().timeStepController.getTimeStepSize() * 1000)
 				+ " ms, "
 				+ String.format("Vmax = %.2f m/s",
@@ -193,11 +193,13 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			else
 				displayedTimeScale = String.format("%.3f", timeScale);
 		if (r > 100)
-			timeStepString = String.format(
+			infoString2 = String.format(
 					GUIStrings.TIMESTEP_RESERVE + " > 100 " + GUIStrings.TIME_SCALE + " " + displayedTimeScale, r);
 		else
-			timeStepString = String.format(
+			infoString2 = String.format(
 					GUIStrings.TIMESTEP_RESERVE + " = %.1f " + GUIStrings.TIME_SCALE + " " + displayedTimeScale, r);
+		infoString2 = infoString2.concat(", interactions: " + Simulation.getInstance().interactionProcessor.getPairInteractionCount());
+		infoString2 = infoString2.concat(", srchs skipped: " + Simulation.getInstance().interactionProcessor.getNeighborSearchsSkipStepsNumber());
 	}
 
 	void drawBackgroundOn(Graphics2D targetG2d) {
@@ -246,8 +248,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private void drawInfoStringsOn(Graphics2D targetG2d) {
 		targetG2d.setColor(Color.BLACK);
 		targetG2d.setFont(mainFont);
-		targetG2d.drawString(timeString, 2, 12);
-		targetG2d.drawString(timeStepString, 2, 28);
+		targetG2d.drawString(infoString1, 2, 12);
+		targetG2d.drawString(infoString2, 2, 28);
 	}
 
 	public void drawStringTilted(Graphics2D targetG2d, String string, int x1, int y1, int x2, int y2) {
@@ -414,15 +416,15 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public void scaleToAllParticles() {
 		if (Simulation.getInstance().getContent().getParticlesCount() > 0) {
 			Boundaries b = Simulation.getInstance().getContent().getBoundaries();
-			b.refreshEffectiveBoundaries();
-			double h = b.getEffectiveHeight();
-			double w = b.getEffectiveWidth();
+			b.refreshContentBoundaries();
+			double h = b.getContentHeight();
+			double w = b.getContentWidth();
 			setScale(Math.min((getHeight() - AUTOSCALE_MARGIN) / h, (getWidth() - AUTOSCALE_MARGIN) / w));
 			System.out.println("viewportH " + getHeight());
 			System.out.println("viewportW " + getWidth());
 			camera.setFollowing(null);
-			camera.setX(b.getEffectiveCenterX());
-			camera.setY(b.getEffectiveCenterY());
+			camera.setX(b.getContentCenterX());
+			camera.setY(b.getContentCenterY());
 			ConsoleWindow.println(GUIStrings.AUTOSCALE);
 		} else
 			scaleToBoundaries();
