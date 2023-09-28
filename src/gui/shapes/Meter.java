@@ -22,13 +22,16 @@ public class Meter extends Shape {
 
 	@Override
 	public void paintShape(Graphics2D g, Viewport viewport) {
-		g.setColor(METER);
-		g.setStroke(new BasicStroke(1f));
-		g.drawLine(x1, y1, x2, y2);
-		String label = String.format("%.3f m",
-				Functions.defineDistance(CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenX(x2),
-						CoordinateConverter.fromScreenY(y1), CoordinateConverter.fromScreenY(y2)));
-		viewport.drawStringTilted(g, label, x1, y1, x2, y2);
+		double screenDistance = Functions.defineDistance(CoordinateConverter.fromScreenX(x1),
+				CoordinateConverter.fromScreenX(x2), CoordinateConverter.fromScreenY(y1),
+				CoordinateConverter.fromScreenY(y2));
+		if (screenDistance > 0) {
+			g.setColor(METER);
+			g.setStroke(new BasicStroke(1f));
+			g.drawLine(x1, y1, x2, y2);
+			String label = String.format("%.3f m", screenDistance);
+			viewport.drawStringTilted(g, label, x1, y1, x2, y2);
+		}
 	}
 
 	@Override
