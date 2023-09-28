@@ -27,11 +27,16 @@ public class Functions {
 	}
 
 	public static double defineSquaredDistance(int i, int j) {
-		return (pow(Simulation.getInstance().x(i) - Simulation.getInstance().x(j), 2) + pow(Simulation.getInstance().y(i) - Simulation.getInstance().y(j), 2));
+		return (pow(Simulation.getInstance().x(i) - Simulation.getInstance().x(j), 2)
+				+ pow(Simulation.getInstance().y(i) - Simulation.getInstance().y(j), 2));
 	}
 
 	public static double defineDistance(int i, int j) {
 		return fastSqrt(defineSquaredDistance(i, j));
+	}
+
+	public static double defineDistance(double x1, double x2, double y1, double y2) {
+		return fastSqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 	}
 
 	public static double defineDistance(Particle i, Particle j) {
@@ -176,7 +181,7 @@ public class Functions {
 			a = a + Math.PI;
 		return a;
 	}
-	
+
 	public static void addForce(Particle i, Particle j, double force, double distance) {
 		double forceX = force * (j.getX() - i.getX()) / distance;
 		double forceY = force * (j.getY() - i.getY()) / distance;

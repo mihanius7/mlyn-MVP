@@ -11,16 +11,18 @@ import elements.line.Spring;
 import elements.point.Particle;
 
 public class SimulationContent implements Cloneable {
-	
+
 	ParticleGroup particles = new ParticleGroup();
 	SpringGroup springs = new SpringGroup();
 	Boundaries boundaries = new Boundaries();
+
 	private Particle referenceParticle;
+
 	private final ParticleGroup selectedParticles = new ParticleGroup();
 	private final SpringGroup selectedSprings = new SpringGroup();
-	
+
 	private int maxSelectedNumber = 1;
-	
+
 	public SimulationContent() {
 		referenceParticle = new Particle(0, 0, 1 * kg, 6 * cm);
 		referenceParticle.getShape().setVisible(false);
@@ -29,15 +31,15 @@ public class SimulationContent implements Cloneable {
 	public ParticleGroup getParticles() {
 		return particles;
 	}
-	
+
 	public SpringGroup getSprings() {
 		return springs;
-	}	
+	}
 
 	public Boundaries getBoundaries() {
 		return boundaries;
 	}
-	
+
 	public Particle getParticle(int i) {
 		if (i < particles.size() && particles.get(i) != null)
 			return particles.get(i);
@@ -82,15 +84,21 @@ public class SimulationContent implements Cloneable {
 		else
 			return null;
 	}
-	
+
 	public void setMaxSelectionNumber(int i) {
 		maxSelectedNumber = i;
 	}
-	
+
 	public void select(Particle p) {
-		if (selectedParticles.size() < maxSelectedNumber) {
+		if (selectedParticles.size() < maxSelectedNumber && !p.isSelected()) {
 			selectedParticles.add(p);
 			p.select();
+		}
+	}
+
+	public void select(ParticleGroup group) {
+		for (Particle p : particles) {
+			select(p);
 		}
 	}
 
@@ -173,7 +181,7 @@ public class SimulationContent implements Cloneable {
 		else
 			return null;
 	}
-	
+
 	public void removeSelectedParticles() {
 		if (!selectedParticles.isEmpty()) {
 			Simulation.getInstance().removeParticlesSafety(selectedParticles);
@@ -187,7 +195,7 @@ public class SimulationContent implements Cloneable {
 			selectedSprings.clear();
 		}
 	}
-	
+
 	public ParticleGroup getSelectedParticles() {
 		return selectedParticles;
 	}
@@ -195,7 +203,7 @@ public class SimulationContent implements Cloneable {
 	public SpringGroup getSelectedSprings() {
 		return selectedSprings;
 	}
-	
+
 	public int getParticlesCount() {
 		return particles.size();
 	}
@@ -203,7 +211,7 @@ public class SimulationContent implements Cloneable {
 	public int getSpringsCount() {
 		return springs.size();
 	}
-	
+
 	public Object clone() throws CloneNotSupportedException {
 		SimulationContent clone = (SimulationContent) super.clone();
 		clone.particles = (ParticleGroup) particles.clone();
@@ -211,5 +219,5 @@ public class SimulationContent implements Cloneable {
 		clone.boundaries = (Boundaries) boundaries.clone();
 		return clone;
 	}
-	
+
 }

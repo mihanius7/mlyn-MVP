@@ -32,8 +32,9 @@ import simulation.math.Vector;
 
 public class Viewport extends JPanel implements ActionListener, Runnable {
 
+	private static final int SCALE_LINE_MARGIN = 24;
 	public static final double ARROW_LENGTH_COEFFICIENT = 0.25;
-	public static final  int REFRESH_MESSAGES_INTERVAL = 500;
+	public static final int REFRESH_MESSAGES_INTERVAL = 500;
 	public final int ARROW_DRAWING_MIN_THRESHOLD = 8;
 	public final float LABELS_MIN_FONT_SIZE = 10;
 	public final int LABELS_FONT_SIZE = 12;
@@ -41,16 +42,17 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public final static double DEFAULT_GRID_SIZE = 20 * cm;
 	public final int FRAME_PAINT_DELAY = 20;
 	public final int AUTOSCALE_MARGIN = 75;
-	
+
 	Camera camera;
 	private Graphics2D canvas;
 	public Graphics2D tracksCanvas;
 	private RenderingHints rh;
-	
+
 	private static ArrayList<Shape> shapes;
+	private static ArrayList<Shape> physicalShapes;
 
 	private float currentFontSize = LABELS_FONT_SIZE;
-	
+
 	private boolean drawInfo = true;
 	public boolean useGrid = true;
 	private boolean drawTracks = false;
@@ -72,6 +74,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private ViewportEvent viewportEvent;
 
 	public Viewport(int initW, int initH, MainWindow mw) {
+		physicalShapes = new ArrayList<Shape>();
 		shapes = new ArrayList<Shape>();
 		viewportEvent = new ViewportEvent(this, mw);
 		addKeyListener(viewportEvent);
@@ -96,7 +99,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		ConsoleWindow.println(GUIStrings.RENDERING_THREAD_STARTED);
 		while (true) {
 			dt = System.currentTimeMillis() - renderTime;
-			checkShapesCount();
+			checkShapesList();
 			repaint();
 			waitForNextRender();
 			renderTime = System.currentTimeMillis();
@@ -115,19 +118,29 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		}
 	}
 
-	private void checkShapesCount() {
-		if (shapes.size() != Simulation.getInstance().getContent().getParticlesCount()
+	private void checkShapesList() {
+		if (physicalShapes.size() != Simulation.getInstance().getContent().getParticlesCount()
 				+ Simulation.getInstance().getContent().getSpringsCount()) {
-			shapes.clear();
+			shapes.removeAll(physicalShapes);
+			physicalShapes.clear();
 			for (int i = 0; i < Simulation.getInstance().getContent().getParticlesCount(); i++) {
 				if (Simulation.getInstance().getContent().getParticle(i) != null)
-					shapes.add(Simulation.getInstance().getContent().getParticle(i).getShape());
+					physicalShapes.add(Simulation.getInstance().getContent().getParticle(i).getShape());
 			}
 			for (int i = 0; i < Simulation.getInstance().getContent().getSpringsCount(); i++) {
 				if (Simulation.getInstance().getContent().getSpring(i) != null)
-					shapes.add(Simulation.getInstance().getContent().getSpring(i).getShape());
+					physicalShapes.add(Simulation.getInstance().getContent().getSpring(i).getShape());
 			}
+			shapes.addAll(physicalShapes);
 		}
+	}
+	
+	public synchronized boolean addShape(Shape s) {
+		return shapes.add(s);
+	}
+	
+	public synchronized boolean removeShape(Shape s) {
+		return shapes.remove(s);
 	}
 
 	@Override
@@ -160,7 +173,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		if (drawInfo)
 			drawInfoStringsOn(graphics);
 		Toolkit.getDefaultToolkit().sync();
-		//graphics.dispose();
+		// graphics.dispose();
 		fps++;
 	}
 
@@ -182,11 +195,11 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		String displayedTimeScale = "нявызначаны";
 		infoString1 = String.format("t = %.3f c, ", Simulation.getInstance().getTime())
 				+ String.format("dt = %.4f", Simulation.getInstance().timeStepController.getTimeStepSize() * 1000)
-				+ " ms, "
-				+ String.format("Vmax = %.2f m/s",
-						PointMass.maxVelocity)
-				+ ", fps = " + fps * 1000.0 / REFRESH_MESSAGES_INTERVAL
-				+ ", sps = " + Simulation.getInstance().timeStepController.getStepsPerSecond() / (REFRESH_MESSAGES_INTERVAL / 1000.0) / 1000.0 + "k";
+				+ " ms, " + String.format("Vmax = %.2f m/s", PointMass.maxVelocity) + ", fps = "
+				+ fps * 1000.0 / REFRESH_MESSAGES_INTERVAL + ", sps = "
+				+ Simulation.getInstance().timeStepController.getStepsPerSecond() / (REFRESH_MESSAGES_INTERVAL / 1000.0)
+						/ 1000.0
+				+ "k";
 		if (Simulation.getInstance().isActive())
 			if (timeScale > 1000 || timeScale < 1e-3)
 				displayedTimeScale = String.format("%.2e", timeScale);
@@ -198,8 +211,10 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		else
 			infoString2 = String.format(
 					GUIStrings.TIMESTEP_RESERVE + " = %.1f " + GUIStrings.TIME_SCALE + " " + displayedTimeScale, r);
-		infoString2 = infoString2.concat(", interactions: " + Simulation.getInstance().interactionProcessor.getPairInteractionCount());
-		infoString2 = infoString2.concat(", srchs skipped: " + Simulation.getInstance().interactionProcessor.getNeighborSearchsSkipStepsNumber());
+		infoString2 = infoString2
+				.concat(", interactions: " + Simulation.getInstance().interactionProcessor.getPairInteractionCount());
+		infoString2 = infoString2.concat(", srchs skipped: "
+				+ Simulation.getInstance().interactionProcessor.getNeighborSearchsSkipStepsNumber());
 	}
 
 	void drawBackgroundOn(Graphics2D targetG2d) {
@@ -310,8 +325,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	private void drawAxisOn(Graphics2D targetG2d) {
-		int x0 = 20;
-		int y0 = getHeight() - 20;
+		int x0 = SCALE_LINE_MARGIN;
+		int y0 = getHeight() - SCALE_LINE_MARGIN;
 		int x1 = x0 + 50;
 		int y1 = y0 - 50;
 		drawArrowLine(targetG2d, x0, y0, x1, y0, 10, 4);
@@ -322,10 +337,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	private void drawScaleLineOn(Graphics2D targetG2d) {
 		int l = 50;
-		int xc = getWidth() - l / 2 - 20;
-		int yc = getHeight() - 20;
-		targetG2d.drawLine(xc - l / 2, yc, xc + l / 2, yc);
-		targetG2d.drawString(String.format("%.1e m", CoordinateConverter.fromScreen(l)), xc - 32, yc - 4);
+		targetG2d.drawLine(getWidth() - l - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN, getWidth() - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN);
+		drawStringTilted(targetG2d, String.format("%.1e m", CoordinateConverter.fromScreen(l)), getWidth() - l - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN, getWidth() - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN);
 	}
 
 	public void drawArrowLine(Graphics2D targetG2d, int x1, int y1, Vector v, Color arrowColor, String label) {

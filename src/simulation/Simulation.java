@@ -188,7 +188,7 @@ public class Simulation implements Runnable {
 		interactionProcessor.recalculateNeighborsNeeded();
 	}
 
-	private void removeParticles(ParticleGroup pp) {
+	private synchronized void removeParticles(ParticleGroup pp) {
 		if (!content.springs.isEmpty())
 			for (Particle p : pp)
 				removeSprings(content.springs.findAttachedSprings(p));
@@ -196,7 +196,7 @@ public class Simulation implements Runnable {
 		interactionProcessor.recalculateNeighborsNeeded();
 	}
 
-	public void removeParticlesSafety(ParticleGroup pp) {
+	public synchronized void removeParticlesSafety(ParticleGroup pp) {
 		if (!content.springs.isEmpty())
 			for (Particle p : pp)
 				removeSpringsSafety(content.springs.findAttachedSprings(p));
@@ -214,6 +214,7 @@ public class Simulation implements Runnable {
 	}
 
 	private void removeSpring(Spring s) {
+		content.deselect(s);
 		content.springs.remove(s);
 	}
 
@@ -225,7 +226,7 @@ public class Simulation implements Runnable {
 			content.springs.remove(s);
 	}
 
-	private void removeSprings(SpringGroup ss) {
+	private synchronized void removeSprings(SpringGroup ss) {
 		for (Spring s : ss)
 			removeSpring(s);
 	}
