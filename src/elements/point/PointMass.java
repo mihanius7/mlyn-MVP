@@ -1,5 +1,7 @@
 package elements.point;
 
+import java.awt.geom.Point2D;
+
 import simulation.Simulation;
 import simulation.math.TrajectoryIntegrator;
 import simulation.math.Vector;
@@ -37,6 +39,10 @@ public class PointMass implements Cloneable {
 			m = newMass;
 		else
 			throw new RuntimeException("Can't set particle mass to zero. ");
+	}
+	
+	public Point2D createPoint() {
+		return new Point2D.Double(x, y);
 	}
 
 	public double getX() {

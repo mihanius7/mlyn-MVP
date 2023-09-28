@@ -13,6 +13,7 @@ import elements.group.SpringGroup;
 import elements.line.Spring;
 import elements.point.Particle;
 import gui.shapes.Meter;
+import gui.shapes.Rectangle;
 import simulation.Simulation;
 import simulation.components.TimeStepController;
 
@@ -29,6 +30,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 	private Viewport viewport;
 	private MainWindow mainWindow;
 	private Meter meter;
+	private Rectangle rectangle;
 
 	public ViewportEvent(Viewport v, MainWindow w) {
 		viewport = v;
@@ -81,6 +83,8 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 		} else if (mouseMode == MouseMode.PARTICLE_SELECT) {
 			meter = new Meter();
 			viewport.addShape(meter);
+			rectangle = new Rectangle();
+			viewport.addShape(rectangle);
 			p = Simulation.getInstance().getContent().getParticles().findNearestParticle(
 					CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1),
 					CoordinateConverter.fromScreen(10));
@@ -95,9 +99,6 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				} else {
 					Simulation.getInstance().getContent().deselect(p);
 				}
-			} else {
-				viewport.setCrossX(CoordinateConverter.fromScreenX(x1));
-				viewport.setCrossY(CoordinateConverter.fromScreenY(y1));
 			}
 		} else if (mouseMode == MouseMode.SPRING_SELECT) {
 			s = Simulation.getInstance().getContent().getSprings().findNearestSpring(
@@ -162,12 +163,11 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				Simulation.getInstance().interactionProcessor.setMoveToMouse(true);
 			}
 		} else if (mouseMode == MouseMode.PARTICLE_SELECT) {
-			viewport.setCrossX(CoordinateConverter.fromScreenX(x2));
-			viewport.setCrossY(CoordinateConverter.fromScreenY(y2));
-			meter.setX1(x1);
-			meter.setY1(y1);
-			meter.setX2(x2);
-			meter.setY2(y2);
+			rectangle.setX1(x1);
+			rectangle.setY1(y1);
+			rectangle.setX2(x2);
+			rectangle.setY2(y2);
+			Simulation.getInstance().getContent().getParticles().selectInRect(CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1), CoordinateConverter.fromScreenX(x2), CoordinateConverter.fromScreenY(y2));
 		} else {
 			if (mouseMode == MouseMode.PARTICLE_MANIPULATION_ACCELERATION
 					&& Simulation.getInstance().getContent().getSelectedParticle(0) != null
@@ -193,6 +193,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 		Simulation.getInstance().interactionProcessor.setParticleTargetXY(new Point2D.Double(0, 0));
 		radiusX = 0;
 		radiusY = 0;
+		viewport.removeShape(rectangle);
 		if (mouseMode == MouseMode.PARTICLE_ADD
 				&& Simulation.getInstance().getContent().getReferenceParticle().getShape().isVisible()) {
 			Simulation.getInstance().getContent().getReferenceParticle().getShape().setVisible(false);
@@ -228,7 +229,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				|| mouseMode == MouseMode.PARTICLE_MANIPULATION_COORDINATE) {
 			mainWindow.clearSelection();
 		} else if (mouseMode == MouseMode.PARTICLE_SELECT) {
-			if (Simulation.getInstance().getContent().getSelectedParticles().size() >= 2) {
+			if (Simulation.getInstance().getContent().getSelectedParticles().size() == 2) {
 				refreshMeter();
 			} else {
 				viewport.removeShape(meter);
