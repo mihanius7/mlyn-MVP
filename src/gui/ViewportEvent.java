@@ -229,7 +229,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				|| mouseMode == MouseMode.PARTICLE_MANIPULATION_COORDINATE) {
 			mainWindow.clearSelection();
 		} else if (mouseMode == MouseMode.PARTICLE_SELECT) {
-			if (Simulation.getInstance().getContent().getSelectedParticles().size() == 2) {
+			if (Simulation.getInstance().getContent().getSelectedParticles().size() >= 2 && arg0.isControlDown()) {
 				refreshMeter();
 			} else {
 				viewport.removeShape(meter);
