@@ -100,6 +100,9 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				} else {
 					Simulation.getInstance().getContent().deselect(p);
 				}
+			} else {
+				viewport.setCrossX(CoordinateConverter.fromScreenX(x1));
+				viewport.setCrossY(CoordinateConverter.fromScreenY(y1));
 			}
 		} else if (mouseMode == MouseMode.SPRING_SELECT) {
 			s = Simulation.getInstance().getContent().getSprings().findNearestSpring(

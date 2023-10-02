@@ -17,7 +17,7 @@ import simulation.components.TimeStepController.TimeStepMode;
 public class SampleScenes {
 
 	public void initializeScene() {
-		scenePreset();
+		scenePreset2();
 	}
 
 	public void emptyScene() {
@@ -40,7 +40,7 @@ public class SampleScenes {
 		ConsoleWindow.println("	"+ GUIStrings.DONE);
 	}
 
-public void scenePreset() {
+public void scenePreset1() {
 		Simulation.getInstance().timeStepController.setModeAndReset(TimeStepMode.DYNAMIC);
 		Simulation.getInstance().timeStepController.setTimeScale(0.001);
 		Simulation.getInstance().interactionProcessor.setUsePPCollisions(true);
@@ -57,5 +57,15 @@ public void scenePreset() {
 		Simulation.getInstance().addToSimulation(new Particle(320 * cm, 130 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
 		ParticleShape.drawForces = true;
 	}
+
+public void scenePreset2() {
+	Simulation.getInstance().timeStepController.setModeAndReset(TimeStepMode.DYNAMIC);
+	Simulation.getInstance().timeStepController.setTimeScale(0.001);
+	Simulation.getInstance().interactionProcessor.setUsePPCollisions(false);
+	Simulation.getInstance().interactionProcessor.setUseExternalForces(false);
+	Simulation.getInstance().getContent().getBoundaries().setUseAll(false);
+	Simulation.getInstance().addToSimulation(new Particle(20 * cm, 0 * cm, 1 * kg, 2.1E-8, 0, 0, 5 * cm, Color.RED));
+	Simulation.getInstance().addToSimulation(new Particle(70 * cm, 0 * cm, 1 * kg, -8.4E-8, 0, 0, 5 * cm, Color.BLUE));
+}
 
 }

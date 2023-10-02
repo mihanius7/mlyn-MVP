@@ -18,8 +18,10 @@ public class HeatMap {
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
 	private PairForce pairForce;
-	private double range = 1000, maxValue, maxField;
-	private boolean isGravityFieldMap = false;
+	private double range = 5000;
+	private double minValue, minField;
+	private double maxValue, maxField;
+	private boolean isGravityFieldMap;
 	private boolean isAdaptiveRange = false;
 
 	public HeatMap(int w, int h) {
@@ -48,9 +50,11 @@ public class HeatMap {
 		int ui = (Simulation.getInstance().isActive()) ? updateInterval : 25;
 		if (updatesNumber >= ui) {
 			if (isAdaptiveRange) {
-				range = maxField;
+				minValue = Double.MAX_VALUE;
+				maxValue = Double.MIN_VALUE;
+				range = (Math.max(minField, maxField) - Math.min(minField, maxField)) / 4096;
+				System.out.println("Range: " + range);
 			}
-			maxValue = 0;
 			updatesNumber = 0;
 			int wSteps = (int) (width / resolution);
 			int hSteps = (int) (height / resolution);
@@ -60,17 +64,20 @@ public class HeatMap {
 					heatMapCanvas.setColor(defineColor(field));
 					heatMapCanvas.fill(
 							new Rectangle2D.Double(pixelX * resolution, pixelY * resolution, resolution, resolution));
-					if (Math.abs(field) > maxValue)
-						maxValue = Math.abs(field);
+					if (field > maxValue)
+						maxValue = field;
+					else if (field < minValue)
+						minValue = field;
 				}
 			}
+			minField = minValue;
 			maxField = maxValue;
 		}
 	}
 
 	private double defineFieldStrength(int pixelX, int pixelY) {
 		Particle testParticle;
-		double squaredDistance;
+		double distance;
 		double x1;
 		double y1;
 		double x2;
@@ -83,9 +90,9 @@ public class HeatMap {
 		int pNumber = 0;
 		while (Simulation.getInstance().getContent().getParticle(pNumber) != null) {
 			testParticle = Simulation.getInstance().getContent().getParticle(pNumber);
-			squaredDistance = Functions.defineSquaredDistance(testParticle, (x1 + x2) / 2, (y1 + y2) / 2);
-			field += (isGravityFieldMap) ? pairForce.defineGravitationFieldStrength(testParticle, squaredDistance)
-					: pairForce.defineCoulombFieldStrength(testParticle, squaredDistance);
+			distance = Functions.defineDistance(testParticle, (x1 + x2) / 2, (y1 + y2) / 2);
+			field += (isGravityFieldMap) ? pairForce.defineGravitationFieldStrength(testParticle, distance)
+					: pairForce.defineCoulombFieldStrength(testParticle, distance);
 			pNumber++;
 		}
 		return field;
@@ -95,7 +102,7 @@ public class HeatMap {
 		Color c1;
 		int colorIndex;
 		colorIndex = (isGravityFieldMap) ? (int) Functions.linear2DInterpolation(-maxField, 255, 0, 0, value)
-				: (int) Functions.linear2DInterpolation(-range/2, 0, range/2, 255, value / 1000);
+				: (int) Functions.linear2DInterpolation(-range / 2, 0, range / 2, 255, value);
 		c1 = new Color(Colors.TURBO_SRGB_BYTES[colorIndex][0], Colors.TURBO_SRGB_BYTES[colorIndex][1],
 				Colors.TURBO_SRGB_BYTES[colorIndex][2]);
 		return c1;
