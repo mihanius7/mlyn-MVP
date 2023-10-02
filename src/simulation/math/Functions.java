@@ -189,7 +189,7 @@ public class Functions {
 		j.addFx(forceX);
 		i.addFy(-forceY);
 		j.addFy(forceY);
-	}
+	}	
 
 	public static void addForceTangential(Particle i, Particle j, double force, double distance) {
 		double forceX = force * (j.getY() - i.getY()) / distance;

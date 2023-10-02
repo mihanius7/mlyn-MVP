@@ -5,11 +5,6 @@ import static java.lang.Math.sqrt;
 public class Vector implements Cloneable {
 	private double x, y;
 
-	public Vector() {
-		x = 0;
-		y = 0;
-	}
-
 	public Vector(double xComponent, double yComponent) {
 		x = xComponent;
 		y = yComponent;
@@ -18,6 +13,10 @@ public class Vector implements Cloneable {
 	public Vector(Vector v) {
 		x = v.X();
 		y = v.Y();
+	}
+
+	public Vector() {
+		this(0, 0);
 	}
 
 	public void setX(double xComponent) {
@@ -54,9 +53,10 @@ public class Vector implements Cloneable {
 		y += dy;
 	}
 
-	public void multiply(double d) {
+	public Vector multiply(double d) {
 		multiplyX(d);
 		multiplyY(d);
+		return this;
 	}
 
 	public void multiplyX(double d) {

@@ -138,11 +138,11 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			shapes.addAll(physicalShapes);
 		}
 	}
-	
+
 	public synchronized boolean addShape(Shape s) {
 		return shapes.add(s);
 	}
-	
+
 	public synchronized boolean removeShape(Shape s) {
 		return shapes.remove(s);
 	}
@@ -345,8 +345,11 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	private void drawScaleLineOn(Graphics2D targetG2d) {
 		int l = 50;
-		targetG2d.drawLine(getWidth() - l - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN, getWidth() - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN);
-		drawStringTilted(targetG2d, String.format("%.1e m", CoordinateConverter.fromScreen(l)), getWidth() - l - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN, getWidth() - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN);
+		targetG2d.drawLine(getWidth() - l - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN,
+				getWidth() - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN);
+		drawStringTilted(targetG2d, String.format("%.1e m", CoordinateConverter.fromScreen(l)),
+				getWidth() - l - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN, getWidth() - SCALE_LINE_MARGIN,
+				getHeight() - SCALE_LINE_MARGIN);
 	}
 
 	public void drawArrowLine(Graphics2D targetG2d, int x1, int y1, Vector v, Color arrowColor, String label) {
@@ -433,7 +436,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public boolean isDrawFields() {
 		return drawHeatMap;
 	}
-	
+
 	void initHeatMapImage() {
 		heatMap = new HeatMap(this);
 	}

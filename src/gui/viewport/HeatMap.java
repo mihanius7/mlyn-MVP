@@ -11,14 +11,15 @@ import simulation.components.InteractionProcessor;
 import simulation.components.InteractionType;
 import simulation.math.Functions;
 import simulation.math.PairForce;
+import simulation.math.Vector;
 
 public class HeatMap {
 
-	private int updateInterval = 3, resolution = 6, updatesNumber = 0, width, height;
+	private int updateInterval = 3, resolution = 5, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
 	private PairForce pairForce;
-	private double range = 5000;
+	private double range = 2000;
 	private double minValue, minField;
 	private double maxValue, maxField;
 	private boolean isGravityFieldMap;
@@ -32,8 +33,8 @@ public class HeatMap {
 		pairForce = new PairForce();
 	}
 
-	public HeatMap(Viewport viewport) {
-		this(viewport.getWidth(), viewport.getHeight());
+	public HeatMap(Viewport v) {
+		this(v.getWidth(), v.getHeight());
 	}
 
 	public BufferedImage getHeatMapImage() {
@@ -47,7 +48,7 @@ public class HeatMap {
 		else if (InteractionProcessor.getInteractionType() == InteractionType.COULOMB
 				|| InteractionProcessor.getInteractionType() == InteractionType.COULOMB_AND_GRAVITATION)
 			isGravityFieldMap = false;
-		int ui = (Simulation.getInstance().isActive()) ? updateInterval : 25;
+		int ui = (Simulation.getInstance().isActive()) ? updateInterval : 15;
 		if (updatesNumber >= ui) {
 			if (isAdaptiveRange) {
 				minValue = Double.MAX_VALUE;
@@ -58,12 +59,19 @@ public class HeatMap {
 			updatesNumber = 0;
 			int wSteps = (int) (width / resolution);
 			int hSteps = (int) (height / resolution);
-			for (int pixelX = 0; pixelX <= wSteps; pixelX++) {
-				for (int pixelY = 0; pixelY <= hSteps; pixelY++) {
-					double field = defineFieldStrength(pixelX, pixelY);
-					heatMapCanvas.setColor(defineColor(field));
+			for (int stepX = 0; stepX <= wSteps; stepX++) {
+				for (int stepY = 0; stepY <= hSteps; stepY++) {
+					double xc = (CoordinateConverter.fromScreenX(stepX * resolution)
+							+ CoordinateConverter.fromScreenX((stepX + 1) * resolution)) / 2;
+					double yc = (CoordinateConverter.fromScreenY(stepY * resolution)
+							+ CoordinateConverter.fromScreenY((stepY + 1) * resolution)) / 2;
+					Vector fieldVector = defineField(xc, yc);
+					double field = fieldVector.X();
+					heatMapCanvas.setColor(defineColor(field, range));
 					heatMapCanvas.fill(
-							new Rectangle2D.Double(pixelX * resolution, pixelY * resolution, resolution, resolution));
+							new Rectangle2D.Double(stepX * resolution, stepY * resolution, resolution, resolution));
+//					viewport.drawArrowLine(heatMapCanvas, (int) (stepX + 0.5) * resolution, (int) (stepY + 0.5) * resolution,
+//							fieldVector.multiply(0.0005), Color.BLACK, "");
 					if (field > maxValue)
 						maxValue = field;
 					else if (field < minValue)
@@ -75,30 +83,25 @@ public class HeatMap {
 		}
 	}
 
-	private double defineFieldStrength(int pixelX, int pixelY) {
+	private Vector defineField(double x, double y) {
 		Particle testParticle;
+		Vector field = new Vector();
 		double distance;
-		double x1;
-		double y1;
-		double x2;
-		double y2;
-		double field = 0;
-		x1 = CoordinateConverter.fromScreenX(pixelX * resolution);
-		y1 = CoordinateConverter.fromScreenY(pixelY * resolution);
-		x2 = CoordinateConverter.fromScreenX((pixelX + 1) * resolution);
-		y2 = CoordinateConverter.fromScreenY((pixelY + 1) * resolution);
+		double dF = 0;
 		int pNumber = 0;
 		while (Simulation.getInstance().getContent().getParticle(pNumber) != null) {
 			testParticle = Simulation.getInstance().getContent().getParticle(pNumber);
-			distance = Functions.defineDistance(testParticle, (x1 + x2) / 2, (y1 + y2) / 2);
-			field += (isGravityFieldMap) ? pairForce.defineGravitationFieldStrength(testParticle, distance)
+			distance = Functions.defineDistance(testParticle, x, y);
+			dF = (isGravityFieldMap) ? pairForce.defineGravitationFieldStrength(testParticle, distance)
 					: pairForce.defineCoulombFieldStrength(testParticle, distance);
+			field.addToX(dF * (x - testParticle.getX()) / distance);
+			field.addToY(dF * (y - testParticle.getY()) / distance);
 			pNumber++;
 		}
 		return field;
 	}
 
-	public Color defineColor(double value) {
+	public Color defineColor(double value, double range) {
 		Color c1;
 		int colorIndex;
 		colorIndex = (isGravityFieldMap) ? (int) Functions.linear2DInterpolation(-maxField, 255, 0, 0, value)
