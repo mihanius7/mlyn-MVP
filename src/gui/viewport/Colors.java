@@ -1,4 +1,4 @@
-package gui;
+package gui.viewport;
 
 import java.awt.Color;
 

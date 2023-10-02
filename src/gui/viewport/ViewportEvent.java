@@ -1,4 +1,4 @@
-package gui;
+package gui.viewport;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -12,6 +12,7 @@ import java.awt.geom.Point2D;
 import elements.group.SpringGroup;
 import elements.line.Spring;
 import elements.point.Particle;
+import gui.MainWindow;
 import gui.shapes.Meter;
 import gui.shapes.Rectangle;
 import simulation.Simulation;
@@ -19,7 +20,7 @@ import simulation.components.TimeStepController;
 
 public class ViewportEvent implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener {
 
-	private static final int MAX_SPRINGS_FOR_LABEL_AFTER_SELECTION = 8;
+	private static final int MAX_SPRINGS_FOR_LABELING_AFTER_SELECTION = 8;
 	private int x1;
 	private int y1;
 	private int x2;
@@ -131,7 +132,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 
 	private void labelAttachedSprings(Particle p) {
 		SpringGroup springGroup = Simulation.getInstance().getContent().getSprings().findAttachedSprings(p);
-		if (springGroup.size() > 1 && springGroup.size() < MAX_SPRINGS_FOR_LABEL_AFTER_SELECTION) {
+		if (springGroup.size() > 1 && springGroup.size() < MAX_SPRINGS_FOR_LABELING_AFTER_SELECTION) {
 			for (Spring s1 : springGroup) {
 				s1.getShape().setDrawLabel(true);
 			}

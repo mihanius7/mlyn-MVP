@@ -157,7 +157,7 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 	public void selectInRect(double x1, double y1, double x2, double y2) {
 		Rectangle2D.Double rect = new Rectangle2D.Double(Math.min(x2, x1), Math.min(y2, y1), Math.abs(x2 - x1), Math.abs(y2 - y1));
 		for (Particle p : this) {
-			if (rect.contains(p.createPoint())) {
+			if (rect.contains(p.getCenterPoint())) {
 				Simulation.getInstance().getContent().select(p);
 			} else {
 				Simulation.getInstance().getContent().deselect(p);

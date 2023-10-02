@@ -1,7 +1,7 @@
 package gui.dialogs;
 
-import gui.Viewport;
 import gui.lang.GUIStrings;
+import gui.viewport.Viewport;
 import simulation.Boundaries;
 import simulation.Simulation;
 

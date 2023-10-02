@@ -23,6 +23,8 @@ import gui.lang.GUIStrings;
 import gui.lang.International;
 import gui.lang.Language;
 import gui.menu.MainWindowMenu;
+import gui.viewport.MouseMode;
+import gui.viewport.Viewport;
 import io.SAXelementParser;
 import simulation.Simulation;
 import simulation.components.TimeStepController.TimeStepMode;

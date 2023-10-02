@@ -5,8 +5,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import elements.Element;
-import gui.CoordinateConverter;
-import gui.Viewport;
+import gui.viewport.CoordinateConverter;
+import gui.viewport.Viewport;
 import simulation.math.Functions;
 
 public class Meter extends Shape {
