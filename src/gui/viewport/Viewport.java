@@ -58,7 +58,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private boolean drawInfo = true;
 	public boolean useGrid = true;
 	private boolean drawTracks = false;
-	private boolean drawHeatMap = false;
+	private boolean drawHeatMap = true;
 	public Font labelsFont;
 	private Font mainFont;
 	private int fps = 0;
@@ -71,6 +71,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private String infoString1 = "N/A", infoString2 = "N/A";
 	private Timer refreshLabelsTimer;
 	private BufferedImage tracksImage;
+	private static HeatMap heatMap;
 	private BasicStroke arrowStroke = new BasicStroke(2f);
 	public BasicStroke crossStroke = new BasicStroke(3f);
 	private ViewportEvent viewportEvent;
@@ -90,6 +91,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		setBounds(0, 0, initW, initH);
 		setDoubleBuffered(true);
 		initTracksImage();
+		initHeatMapImage();
 		mainFont = new Font("Tahoma", Font.TRUETYPE_FONT, 14);
 		labelsFont = new Font("Arial", Font.TRUETYPE_FONT, LABELS_FONT_SIZE);
 		refreshLabelsTimer = new Timer(REFRESH_MESSAGES_INTERVAL, this);
@@ -136,11 +138,11 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			shapes.addAll(physicalShapes);
 		}
 	}
-	
+
 	public synchronized boolean addShape(Shape s) {
 		return shapes.add(s);
 	}
-	
+
 	public synchronized boolean removeShape(Shape s) {
 		return shapes.remove(s);
 	}
@@ -157,6 +159,10 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		camera.follow();
 		currentFontSize = scaleLabelsFont();
 		drawBackgroundOn(graphics);
+		if (drawHeatMap && Simulation.getInstance().interactionProcessor.isUseInterparticleForces()) {
+			heatMap.updateHeatMapImage();
+			graphics.drawImage(heatMap.getHeatMapImage(), 0, 0, null);
+		}
 		if (drawTracks)
 			graphics.drawImage(tracksImage, 0, 0, null);
 		drawBoundariesOn(graphics);
@@ -321,9 +327,9 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.drawLine(xc, yc + 8, xc, yc - 8);
 		targetG2d.drawLine(xc - 8, yc, xc + 8, yc);
 		targetG2d.setFont(labelsFont);
-		targetG2d.setColor(Colors.FONT_TAGS);
+		targetG2d.setColor(Colors.CROSS);
 		if (drawTag)
-			targetG2d.drawString(String.format("(%.1e", x) + String.format("; %.1e) m", y), xc + 4, yc - 4);
+			targetG2d.drawString(String.format("(%.2f", x) + String.format("; %.2f) m", y), xc + 4, yc - 4);
 	}
 
 	private void drawAxisOn(Graphics2D targetG2d) {
@@ -339,8 +345,11 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	private void drawScaleLineOn(Graphics2D targetG2d) {
 		int l = 50;
-		targetG2d.drawLine(getWidth() - l - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN, getWidth() - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN);
-		drawStringTilted(targetG2d, String.format("%.1e m", CoordinateConverter.fromScreen(l)), getWidth() - l - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN, getWidth() - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN);
+		targetG2d.drawLine(getWidth() - l - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN,
+				getWidth() - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN);
+		drawStringTilted(targetG2d, String.format("%.1e m", CoordinateConverter.fromScreen(l)),
+				getWidth() - l - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN, getWidth() - SCALE_LINE_MARGIN,
+				getHeight() - SCALE_LINE_MARGIN);
 	}
 
 	public void drawArrowLine(Graphics2D targetG2d, int x1, int y1, Vector v, Color arrowColor, String label) {
@@ -426,6 +435,10 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	public boolean isDrawFields() {
 		return drawHeatMap;
+	}
+
+	void initHeatMapImage() {
+		heatMap = new HeatMap(this);
 	}
 
 	public void scaleToAllParticles() {

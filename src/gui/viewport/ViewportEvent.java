@@ -100,6 +100,9 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 				} else {
 					Simulation.getInstance().getContent().deselect(p);
 				}
+			} else {
+				viewport.setCrossX(CoordinateConverter.fromScreenX(x1));
+				viewport.setCrossY(CoordinateConverter.fromScreenY(y1));
 			}
 		} else if (mouseMode == MouseMode.SPRING_SELECT) {
 			s = Simulation.getInstance().getContent().getSprings().findNearestSpring(
@@ -158,6 +161,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 						.setY(CoordinateConverter.fromScreenY(y2 + radiusY));
 				if (viewport.useGrid)
 					Simulation.getInstance().getContent().getSelectedParticle(0).snapToGrid(viewport.getGridSize());
+				Simulation.getInstance().perfomStep(2, false);
 			} else {
 				Simulation.getInstance().interactionProcessor.setParticleTargetXY(new Point2D.Double(
 						CoordinateConverter.fromScreenX(x2 + radiusX), CoordinateConverter.fromScreenY(y2 + radiusY)));

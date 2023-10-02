@@ -22,8 +22,8 @@ public class PairForce {
 		return k * particle1.getCharge() * particle2.getCharge() / squaredDistance;
 	}
 
-	public double defineCoulombFieldStrength(Particle particle1, double distance) {
-		return k * particle1.getCharge() / sqr(distance);
+	public double defineCoulombFieldStrength(Particle particle, double distance) {
+		return k * particle.getCharge() / sqr(distance);
 	}
 
 	public double defineGravitationForce(Particle particle1, Particle particle2, double distance) {

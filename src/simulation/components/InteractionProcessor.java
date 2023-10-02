@@ -311,6 +311,10 @@ public class InteractionProcessor implements SimulationComponent {
 		message();
 	}
 
+	public static InteractionType getInteractionType() {
+		return interactionType;
+	}
+
 	public ExternalForce getExternalForce() {
 		return externalForce;
 	}

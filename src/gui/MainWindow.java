@@ -291,7 +291,7 @@ public class MainWindow extends JFrame {
 			File selectedFile = openSceneChooser.getSelectedFile();
 			parser.loadFromFile(selectedFile);
 			setCaption(selectedFile.getName());
-			Simulation.getInstance().perfomStep(5);
+			Simulation.getInstance().perfomStep(5, true);
 			refreshGUIControls();
 			viewport.reset();
 			viewport.scaleToAllParticles();
