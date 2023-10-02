@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import elements.Element;
-import gui.Viewport;
+import gui.viewport.Viewport;
 import simulation.math.Functions;
 
 public class Rectangle extends Shape {

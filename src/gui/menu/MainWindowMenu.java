@@ -12,10 +12,10 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 
 import gui.MainWindow;
-import gui.MouseMode;
-import gui.Viewport;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
+import gui.viewport.MouseMode;
+import gui.viewport.Viewport;
 import simulation.Simulation;
 
 public class MainWindowMenu extends JMenuBar {

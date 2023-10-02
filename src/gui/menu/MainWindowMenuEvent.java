@@ -5,9 +5,9 @@ import java.awt.event.ActionListener;
 
 import gui.ConsoleWindow;
 import gui.MainWindow;
-import gui.MouseMode;
-import gui.Viewport;
 import gui.shapes.ParticleShape;
+import gui.viewport.MouseMode;
+import gui.viewport.Viewport;
 import simulation.Simulation;
 import simulation.math.Vector;
 

@@ -1,4 +1,4 @@
-package gui;
+package gui.viewport;
 
 public class CoordinateConverter {
 	private static Viewport viewport;

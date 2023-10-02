@@ -11,8 +11,8 @@ import constants.PhysicalConstants;
 import elements.Element;
 import elements.line.Spring;
 import elements.point.Particle;
-import gui.CoordinateConverter;
-import gui.Viewport;
+import gui.viewport.CoordinateConverter;
+import gui.viewport.Viewport;
 
 public class SpringShape extends Shape {
 	

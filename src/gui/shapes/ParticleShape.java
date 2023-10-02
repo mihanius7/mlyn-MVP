@@ -7,9 +7,9 @@ import java.awt.Graphics2D;
 
 import elements.Element;
 import elements.point.Particle;
-import gui.Colors;
-import gui.CoordinateConverter;
-import gui.Viewport;
+import gui.viewport.Colors;
+import gui.viewport.CoordinateConverter;
+import gui.viewport.Viewport;
 import simulation.Simulation;
 
 public class ParticleShape extends Shape {

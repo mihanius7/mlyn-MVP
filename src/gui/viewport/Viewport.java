@@ -1,4 +1,4 @@
-package gui;
+package gui.viewport;
 
 import static constants.PhysicalConstants.cm;
 
@@ -23,6 +23,8 @@ import javax.swing.Timer;
 import constants.PhysicalConstants;
 import elements.Element;
 import elements.point.PointMass;
+import gui.ConsoleWindow;
+import gui.MainWindow;
 import gui.lang.GUIStrings;
 import gui.shapes.Shape;
 import gui.shapes.SpringShape;
@@ -241,7 +243,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.fillRect(0, 0, getWidth(), getHeight());
 	}
 
-	void initTracksImage() {
+	public void initTracksImage() {
 		tracksImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
 		tracksCanvas = tracksImage.createGraphics();
 		tracksCanvas.setStroke(new BasicStroke(2f));
