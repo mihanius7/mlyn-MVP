@@ -35,7 +35,7 @@ public class SampleScenes {
 		b.setBounds(0, 9.2, 4.2, 0);
 		b.setUseAll(true);
 		b.setUseUpper(false);
-		Simulation.getInstance().perfomStep(10);
+		Simulation.getInstance().perfomStep(10, true);
 		MainWindow.setCaption(GUIStrings.NEW_PROJECT_NAME);
 		ConsoleWindow.println("	"+ GUIStrings.DONE);
 	}

@@ -58,7 +58,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private boolean drawInfo = true;
 	public boolean useGrid = true;
 	private boolean drawTracks = false;
-	private boolean drawHeatMap = false;
+	private boolean drawHeatMap = true;
 	public Font labelsFont;
 	private Font mainFont;
 	private int fps = 0;
@@ -71,6 +71,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private String infoString1 = "N/A", infoString2 = "N/A";
 	private Timer refreshLabelsTimer;
 	private BufferedImage tracksImage;
+	private static HeatMap heatMap;
 	private BasicStroke arrowStroke = new BasicStroke(2f);
 	public BasicStroke crossStroke = new BasicStroke(3f);
 	private ViewportEvent viewportEvent;
@@ -90,6 +91,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		setBounds(0, 0, initW, initH);
 		setDoubleBuffered(true);
 		initTracksImage();
+		initHeatMapImage();
 		mainFont = new Font("Tahoma", Font.TRUETYPE_FONT, 14);
 		labelsFont = new Font("Arial", Font.TRUETYPE_FONT, LABELS_FONT_SIZE);
 		refreshLabelsTimer = new Timer(REFRESH_MESSAGES_INTERVAL, this);
@@ -157,6 +159,10 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		camera.follow();
 		currentFontSize = scaleLabelsFont();
 		drawBackgroundOn(graphics);
+		if (drawHeatMap && Simulation.getInstance().interactionProcessor.isUseInterparticleForces()) {
+			heatMap.updateHeatMapImage();
+			graphics.drawImage(heatMap.getHeatMapImage(), 0, 0, null);
+		}
 		if (drawTracks)
 			graphics.drawImage(tracksImage, 0, 0, null);
 		drawBoundariesOn(graphics);
@@ -426,6 +432,10 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	public boolean isDrawFields() {
 		return drawHeatMap;
+	}
+	
+	void initHeatMapImage() {
+		heatMap = new HeatMap(this);
 	}
 
 	public void scaleToAllParticles() {

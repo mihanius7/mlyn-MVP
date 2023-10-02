@@ -37,10 +37,10 @@ public class Simulation implements Runnable {
 	private static boolean isRunning = false, refreshContentNeeded = true;
 
 	public Simulation() {
-		instance = this;		
-		content = new SimulationContent();		
+		instance = this;
+		content = new SimulationContent();
 		interactionProcessor = new InteractionProcessor(content);
-		timeStepController = new TimeStepController();		
+		timeStepController = new TimeStepController();
 		simulationComponents.add(timeStepController);
 		simulationComponents.add(interactionProcessor);
 	}
@@ -79,18 +79,20 @@ public class Simulation implements Runnable {
 			component.process();
 	}
 
-	public long perfomStep(int stepNumber) {
+	public long perfomStep(int stepNumber, boolean consoleOutput) {
 		long t1 = System.nanoTime();
 		int n1 = interactionProcessor.getNeighborSearchsNumber();
 		ConsoleWindow.println(GUIStrings.TIMESTEP + " " + timeStepController.getTimeStepSize() + " s");
 		for (int i = 1; i < stepNumber; i++)
 			perfomStep();
 		long t2 = System.nanoTime();
-		int n2 = interactionProcessor.getNeighborSearchsNumber();
-		ConsoleWindow.println("Done " + stepNumber + " steps");
-		ConsoleWindow.println("	elapsed: " + (t2 - t1) / 1E6 + " ms");
-		ConsoleWindow.println("	neighbor searches: " + (n2 - n1));
-		ConsoleWindow.println(GUIStrings.TIMESTEP + " " + timeStepController.getTimeStepSize() + " s");
+		if (consoleOutput) {
+			int n2 = interactionProcessor.getNeighborSearchsNumber();
+			ConsoleWindow.println("Done " + stepNumber + " steps");
+			ConsoleWindow.println("	elapsed: " + (t2 - t1) / 1E6 + " ms");
+			ConsoleWindow.println("	neighbor searches: " + (n2 - n1));
+			ConsoleWindow.println(GUIStrings.TIMESTEP + " " + timeStepController.getTimeStepSize() + " s");
+		}
 		return t2 - t1;
 	}
 
@@ -254,7 +256,7 @@ public class Simulation implements Runnable {
 	private void reset() {
 		content.deselectAll();
 		refreshContentNeeded = false;
-		time = 0;		
+		time = 0;
 		stepEvaluationTime = 1;
 		content.springs.clear();
 		content.particles.clear();
@@ -288,7 +290,7 @@ public class Simulation implements Runnable {
 	public double getTime() {
 		return time;
 	}
-	
+
 	public void setSimulationDuration(double duration) {
 		instance.stopTime = time + duration;
 	}

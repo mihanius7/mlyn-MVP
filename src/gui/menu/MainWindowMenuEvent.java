@@ -34,7 +34,7 @@ public class MainWindowMenuEvent implements ActionListener {
 			else
 				mainWindow.startSimulationThread();
 		} else if (src.equals(mainWindowMenu.itemSteps)) {
-			Simulation.getInstance().perfomStep(50);
+			Simulation.getInstance().perfomStep(50, true);
 		} else if (src.equals(mainWindowMenu.itemAutoscale1)) {
 			viewport.scaleToAllParticles();
 		} else if (src.equals(mainWindowMenu.itemAutoscale2)) {

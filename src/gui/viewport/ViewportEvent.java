@@ -158,6 +158,7 @@ public class ViewportEvent implements MouseListener, MouseMotionListener, MouseW
 						.setY(CoordinateConverter.fromScreenY(y2 + radiusY));
 				if (viewport.useGrid)
 					Simulation.getInstance().getContent().getSelectedParticle(0).snapToGrid(viewport.getGridSize());
+				Simulation.getInstance().perfomStep(2, false);
 			} else {
 				Simulation.getInstance().interactionProcessor.setParticleTargetXY(new Point2D.Double(
 						CoordinateConverter.fromScreenX(x2 + radiusX), CoordinateConverter.fromScreenY(y2 + radiusY)));
