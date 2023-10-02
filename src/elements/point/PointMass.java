@@ -41,10 +41,6 @@ public class PointMass implements Cloneable {
 			throw new RuntimeException("Can't set particle mass to zero. ");
 	}
 	
-	public Point2D createPoint() {
-		return new Point2D.Double(x, y);
-	}
-
 	public double getX() {
 		return x;
 	}
