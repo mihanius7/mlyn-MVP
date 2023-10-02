@@ -1,8 +1,8 @@
 package simulation.components;
 
 import gui.ConsoleWindow;
-import gui.Viewport;
 import gui.lang.GUIStrings;
+import gui.viewport.Viewport;
 import simulation.Simulation;
 
 public class TimeStepController implements SimulationComponent {

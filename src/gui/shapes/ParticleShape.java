@@ -28,6 +28,9 @@ public class ParticleShape extends Shape {
 	public static boolean drawForces = false;
 	public static boolean drawNeighbourRadius = false;
 	public static boolean drawTags = false;
+	
+	private int lastPaintedX;
+	private int lastPaintedY;
 
 	public static BasicStroke particleBorder = new BasicStroke(0.5f);
 
@@ -49,11 +52,11 @@ public class ParticleShape extends Shape {
 					p.isSelected() ? PARTICLE_SELECTED : color, false));
 		targetG2d.fillOval(x - r, y - r, r * 2, r * 2);
 		if (viewport.isDrawTracks()) {
-			int x0 = CoordinateConverter.toScreenX(p.getLastX());
-			int y0 = CoordinateConverter.toScreenY(p.getLastY());
 			viewport.tracksCanvas.setColor(color);
-			viewport.tracksCanvas.drawLine(x0, y0, x, y);
+			viewport.tracksCanvas.drawLine(lastPaintedX, lastPaintedY, x, y);
 		}
+		lastPaintedX = x;
+		lastPaintedY = y;
 		if (drawParticleBorders) {
 			targetG2d.setColor(PARTICLE_BORDER);
 			targetG2d.setStroke(particleBorder);
