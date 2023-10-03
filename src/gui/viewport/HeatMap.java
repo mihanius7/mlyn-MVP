@@ -15,15 +15,16 @@ import simulation.math.Vector;
 
 public class HeatMap {
 
-	private int updateInterval = 3, resolution = 5, updatesNumber = 0, width, height;
+	private int updateInterval = 3, resolution = 10, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
 	private PairForce pairForce;
-	private double range = 2000;
+	private double range = 10000;
 	private double minValue, minField;
 	private double maxValue, maxField;
 	private boolean isGravityFieldMap;
-	private boolean isAdaptiveRange = false;
+	private boolean isAdaptiveRange = true;
+	private Viewport viewport;
 
 	public HeatMap(int w, int h) {
 		width = w;
@@ -35,6 +36,7 @@ public class HeatMap {
 
 	public HeatMap(Viewport v) {
 		this(v.getWidth(), v.getHeight());
+		this.viewport = v;
 	}
 
 	public BufferedImage getHeatMapImage() {
@@ -50,12 +52,7 @@ public class HeatMap {
 			isGravityFieldMap = false;
 		int ui = (Simulation.getInstance().isActive()) ? updateInterval : 15;
 		if (updatesNumber >= ui) {
-			if (isAdaptiveRange) {
-				minValue = Double.MAX_VALUE;
-				maxValue = Double.MIN_VALUE;
-				range = (Math.max(minField, maxField) - Math.min(minField, maxField)) / 4096;
-				System.out.println("Range: " + range);
-			}
+			defineRange();
 			updatesNumber = 0;
 			int wSteps = (int) (width / resolution);
 			int hSteps = (int) (height / resolution);
@@ -66,7 +63,7 @@ public class HeatMap {
 					double yc = (CoordinateConverter.fromScreenY(stepY * resolution)
 							+ CoordinateConverter.fromScreenY((stepY + 1) * resolution)) / 2;
 					Vector fieldVector = defineField(xc, yc);
-					double field = fieldVector.X();
+					double field = Math.log10(fieldVector.norm() + 1);
 					heatMapCanvas.setColor(defineColor(field, range));
 					heatMapCanvas.fill(
 							new Rectangle2D.Double(stepX * resolution, stepY * resolution, resolution, resolution));
@@ -80,6 +77,14 @@ public class HeatMap {
 			}
 			minField = minValue;
 			maxField = maxValue;
+		}
+	}
+
+	private void defineRange() {
+		if (isAdaptiveRange) {
+			minValue = Double.MAX_VALUE;
+			maxValue = Double.MIN_VALUE;
+			range = (Math.max(minField, maxField) - Math.min(minField, maxField)) / 64;
 		}
 	}
 
@@ -104,7 +109,7 @@ public class HeatMap {
 	public Color defineColor(double value, double range) {
 		Color c1;
 		int colorIndex;
-		colorIndex = (isGravityFieldMap) ? (int) Functions.linear2DInterpolation(-maxField, 255, 0, 0, value)
+		colorIndex = (isGravityFieldMap) ? (int) Functions.linear2DInterpolation(0, 0, range, 255, value)
 				: (int) Functions.linear2DInterpolation(-range / 2, 0, range / 2, 255, value);
 		c1 = new Color(Colors.TURBO_SRGB_BYTES[colorIndex][0], Colors.TURBO_SRGB_BYTES[colorIndex][1],
 				Colors.TURBO_SRGB_BYTES[colorIndex][2]);

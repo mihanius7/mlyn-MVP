@@ -29,7 +29,7 @@ public class Meter extends Shape {
 			g.setColor(METER);
 			g.setStroke(new BasicStroke(1f));
 			g.drawLine(x1, y1, x2, y2);
-			String label = String.format("%.3f m", screenDistance);
+			String label = String.format("%.2e m", screenDistance);
 			viewport.drawStringTilted(g, label, x1, y1, x2, y2);
 		}
 	}

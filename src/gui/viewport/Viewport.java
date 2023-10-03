@@ -40,7 +40,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public final int ARROW_DRAWING_MIN_THRESHOLD = 8;
 	public final float LABELS_MIN_FONT_SIZE = 10;
 	public final int LABELS_FONT_SIZE = 12;
-	public final float LABELS_MAX_FONT_SIZE = 20;
+	public final float LABELS_MAX_FONT_SIZE = 18;
 	public final static double DEFAULT_GRID_SIZE = 20 * cm;
 	public final int FRAME_PAINT_DELAY = 20;
 	public final int AUTOSCALE_MARGIN = 75;
@@ -269,7 +269,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	private void drawInfoStringsOn(Graphics2D targetG2d) {
-		targetG2d.setColor(Color.BLACK);
+		targetG2d.setColor(drawHeatMap? Color.WHITE : Colors.FONT_MAIN);
 		targetG2d.setFont(mainFont);
 		targetG2d.drawString(infoString1, 2, 12);
 		targetG2d.drawString(infoString2, 2, 28);
@@ -329,7 +329,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.setFont(labelsFont);
 		targetG2d.setColor(Colors.CROSS);
 		if (drawTag)
-			targetG2d.drawString(String.format("(%.2f", x) + String.format("; %.2f) m", y), xc + 4, yc - 4);
+			targetG2d.drawString(String.format("(%.2e", x) + String.format("; %.2e) m", y), xc + 4, yc - 4);
 	}
 
 	private void drawAxisOn(Graphics2D targetG2d) {
@@ -337,6 +337,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		int y0 = getHeight() - SCALE_LINE_MARGIN;
 		int x1 = x0 + 50;
 		int y1 = y0 - 50;
+		targetG2d.setColor(Colors.FONT_MAIN);
 		drawArrowLine(targetG2d, x0, y0, x1, y0, 10, 4);
 		drawArrowLine(targetG2d, x0, y0, x0, y1, 10, 4);
 		targetG2d.drawString("X", x1, y0 - 4);
@@ -429,8 +430,13 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	public void setDrawTracks(boolean b) {
 		drawTracks = b;
+		setDrawFields(!b);
 		clearTracksImage();
 		ConsoleWindow.println(GUIStrings.DRAW_TRACKS + ": " + b);
+	}
+	
+	public void setDrawFields(boolean b) {
+		drawHeatMap = b;
 	}
 
 	public boolean isDrawFields() {
