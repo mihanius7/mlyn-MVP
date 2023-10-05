@@ -31,6 +31,7 @@ import gui.shapes.SpringShape;
 import gui.viewport.listeners.MouseMode;
 import gui.viewport.listeners.ViewportKeyListener;
 import gui.viewport.listeners.ViewportMouseListener;
+import gui.viewport.listeners.ViewportMouseListenersFactory;
 import simulation.Boundaries;
 import simulation.Simulation;
 import simulation.math.Vector;
@@ -270,7 +271,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	private void drawInfoStringsOn(Graphics2D targetG2d) {
-		targetG2d.setColor(drawHeatMap? Color.WHITE : Colors.FONT_MAIN);
+		targetG2d.setColor(drawHeatMap ? Color.WHITE : Colors.FONT_MAIN);
 		targetG2d.setFont(mainFont);
 		targetG2d.drawString(infoString1, 2, 12);
 		targetG2d.drawString(infoString2, 2, 28);
@@ -434,7 +435,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		clearTracksImage();
 		ConsoleWindow.println(GUIStrings.DRAW_TRACKS + ": " + b);
 	}
-	
+
 	public void setDrawFields(boolean b) {
 		drawHeatMap = b;
 	}
@@ -485,13 +486,20 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	public void setMouseMode(MouseMode newMouseMode) {
-		mouseMode = newMouseMode;
 		addKeyListener(new ViewportKeyListener(this, mainWindow));
-		ViewportMouseListener mouseListener = new ViewportMouseListener(this, mainWindow);
+		ViewportMouseListener mouseListener = ViewportMouseListenersFactory.getViewportListener(newMouseMode, this,
+				mainWindow);
+		if (getMouseListeners().length > 0)
+			removeMouseListener(getMouseListeners()[0]);
+		if (getMouseMotionListeners().length > 0)
+			removeMouseMotionListener(getMouseMotionListeners()[0]);
+		if (getMouseWheelListeners().length > 0)
+			removeMouseWheelListener(getMouseWheelListeners()[0]);
 		addMouseListener(mouseListener);
 		addMouseMotionListener(mouseListener);
 		addMouseWheelListener(mouseListener);
 		Simulation.getInstance().getContent().deselectAll();
+		mouseMode = newMouseMode;
 		ConsoleWindow.println(GUIStrings.MOUSE_MODE + ": " + mouseMode);
 	}
 
