@@ -23,8 +23,8 @@ import gui.lang.GUIStrings;
 import gui.lang.International;
 import gui.lang.Language;
 import gui.menu.MainWindowMenu;
-import gui.viewport.MouseMode;
 import gui.viewport.Viewport;
+import gui.viewport.listeners.MouseMode;
 import io.SAXelementParser;
 import simulation.Simulation;
 import simulation.components.TimeStepController.TimeStepMode;
@@ -218,7 +218,7 @@ public class MainWindow extends JFrame {
 	}
 
 	public void applyReferenceParticleParameters() {
-		viewport.setMouseMode(MouseMode.PARTICLE_ADD);
+		viewport.setMouseMode(MouseMode.ADD_PARTICLE);
 		clearSelection();
 		refreshGUIControls();
 	}
@@ -301,7 +301,7 @@ public class MainWindow extends JFrame {
 	}
 
 	public void setSelectedNextSpring(boolean previous) {
-		if (viewport.getMouseMode() == MouseMode.SPRING_SELECT)
+		if (viewport.getMouseMode() == MouseMode.SELECT_SPRING)
 			if (!previous) {
 				Simulation.getInstance().getContent().selectNextSpring();
 				setFocusTo(Simulation.getInstance().getContent().getSelectedSpring(0));
@@ -310,7 +310,7 @@ public class MainWindow extends JFrame {
 				setFocusTo(Simulation.getInstance().getContent().getSelectedSpring(0));
 			}
 		else {
-			viewport.setMouseMode(MouseMode.SPRING_SELECT);
+			viewport.setMouseMode(MouseMode.SELECT_SPRING);
 			setSelectedNextSpring(previous);
 		}
 	}

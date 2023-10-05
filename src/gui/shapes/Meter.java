@@ -5,8 +5,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import elements.Element;
+import elements.point.Particle;
 import gui.viewport.CoordinateConverter;
 import gui.viewport.Viewport;
+import simulation.Simulation;
 import simulation.math.Functions;
 
 public class Meter extends Shape {
@@ -29,9 +31,19 @@ public class Meter extends Shape {
 			g.setColor(METER);
 			g.setStroke(new BasicStroke(1f));
 			g.drawLine(x1, y1, x2, y2);
-			String label = String.format("%.3f m", screenDistance);
+			String label = String.format("%.2e m", screenDistance);
 			viewport.drawStringTilted(g, label, x1, y1, x2, y2);
 		}
+	}
+	
+	public void refresh() {
+		int size = Simulation.getInstance().getContent().getSelectedParticles().size();
+		Particle p1 = Simulation.getInstance().getContent().getSelectedParticles().get(size - 1);
+		Particle p2 = Simulation.getInstance().getContent().getSelectedParticles().get(size - 2);
+		setX1(CoordinateConverter.toScreenX(p1.getX()));
+		setY1(CoordinateConverter.toScreenY(p1.getY()));
+		setX2(CoordinateConverter.toScreenX(p2.getX()));
+		setY2(CoordinateConverter.toScreenY(p2.getY()));
 	}
 
 	@Override

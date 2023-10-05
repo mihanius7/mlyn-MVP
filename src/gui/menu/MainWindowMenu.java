@@ -14,8 +14,8 @@ import javax.swing.KeyStroke;
 import gui.MainWindow;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
-import gui.viewport.MouseMode;
 import gui.viewport.Viewport;
+import gui.viewport.listeners.MouseMode;
 import simulation.Simulation;
 
 public class MainWindowMenu extends JMenuBar {
@@ -331,17 +331,17 @@ public class MainWindowMenu extends JMenuBar {
 		itemTags.setSelected(ParticleShape.drawTags);
 		itemGrid.setSelected(viewport.useGrid);
 		itemTracks.setSelected(viewport.isDrawTracks());
-		if (viewport.getMouseMode() == MouseMode.PARTICLE_SELECT)
+		if (viewport.getMouseMode() == MouseMode.SELECT_PARTICLE)
 			itemMouseSelect2.setSelected(true);
-		else if (viewport.getMouseMode() == MouseMode.SPRING_SELECT)
+		else if (viewport.getMouseMode() == MouseMode.SELECT_SPRING)
 			itemMouseSelect1.setSelected(true);
-		else if (viewport.getMouseMode() == MouseMode.PARTICLE_ADD)
+		else if (viewport.getMouseMode() == MouseMode.ADD_PARTICLE)
 			itemAdd1.setSelected(true);
-		else if (viewport.getMouseMode() == MouseMode.SPRING_ADD)
+		else if (viewport.getMouseMode() == MouseMode.ADD_SPRING)
 			itemAdd2.setSelected(true);
-		else if (viewport.getMouseMode() == MouseMode.PARTICLE_MANIPULATION_ACCELERATION)
+		else if (viewport.getMouseMode() == MouseMode.PARTICLE_ACT_FORCE)
 			itemByForce.setSelected(true);
-		else if (viewport.getMouseMode() == MouseMode.PARTICLE_MANIPULATION_COORDINATE)
+		else if (viewport.getMouseMode() == MouseMode.PARTICLE_ACT_DISPLACE)
 			itemByPlace.setSelected(true);
 	}
 

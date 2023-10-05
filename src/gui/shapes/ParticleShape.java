@@ -90,11 +90,11 @@ public class ParticleShape extends Shape {
 			x = (int) (CoordinateConverter.toScreenX(p.getX()) + r * 1);
 			y = (int) (CoordinateConverter.toScreenY(p.getY()) - r * 2);
 			y -= viewport.labelsFont.getSize() * stringsInterval;
-			targetG2d.drawString(String.format("%.1f kg, %.1e C", p.getMass(), p.getCharge()), x, y);
+			targetG2d.drawString(String.format("%.1e kg, %.1e C", p.getMass(), p.getCharge()), x, y);
 			y += viewport.labelsFont.getSize() * stringsInterval;
-			targetG2d.drawString(String.format("(%.2f; %.2f) m", p.getX(), p.getY(), p.defineVelocity()), x, y);
+			targetG2d.drawString(String.format("(%.1e; %.2e) m", p.getX(), p.getY(), p.defineVelocity()), x, y);
 			y += viewport.labelsFont.getSize() * stringsInterval;
-			targetG2d.drawString(String.format("%.2f m/s", p.defineVelocity()), x, y);
+			targetG2d.drawString(String.format("%.1e m/s", p.defineVelocity()), x, y);
 		}
 	}
 
