@@ -6,8 +6,8 @@ import java.awt.event.ActionListener;
 import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.shapes.ParticleShape;
-import gui.viewport.MouseMode;
 import gui.viewport.Viewport;
+import gui.viewport.listeners.MouseMode;
 import simulation.Simulation;
 import simulation.math.Vector;
 
@@ -54,7 +54,7 @@ public class MainWindowMenuEvent implements ActionListener {
 		} else if (src.equals(mainWindowMenu.itemConsole)) {
 			mainWindow.showConsoleWindow();
 		} else if (src.equals(mainWindowMenu.itemSelectAll)) {
-			viewport.setMouseMode(MouseMode.PARTICLE_SELECT);
+			viewport.setMouseMode(MouseMode.SELECT_PARTICLE);
 			Simulation.getInstance().getContent().setMaxSelectionNumber(Integer.MAX_VALUE);
 			mainWindowMenu.itemMouseSelect2.setSelected(true);
 			Simulation.getInstance().getContent().selectAllParticles();
@@ -76,25 +76,25 @@ public class MainWindowMenuEvent implements ActionListener {
 			viewport.reset();
 			viewport.scaleToBoundaries();
 		} else if (src.equals(mainWindowMenu.itemMouseSelect2)) {
-			viewport.setMouseMode(MouseMode.PARTICLE_SELECT);
+			viewport.setMouseMode(MouseMode.SELECT_PARTICLE);
 			Simulation.getInstance().getContent().setMaxSelectionNumber(Integer.MAX_VALUE);
 		} else if (src.equals(mainWindowMenu.itemMouseSelect1)) {
-			viewport.setMouseMode(MouseMode.SPRING_SELECT);
+			viewport.setMouseMode(MouseMode.SELECT_SPRING);
 			Simulation.getInstance().getContent().setMaxSelectionNumber(Integer.MAX_VALUE);
 		} else if (src.equals(mainWindowMenu.itemAdd1)) {
 			Simulation.getInstance().getContent().deselectAll();
-			viewport.setMouseMode(MouseMode.PARTICLE_ADD);
+			viewport.setMouseMode(MouseMode.ADD_PARTICLE);
 		} else if (src.equals(mainWindowMenu.itemByPlace)) {
 			Simulation.getInstance().getContent().deselectAll();
-			viewport.setMouseMode(MouseMode.PARTICLE_MANIPULATION_COORDINATE);
+			viewport.setMouseMode(MouseMode.PARTICLE_ACT_DISPLACE);
 			Simulation.getInstance().getContent().setMaxSelectionNumber(1);
 		} else if (src.equals(mainWindowMenu.itemByForce)) {
 			Simulation.getInstance().getContent().deselectAll();
-			viewport.setMouseMode(MouseMode.PARTICLE_MANIPULATION_ACCELERATION);
+			viewport.setMouseMode(MouseMode.PARTICLE_ACT_FORCE);
 			Simulation.getInstance().getContent().setMaxSelectionNumber(1);
 		} else if (src.equals(mainWindowMenu.itemAdd2)) {
 			Simulation.getInstance().getContent().deselectAll();
-			viewport.setMouseMode(MouseMode.SPRING_ADD);
+			viewport.setMouseMode(MouseMode.ADD_SPRING);
 			Simulation.getInstance().getContent().setMaxSelectionNumber(1);
 		} else if (src.equals(mainWindowMenu.itemFix)) {
 			Simulation.getInstance().getContent().getSelectedParticles().fix();

@@ -28,6 +28,9 @@ import gui.MainWindow;
 import gui.lang.GUIStrings;
 import gui.shapes.Shape;
 import gui.shapes.SpringShape;
+import gui.viewport.listeners.MouseMode;
+import gui.viewport.listeners.ViewportKeyListener;
+import gui.viewport.listeners.ViewportMouseListener;
 import simulation.Boundaries;
 import simulation.Simulation;
 import simulation.math.Vector;
@@ -58,7 +61,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private boolean drawInfo = true;
 	public boolean useGrid = true;
 	private boolean drawTracks = false;
-	private boolean drawHeatMap = true;
+	private boolean drawHeatMap = false;
 	public Font labelsFont;
 	private Font mainFont;
 	private int fps = 0;
@@ -74,18 +77,16 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private static HeatMap heatMap;
 	private BasicStroke arrowStroke = new BasicStroke(2f);
 	public BasicStroke crossStroke = new BasicStroke(3f);
-	private ViewportEvent viewportEvent;
+	private MouseMode mouseMode;
+	private MainWindow mainWindow;
 
 	public Viewport(int initW, int initH, MainWindow mw) {
 		physicalShapes = new ArrayList<Shape>();
 		shapes = new ArrayList<Shape>();
-		viewportEvent = new ViewportEvent(this, mw);
-		addKeyListener(viewportEvent);
-		addMouseListener(viewportEvent);
-		addMouseMotionListener(viewportEvent);
-		addMouseWheelListener(viewportEvent);
+		mainWindow = mw;
 		camera = new Camera(this);
 		new CoordinateConverter(this);
+		setMouseMode(MouseMode.SELECT_PARTICLE);
 		rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		setBounds(0, 0, initW, initH);
@@ -430,7 +431,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	public void setDrawTracks(boolean b) {
 		drawTracks = b;
-		setDrawFields(!b);
 		clearTracksImage();
 		ConsoleWindow.println(GUIStrings.DRAW_TRACKS + ": " + b);
 	}
@@ -481,13 +481,18 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	public MouseMode getMouseMode() {
-		return viewportEvent.mouseMode;
+		return mouseMode;
 	}
 
-	public void setMouseMode(MouseMode mouseMode) {
-		viewportEvent.mouseMode = mouseMode;
+	public void setMouseMode(MouseMode newMouseMode) {
+		mouseMode = newMouseMode;
+		addKeyListener(new ViewportKeyListener(this, mainWindow));
+		ViewportMouseListener mouseListener = new ViewportMouseListener(this, mainWindow);
+		addMouseListener(mouseListener);
+		addMouseMotionListener(mouseListener);
+		addMouseWheelListener(mouseListener);
 		Simulation.getInstance().getContent().deselectAll();
-		ConsoleWindow.println(GUIStrings.MOUSE_MODE + ": " + viewportEvent.mouseMode);
+		ConsoleWindow.println(GUIStrings.MOUSE_MODE + ": " + mouseMode);
 	}
 
 	public void saveScreenshot() {
