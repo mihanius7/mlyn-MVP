@@ -17,6 +17,8 @@ import gui.viewport.CoordinateConverter;
 import gui.viewport.Viewport;
 import simulation.Simulation;
 
+import static simulation.Simulation.getInstance;
+
 public class ViewportMouseListener implements MouseListener, MouseMotionListener, MouseWheelListener {
 
 	private static final int MAX_SPRINGS_FOR_LABELING_AFTER_SELECTION = 8;
@@ -35,6 +37,7 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 	public ViewportMouseListener(Viewport v, MainWindow w) {
 		viewport = v;
 		mainWindow = w;
+		getInstance().content().setMaxSelectionNumber(0);
 	}
 
 	@Override
@@ -116,7 +119,7 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 		}
 	}
 
-	private void deselectAttachedSprings() {
+	protected void deselectAttachedSprings() {
 		for (Spring s1 : Simulation.getInstance().content().getSprings()) {
 			s1.getShape().setDrawLabel(false);
 		}

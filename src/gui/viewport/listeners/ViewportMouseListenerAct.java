@@ -1,5 +1,7 @@
 package gui.viewport.listeners;
 
+import static simulation.Simulation.getInstance;
+
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 
@@ -16,6 +18,7 @@ public class ViewportMouseListenerAct extends ViewportMouseListener{
 
 	public ViewportMouseListenerAct(Viewport v, MainWindow w) {
 		super(v, w);
+		getInstance().content().setMaxSelectionNumber(1);
 	}
 
 	@Override
@@ -24,6 +27,7 @@ public class ViewportMouseListenerAct extends ViewportMouseListener{
 		y1 = arg0.getY();
 		x2 = x1;
 		y2 = y1;
+		super.deselectAttachedSprings();
 		Particle p = Simulation.getInstance().content().getParticles().findNearestParticle(
 				CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1),
 				CoordinateConverter.fromScreen(10));

@@ -1,5 +1,7 @@
 package gui.viewport.listeners;
 
+import static simulation.Simulation.getInstance;
+
 import java.awt.event.MouseEvent;
 
 import elements.line.Spring;
@@ -13,6 +15,7 @@ public class ViewportMouseListenerAdd extends ViewportMouseListener {
 
 	public ViewportMouseListenerAdd(Viewport v, MainWindow w) {
 		super(v, w);
+		getInstance().content().setMaxSelectionNumber(1);
 	}
 
 	@Override
