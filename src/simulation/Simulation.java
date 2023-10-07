@@ -212,7 +212,7 @@ public class Simulation implements Runnable {
 
 	public void removeRandomParticles(int number) {
 		for (int i = 0; i < number; i++)
-			removeParticleSafety(content.getParticle((int) Math.round(Math.random() * content.particles.size())));
+			removeParticleSafety(content.particle((int) Math.round(Math.random() * content.particles.size())));
 	}
 
 	private void removeSpring(Spring s) {
@@ -280,11 +280,11 @@ public class Simulation implements Runnable {
 	}
 
 	public double x(int i) {
-		return content.getParticle(i).getX();
+		return content.particle(i).getX();
 	}
 
 	public double y(int i) {
-		return content.getParticle(i).getY();
+		return content.particle(i).getY();
 	}
 
 	public double getTime() {
@@ -299,7 +299,7 @@ public class Simulation implements Runnable {
 		return stepEvaluationTime;
 	}
 
-	public SimulationContent getContent() {
+	public SimulationContent content() {
 		return content;
 	}
 

@@ -69,7 +69,7 @@ public class MainWindow extends JFrame {
 		
 		consoleWindow = new ConsoleWindow();
 
-		setFocusTo(Simulation.getInstance().getContent().getReferenceParticle());
+		setFocusTo(Simulation.getInstance().content().getReferenceParticle());
 
 		setResizable(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -203,18 +203,18 @@ public class MainWindow extends JFrame {
 	}
 
 	public void setFocusTo(Particle p) {
-		if (Simulation.getInstance().getContent().getSelectedParticles().size() > 0)
-			Simulation.getInstance().getContent().getSelectedParticle(Simulation.getInstance().getContent().getSelectedParticles().size() - 1);
+		if (Simulation.getInstance().content().getSelectedParticles().size() > 0)
+			Simulation.getInstance().content().getSelectedParticle(Simulation.getInstance().content().getSelectedParticles().size() - 1);
 	}
 
 	public void setFocusTo(Spring s) {
-		if (Simulation.getInstance().getContent().getSelectedSprings().size() > 0)
-			Simulation.getInstance().getContent().getSelectedSpring(Simulation.getInstance().getContent().getSelectedSprings().size() - 1);
+		if (Simulation.getInstance().content().getSelectedSprings().size() > 0)
+			Simulation.getInstance().content().getSelectedSpring(Simulation.getInstance().content().getSelectedSprings().size() - 1);
 	}
 
 	public void clearSelection() {
-		Simulation.getInstance().getContent().deselectAll();
-		setFocusTo(Simulation.getInstance().getContent().getReferenceParticle());
+		Simulation.getInstance().content().deselectAll();
+		setFocusTo(Simulation.getInstance().content().getReferenceParticle());
 	}
 
 	public void applyReferenceParticleParameters() {
@@ -303,11 +303,11 @@ public class MainWindow extends JFrame {
 	public void setSelectedNextSpring(boolean previous) {
 		if (viewport.getMouseMode() == MouseMode.SELECT_SPRING)
 			if (!previous) {
-				Simulation.getInstance().getContent().selectNextSpring();
-				setFocusTo(Simulation.getInstance().getContent().getSelectedSpring(0));
+				Simulation.getInstance().content().selectNextSpring();
+				setFocusTo(Simulation.getInstance().content().getSelectedSpring(0));
 			} else {
-				Simulation.getInstance().getContent().selectPreviousSpring();
-				setFocusTo(Simulation.getInstance().getContent().getSelectedSpring(0));
+				Simulation.getInstance().content().selectPreviousSpring();
+				setFocusTo(Simulation.getInstance().content().getSelectedSpring(0));
 			}
 		else {
 			viewport.setMouseMode(MouseMode.SELECT_SPRING);

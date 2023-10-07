@@ -138,7 +138,7 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 	public String toString() {
 		String s = "Size = " + size();
 		for (Particle p : this)
-			s = s.concat(String.format(String.valueOf(Simulation.getInstance().getContent().getIndex(p)) + "\t%.1e\t%.1e\n", p.getX(), p.getY()));
+			s = s.concat(String.format(String.valueOf(Simulation.getInstance().content().getIndex(p)) + "\t%.1e\t%.1e\n", p.getX(), p.getY()));
 		return s;
 	}
 	
@@ -158,9 +158,9 @@ public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 		Rectangle2D.Double rect = new Rectangle2D.Double(Math.min(x2, x1), Math.min(y2, y1), Math.abs(x2 - x1), Math.abs(y2 - y1));
 		for (Particle p : this) {
 			if (rect.contains(p.getCenterPoint())) {
-				Simulation.getInstance().getContent().select(p);
+				Simulation.getInstance().content().select(p);
 			} else {
-				Simulation.getInstance().getContent().deselect(p);
+				Simulation.getInstance().content().deselect(p);
 			}
 		};	
 	}

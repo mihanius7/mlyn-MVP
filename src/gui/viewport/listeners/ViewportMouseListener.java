@@ -72,7 +72,7 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 			viewport.addShape(meter);
 			selectionRectangle = new Rectangle();
 			viewport.addShape(selectionRectangle);
-			p = Simulation.getInstance().getContent().getParticles().findNearestParticle(
+			p = Simulation.getInstance().content().getParticles().findNearestParticle(
 					CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1),
 					CoordinateConverter.fromScreen(10));
 			if (!arg0.isControlDown()) {
@@ -80,18 +80,18 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 			}
 			if (p != null) {
 				if (!p.isSelected()) {
-					Simulation.getInstance().getContent().select(p);
+					Simulation.getInstance().content().select(p);
 					mainWindow.setFocusTo(p);
 					labelAttachedSprings(p);
 				} else {
-					Simulation.getInstance().getContent().deselect(p);
+					Simulation.getInstance().content().deselect(p);
 				}
 			} else {
 				viewport.setCrossX(CoordinateConverter.fromScreenX(x1));
 				viewport.setCrossY(CoordinateConverter.fromScreenY(y1));
 			}
 		} else if (viewport.getMouseMode() == MouseMode.SELECT_SPRING) {
-			s = Simulation.getInstance().getContent().getSprings().findNearestSpring(
+			s = Simulation.getInstance().content().getSprings().findNearestSpring(
 					CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1),
 					CoordinateConverter.fromScreen(5));
 			if (!arg0.isControlDown()) {
@@ -99,16 +99,16 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 			}
 			if (s != null) {
 				if (!s.isSelected()) {
-					Simulation.getInstance().getContent().select(s);
+					Simulation.getInstance().content().select(s);
 					mainWindow.setFocusTo(s);
 				} else
-					Simulation.getInstance().getContent().deselect(s);
+					Simulation.getInstance().content().deselect(s);
 			}
 		}
 	}
 
 	protected void labelAttachedSprings(Particle p) {
-		SpringGroup springGroup = Simulation.getInstance().getContent().getSprings().findAttachedSprings(p);
+		SpringGroup springGroup = Simulation.getInstance().content().getSprings().findAttachedSprings(p);
 		if (springGroup.size() > 1 && springGroup.size() < MAX_SPRINGS_FOR_LABELING_AFTER_SELECTION) {
 			for (Spring s1 : springGroup) {
 				s1.getShape().setDrawLabel(true);
@@ -117,7 +117,7 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 	}
 
 	private void deselectAttachedSprings() {
-		for (Spring s1 : Simulation.getInstance().getContent().getSprings()) {
+		for (Spring s1 : Simulation.getInstance().content().getSprings()) {
 			s1.getShape().setDrawLabel(false);
 		}
 	}
@@ -130,7 +130,7 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 		selectionRectangle.setY1(y1);
 		selectionRectangle.setX2(x2);
 		selectionRectangle.setY2(y2);
-		Simulation.getInstance().getContent().getParticles().selectInRect(CoordinateConverter.fromScreenX(x1),
+		Simulation.getInstance().content().getParticles().selectInRect(CoordinateConverter.fromScreenX(x1),
 				CoordinateConverter.fromScreenY(y1), CoordinateConverter.fromScreenX(x2),
 				CoordinateConverter.fromScreenY(y2));
 	}
@@ -138,7 +138,7 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		viewport.removeShape(selectionRectangle);
-		if (Simulation.getInstance().getContent().getSelectedParticles().size() >= 2 && arg0.isControlDown()) {
+		if (Simulation.getInstance().content().getSelectedParticles().size() >= 2 && arg0.isControlDown()) {
 			meter.refresh();
 		} else {
 			viewport.removeShape(meter);

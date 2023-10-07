@@ -37,9 +37,9 @@ public class Meter extends Shape {
 	}
 	
 	public void refresh() {
-		int size = Simulation.getInstance().getContent().getSelectedParticles().size();
-		Particle p1 = Simulation.getInstance().getContent().getSelectedParticles().get(size - 1);
-		Particle p2 = Simulation.getInstance().getContent().getSelectedParticles().get(size - 2);
+		int size = Simulation.getInstance().content().getSelectedParticles().size();
+		Particle p1 = Simulation.getInstance().content().getSelectedParticles().get(size - 1);
+		Particle p2 = Simulation.getInstance().content().getSelectedParticles().get(size - 2);
 		setX1(CoordinateConverter.toScreenX(p1.getX()));
 		setY1(CoordinateConverter.toScreenY(p1.getY()));
 		setX2(CoordinateConverter.toScreenX(p2.getX()));

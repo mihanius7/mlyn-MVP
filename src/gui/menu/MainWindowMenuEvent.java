@@ -48,17 +48,17 @@ public class MainWindowMenuEvent implements ActionListener {
 		} else if (src.equals(mainWindowMenu.itemFriction)) {
 			Simulation.getInstance().interactionProcessor.setUseFriction(mainWindowMenu.itemFriction.getState());
 		} else if (src.equals(mainWindowMenu.itemFreeze)) {
-			Simulation.getInstance().getContent().getParticles().setZeroVelocities();
+			Simulation.getInstance().content().getParticles().setZeroVelocities();
 		} else if (src.equals(mainWindowMenu.itemBoundaries)) {
 			mainWindow.showEditBoundariesWindow();
 		} else if (src.equals(mainWindowMenu.itemConsole)) {
 			mainWindow.showConsoleWindow();
 		} else if (src.equals(mainWindowMenu.itemSelectAll)) {
 			viewport.setMouseMode(MouseMode.SELECT_PARTICLE);
-			Simulation.getInstance().getContent().setMaxSelectionNumber(Integer.MAX_VALUE);
+			Simulation.getInstance().content().setMaxSelectionNumber(Integer.MAX_VALUE);
 			mainWindowMenu.itemMouseSelect2.setSelected(true);
-			Simulation.getInstance().getContent().selectAllParticles();
-			mainWindow.setFocusTo(Simulation.getInstance().getContent().getLastAddedParticle());
+			Simulation.getInstance().content().selectAllParticles();
+			mainWindow.setFocusTo(Simulation.getInstance().content().getLastAddedParticle());
 		} else if (src.equals(mainWindowMenu.itemVelocities)) {
 			ParticleShape.drawVelocities = mainWindowMenu.itemVelocities.getState();
 		} else if (src.equals(mainWindowMenu.itemForces)) {
@@ -77,44 +77,44 @@ public class MainWindowMenuEvent implements ActionListener {
 			viewport.scaleToBoundaries();
 		} else if (src.equals(mainWindowMenu.itemMouseSelect2)) {
 			viewport.setMouseMode(MouseMode.SELECT_PARTICLE);
-			Simulation.getInstance().getContent().setMaxSelectionNumber(Integer.MAX_VALUE);
+			Simulation.getInstance().content().setMaxSelectionNumber(Integer.MAX_VALUE);
 		} else if (src.equals(mainWindowMenu.itemMouseSelect1)) {
 			viewport.setMouseMode(MouseMode.SELECT_SPRING);
-			Simulation.getInstance().getContent().setMaxSelectionNumber(Integer.MAX_VALUE);
+			Simulation.getInstance().content().setMaxSelectionNumber(Integer.MAX_VALUE);
 		} else if (src.equals(mainWindowMenu.itemAdd1)) {
-			Simulation.getInstance().getContent().deselectAll();
+			Simulation.getInstance().content().deselectAll();
 			viewport.setMouseMode(MouseMode.ADD_PARTICLE);
 		} else if (src.equals(mainWindowMenu.itemByPlace)) {
-			Simulation.getInstance().getContent().deselectAll();
+			Simulation.getInstance().content().deselectAll();
 			viewport.setMouseMode(MouseMode.PARTICLE_ACT_DISPLACE);
-			Simulation.getInstance().getContent().setMaxSelectionNumber(1);
+			Simulation.getInstance().content().setMaxSelectionNumber(1);
 		} else if (src.equals(mainWindowMenu.itemByForce)) {
-			Simulation.getInstance().getContent().deselectAll();
+			Simulation.getInstance().content().deselectAll();
 			viewport.setMouseMode(MouseMode.PARTICLE_ACT_FORCE);
-			Simulation.getInstance().getContent().setMaxSelectionNumber(1);
+			Simulation.getInstance().content().setMaxSelectionNumber(1);
 		} else if (src.equals(mainWindowMenu.itemAdd2)) {
-			Simulation.getInstance().getContent().deselectAll();
+			Simulation.getInstance().content().deselectAll();
 			viewport.setMouseMode(MouseMode.ADD_SPRING);
-			Simulation.getInstance().getContent().setMaxSelectionNumber(1);
+			Simulation.getInstance().content().setMaxSelectionNumber(1);
 		} else if (src.equals(mainWindowMenu.itemFix)) {
-			Simulation.getInstance().getContent().getSelectedParticles().fix();
+			Simulation.getInstance().content().getSelectedParticles().fix();
 		} else if (src.equals(mainWindowMenu.itemColorizeByCharge)) {
-			Simulation.getInstance().getContent().getParticles().colorizeByCharge();
+			Simulation.getInstance().content().getParticles().colorizeByCharge();
 		} else if (src.equals(mainWindowMenu.itemCoM)) {
-			Vector v = Simulation.getInstance().getContent().getSelectedParticles().defineCenterOfMass();
+			Vector v = Simulation.getInstance().content().getSelectedParticles().defineCenterOfMass();
 			viewport.setCrossX(v.X());
 			viewport.setCrossY(v.Y());
-			Simulation.getInstance().getContent().deselectAll();
+			Simulation.getInstance().content().deselectAll();
 		} else if (src.equals(mainWindowMenu.itemDelete)) {
-			Simulation.getInstance().getContent().removeSelectedParticles();
-			Simulation.getInstance().getContent().removeSelectedSprings();
+			Simulation.getInstance().content().removeSelectedParticles();
+			Simulation.getInstance().content().removeSelectedSprings();
 		} else if (src.equals(mainWindowMenu.itemSnap)) {
-			Simulation.getInstance().getContent().getSelectedParticles().snapToGrid(viewport.getGridSize());
+			Simulation.getInstance().content().getSelectedParticles().snapToGrid(viewport.getGridSize());
 			Simulation.getInstance().interactionProcessor.recalculateNeighborsNeeded();
 		} else if (src.equals(mainWindowMenu.itemFollow)) {
-			if (Simulation.getInstance().getContent().getSelectedParticles().size() > 0) {
-				viewport.getCamera().setFollowing(Simulation.getInstance().getContent().getSelectedParticle(0));
-				Simulation.getInstance().getContent().deselectAll();
+			if (Simulation.getInstance().content().getSelectedParticles().size() > 0) {
+				viewport.getCamera().setFollowing(Simulation.getInstance().content().getSelectedParticle(0));
+				Simulation.getInstance().content().deselectAll();
 			} else
 				MainWindow.NothingIsSelectedMessage();
 		} else if (src.equals(mainWindowMenu.itemAbout)) {

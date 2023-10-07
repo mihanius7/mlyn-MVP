@@ -1,50 +1,49 @@
 package elements.line;
 
 import static java.lang.Math.min;
+import static simulation.Simulation.getInstance;
 import static simulation.math.Functions.defineDistance;
 
 import elements.point.Particle;
-import simulation.Simulation;
 import simulation.math.Functions;
 
 public class Pair {
 
 	protected final Particle p1, p2;
-	protected double force, oldForceSmoothed;
-	protected double distance, lastDistance = 0;
-	protected double criticalShift, angle;
-	private double timeStepReserve;
-	
-	public Pair() {
-		p1 = null;
-		p2 = null;
-	}
+	protected double force;
+	protected double forceSmoothed;
+	protected double distance; 
+	protected double lastDistance;
+	protected double criticalShift; 
+	protected double angle;
+	protected double timeStepReserve;
 
 	public Pair(Particle i, Particle j) {
-		p1 = Simulation.getInstance().getContent().getParticleWithLesserIndex(i, j);
-		p2 = Simulation.getInstance().getContent().getParticleWithLargerIndex(i, j);
-		setCriticalShift();
-		distance = lastDistance + criticalShift;
+		p1 = getInstance().content().particleWithLesserIndex(i, j);
+		p2 = getInstance().content().particleWithLargerIndex(i, j);
+		setupCriticalShift();
 	}
 
 	public Pair(int i, int j) {
-		p1 = Simulation.getInstance().getContent().getParticleWithLesserIndex(Simulation.getInstance().getContent().getParticle(i), Simulation.getInstance().getContent().getParticle(j));
-		p2 = Simulation.getInstance().getContent().getParticleWithLargerIndex(Simulation.getInstance().getContent().getParticle(i), Simulation.getInstance().getContent().getParticle(j));
-		setCriticalShift();
-		distance = lastDistance + criticalShift;
+		this(getInstance().content().particleWithLesserIndex(
+				getInstance().content().particle(i),
+				getInstance().content().particle(j)),
+				getInstance().content().particleWithLargerIndex(
+						getInstance().content().particle(i),
+						getInstance().content().particle(j)));
 	}
 
-	private void setCriticalShift() {
+	private void setupCriticalShift() {
 		criticalShift = 0.25 * min(p1.getRadius(), p2.getRadius());
 	}
 
-	private void refreshTimeStepReserve() {
+	private void calculateTimeStepReserve() {
 		timeStepReserve = criticalShift / Math.abs(lastDistance - distance);
 	}
 
 	public double getForceSmoothed() {
-		oldForceSmoothed -= oldForceSmoothed - force;
-		return oldForceSmoothed;
+		forceSmoothed -= forceSmoothed - force;
+		return forceSmoothed;
 	}
 
 	public final Particle getFirstParticle() {
@@ -55,13 +54,8 @@ public class Pair {
 		return p2;
 	}
 
-	public final Particle getOppositeParticle(Particle p) {
-		Particle returnParticle = null;
-		if (p == p1)
-			returnParticle = p2;
-		else if (p == p2)
-			returnParticle = p1;
-		return returnParticle;
+	public final Particle getSecondParticle(Particle firstParticle) {
+		return firstParticle == p1 ? p2 : p1;
 	}
 
 	public boolean isHasParticle(Particle p) {
@@ -78,23 +72,13 @@ public class Pair {
 	}
 
 	protected final double defineVelocityProjection() {
-		double p = (lastDistance - distance) / Simulation.getInstance().timeStepController.getTimeStepSize();
-		return p;
+		return (lastDistance - distance) / getInstance().timeStepController.getTimeStepSize();
 	}
 
 	public double getCriticalShift() {
 		return criticalShift;
 	}
-
-	public void doForce() {
-		lastDistance = distance;
-		distance = defineDistance(p1, p2);
-		refreshTimeStepReserve();
-		if (timeStepReserve < 1) {
-			Simulation.getInstance().timeStepController.setTimeStepAlarm();
-		}
-	}
-
+	
 	public double getForceValue() {
 		return force;
 	}
@@ -103,4 +87,12 @@ public class Pair {
 		return timeStepReserve;
 	}
 
+	public void doForce() {
+		lastDistance = distance;
+		distance = defineDistance(p1, p2);
+		calculateTimeStepReserve();
+		if (timeStepReserve < 1) {
+			getInstance().timeStepController.setAlarm();
+		}
+	}
 }
