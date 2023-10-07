@@ -110,11 +110,11 @@ public class ElementHandler implements ContentHandler {
 	@Override
 	public void endElement(String uri, String localName, String qName) throws SAXException {
 		if (qName.equals("particle") && p != null) {
-			Simulation.getInstance().addToSimulation(p);
+			Simulation.getInstance().add(p);
 			p = null;
 		}
 		if (qName.equals("spring") && s != null) {
-			Simulation.getInstance().addToSimulation(s);
+			Simulation.getInstance().add(s);
 			s = null;
 		}
 	}

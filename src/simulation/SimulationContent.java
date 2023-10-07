@@ -184,14 +184,14 @@ public class SimulationContent implements Cloneable {
 
 	public void removeSelectedParticles() {
 		if (!selectedParticles.isEmpty()) {
-			Simulation.getInstance().removeParticlesSafety(selectedParticles);
+			Simulation.getInstance().removeSafety(selectedParticles);
 			selectedParticles.clear();
 		}
 	}
 
 	public void removeSelectedSprings() {
 		if (!selectedSprings.isEmpty()) {
-			Simulation.getInstance().removeSpringsSafety(selectedSprings);
+			Simulation.getInstance().removeSafety(selectedSprings);
 			selectedSprings.clear();
 		}
 	}

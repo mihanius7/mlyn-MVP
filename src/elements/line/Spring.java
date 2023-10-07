@@ -92,7 +92,7 @@ public class Spring extends Pair implements Element {
 		if (Math.abs(force) > maxSpringForceCandidate)
 			maxSpringForceCandidate = Math.abs(force);
 		if (force >= breakUpTension)
-			Simulation.getInstance().removeSpringSafety(this);
+			Simulation.getInstance().removeSafety(this);
 	}
 
 	public double getVisibleWidth() {

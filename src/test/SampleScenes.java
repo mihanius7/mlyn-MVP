@@ -49,20 +49,20 @@ public class SampleScenes {
 		Boundaries b = Simulation.getInstance().content().getBoundaries();
 		b.setBounds(0, 9.2, 4.2, 0);
 		Simulation.getInstance()
-				.addToSimulation(new Particle(301 * cm, 90 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
+				.add(new Particle(301 * cm, 90 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
 		Simulation.getInstance()
-				.addToSimulation(new Particle(299 * cm, 30 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
+				.add(new Particle(299 * cm, 30 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
 		Simulation.getInstance()
-				.addToSimulation(new Particle(300 * cm, 120 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
+				.add(new Particle(300 * cm, 120 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
 		Simulation.getInstance()
-				.addToSimulation(new Particle(300 * cm, 10 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
+				.add(new Particle(300 * cm, 10 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
 		Simulation.getInstance().content().getLastAddedParticle().setMovable(false);
 		Simulation.getInstance()
-				.addToSimulation(new Particle(310 * cm, 100 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
+				.add(new Particle(310 * cm, 100 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
 		Simulation.getInstance()
-				.addToSimulation(new Particle(290 * cm, 100 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
+				.add(new Particle(290 * cm, 100 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
 		Simulation.getInstance()
-				.addToSimulation(new Particle(320 * cm, 130 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
+				.add(new Particle(320 * cm, 130 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
 		ParticleShape.drawForces = true;
 	}
 
@@ -74,9 +74,9 @@ public class SampleScenes {
 		Simulation.getInstance().interactionProcessor.setInteractionType(InteractionType.COULOMB);
 		Simulation.getInstance().content().getBoundaries().setUseAll(false);
 		Simulation.getInstance()
-				.addToSimulation(new Particle(20 * cm, 0 * cm, 1 * kg, 2.1E-8, 0, 0, 5 * cm, Color.RED));
+				.add(new Particle(20 * cm, 0 * cm, 1 * kg, 2.1E-8, 0, 0, 5 * cm, Color.RED));
 		Simulation.getInstance()
-				.addToSimulation(new Particle(70 * cm, 0 * cm, 1 * kg, -8.4E-8, 0, 0, 5 * cm, Color.BLUE));
+				.add(new Particle(70 * cm, 0 * cm, 1 * kg, -8.4E-8, 0, 0, 5 * cm, Color.BLUE));
 	}
 
 	public void scenePreset3() {
@@ -86,9 +86,9 @@ public class SampleScenes {
 		Simulation.getInstance().interactionProcessor.setUseExternalForces(false);
 		Simulation.getInstance().interactionProcessor.setInteractionType(InteractionType.GRAVITATION);
 		Simulation.getInstance().content().getBoundaries().setUseAll(false);
-		Simulation.getInstance().addToSimulation(new Particle(0, 0, 5.97E24, 0, 0, 0, 6397000, Color.BLUE));
+		Simulation.getInstance().add(new Particle(0, 0, 5.97E24, 0, 0, 0, 6397000, Color.BLUE));
 		Simulation.getInstance()
-				.addToSimulation(new Particle(384400000, 0, 7.35E22, 0, 0, 1022, 1794400, Color.LIGHT_GRAY));
+				.add(new Particle(384400000, 0, 7.35E22, 0, 0, 1022, 1794400, Color.LIGHT_GRAY));
 	}
 
 }

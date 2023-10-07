@@ -36,7 +36,7 @@ public class InteractionProcessor implements SimulationComponent {
 	private ArrayList<Pair> pairs = new ArrayList<Pair>();
 
 	private InteractionType interactionType;
-	private PairForce centralForce;
+	private PairForce pariForce;
 	private PairForce collisionForce;
 	private ParticleGroup particles;
 	private SpringGroup springs;
@@ -260,8 +260,8 @@ public class InteractionProcessor implements SimulationComponent {
 	}
 
 	public void setInteractionType(InteractionType interactionType) {
-		centralForce = PairForceFactory.getCentralForce(interactionType);
-		pairInteractionMaxDistance = centralForce.distanceLimit();
+		pariForce = PairForceFactory.getCentralForce(interactionType);
+		pairInteractionMaxDistance = pariForce.distanceLimit();
 		neighborRange = pairInteractionMaxDistance * 1.1;
 		this.interactionType = interactionType;
 		message();
@@ -335,11 +335,11 @@ public class InteractionProcessor implements SimulationComponent {
 		return timeStepReserveRatio;
 	}
 	
-	public PairForce getCentralForce() {
-		return centralForce;
+	public PairForce pairForceType() {
+		return pariForce;
 	}
 	
-	public PairForce getCollisionForce() {
+	public PairForce collisionForceType() {
 		return collisionForce;
 	}
 

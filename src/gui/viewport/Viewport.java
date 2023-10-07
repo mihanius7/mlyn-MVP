@@ -203,7 +203,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		double r = Simulation.getInstance().interactionProcessor.getTimeStepReserveRatio();
 		double timeScale = Simulation.getInstance().timeStepController.getMeasuredTimeScale();
 		String displayedTimeScale = "нявызначаны";
-		infoString1 = String.format("t = %.3f c, ", Simulation.getInstance().getTime())
+		infoString1 = String.format("t = %.3f c, ", Simulation.getInstance().time())
 				+ String.format("dt = %.4f", Simulation.getInstance().timeStepController.getTimeStepSize() * 1000)
 				+ " ms, " + String.format("Vmax = %.2f m/s", PointMass.maxVelocity) + ", fps = "
 				+ fps * 1000.0 / REFRESH_MESSAGES_INTERVAL + ", sps = "
@@ -508,7 +508,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		Graphics2D ig2 = buffer.createGraphics();
 		ig2.setRenderingHints(rh);
 		renderFrameOn(ig2);
-		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fс.png", Simulation.getInstance().getTime());
+		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fс.png", Simulation.getInstance().time());
 		try {
 			if (javax.imageio.ImageIO.write(buffer, "png", new java.io.File(fileName)))
 				ConsoleWindow.println(GUIStrings.IMAGE_SAVED_TO + " " + fileName);

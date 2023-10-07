@@ -65,7 +65,7 @@ public class ViewportMouseListenerAdd extends ViewportMouseListener {
 			Simulation.getInstance().content().getReferenceParticle().getShape().setVisible(false);
 			Particle refP = Simulation.getInstance().content().getReferenceParticle();
 			Particle newP = new Particle(refP.getX(), refP.getY(), refP);
-			Simulation.getInstance().addToSimulation(newP);
+			Simulation.getInstance().add(newP);
 			Simulation.getInstance().content().select(newP);
 			mainWindow.setFocusTo(newP);
 		} else if (viewport.getMouseMode() == MouseMode.ADD_SPRING
@@ -77,7 +77,7 @@ public class ViewportMouseListenerAdd extends ViewportMouseListener {
 				Particle p2 = new Particle(CoordinateConverter.fromScreenX(x2), CoordinateConverter.fromScreenY(y2), 0,
 						0, Simulation.getInstance().content().getReferenceParticle().getMass(),
 						Simulation.getInstance().content().getReferenceParticle().getRadius());
-				Simulation.getInstance().addToSimulation(p2);
+				Simulation.getInstance().add(p2);
 				p2.setX(CoordinateConverter.fromScreenX(x2));
 				p2.setY(CoordinateConverter.fromScreenY(y2));
 				if (viewport.useGrid)
@@ -88,7 +88,7 @@ public class ViewportMouseListenerAdd extends ViewportMouseListener {
 				Spring s = new Spring(Simulation.getInstance().content().getSelectedParticle(0), p, 5E4, 0);
 				s.setDampingRatio(0.15d);
 				s.setResonantFrequency(50d);
-				Simulation.getInstance().addToSimulation(s);
+				Simulation.getInstance().add(s);
 			}
 			mainWindow.clearSelection();
 		}

@@ -193,7 +193,7 @@ public class MainWindow extends JFrame {
 	}
 
 	public void stopSimulationThread() {
-		Simulation.getInstance().stopSimulation();
+		Simulation.getInstance().stop();
 	}
 
 	public void startViewportRepaintThread() {
@@ -284,10 +284,10 @@ public class MainWindow extends JFrame {
 
 	public void openSceneDialog() {
 		SAXelementParser parser = new SAXelementParser();
-		Simulation.getInstance().stopSimulation();
+		Simulation.getInstance().stop();
 		int ret = openSceneChooser.showDialog(null, GUIStrings.OPEN_SCENE_DIALOG);
 		if (ret == JFileChooser.APPROVE_OPTION) {
-			Simulation.getInstance().clearSimulation();
+			Simulation.getInstance().clearAll();
 			File selectedFile = openSceneChooser.getSelectedFile();
 			parser.loadFromFile(selectedFile);
 			setCaption(selectedFile.getName());
