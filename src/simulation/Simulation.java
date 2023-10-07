@@ -27,8 +27,8 @@ public class Simulation implements Runnable {
 
 	private final ArrayList<SimulationComponent> simulationComponents = new ArrayList<SimulationComponent>();
 
-	public InteractionProcessor interactionProcessor;
-	public TimeStepController timeStepController;
+	public final InteractionProcessor interactionProcessor;
+	public final TimeStepController timeStepController;
 
 	private double time = 0;
 	private double stopTime = Double.MAX_VALUE;
@@ -110,22 +110,18 @@ public class Simulation implements Runnable {
 		}
 	}
 
-	public void stopSimulation() {
-		stopSimulationEchoOff();
-	}
-
-	private void stopSimulationEchoOff() {
+	public void stop() {
 		isRunning = false;
 	}
 
-	private void stopSimulationAndWait() {
+	private void stopAndWait() {
 		if (isRunning) {
 			isRunning = false;
 			waitForStepComplete();
 		}
 	}
 
-	public void addToSimulation(Particle p) {
+	public void add(Particle p) {
 		if (isRunning) {
 			pForAdd.add(p);
 			refreshContentNeeded = true;
@@ -135,7 +131,7 @@ public class Simulation implements Runnable {
 		interactionProcessor.recalculateNeighborsNeeded();
 	}
 
-	public void addToSimulation(Spring s) {
+	public void add(Spring s) {
 		if (isRunning) {
 			sForAdd.add(s);
 			refreshContentNeeded = true;
@@ -145,7 +141,7 @@ public class Simulation implements Runnable {
 		interactionProcessor.recalculateNeighborsNeeded();
 	}
 
-	public void addToSimulation(ParticleGroup pp) {
+	public void add(ParticleGroup pp) {
 		if (isRunning) {
 			pForAdd.addAll(pp);
 			refreshContentNeeded = true;
@@ -156,7 +152,7 @@ public class Simulation implements Runnable {
 		ConsoleWindow.println(GUIStrings.PARTICLES_ADDED);
 	}
 
-	public void addToSimulation(SpringGroup ss) {
+	public void add(SpringGroup ss) {
 		if (isRunning) {
 			sForAdd.addAll(ss);
 			refreshContentNeeded = true;
@@ -167,10 +163,10 @@ public class Simulation implements Runnable {
 		ConsoleWindow.println(GUIStrings.SPRINGS_ADDED);
 	}
 
-	public synchronized void addToSimulation(SimulationComponent arg) {
+	public synchronized void add(SimulationComponent arg) {
 		boolean wasActive = false;
 		if (isRunning) {
-			stopSimulationAndWait();
+			stopAndWait();
 			wasActive = true;
 		}
 		simulationComponents.add((SimulationComponent) arg);
@@ -179,9 +175,9 @@ public class Simulation implements Runnable {
 			MainWindow.getInstance().startSimulationThread();
 	}
 
-	public void removeParticleSafety(Particle p) {
+	public void removeSafety(Particle p) {
 		if (!content.springs.isEmpty())
-			removeSpringsSafety(content.springs.findAttachedSprings(p));
+			removeSafety(content.springs.findAttachedSprings(p));
 		if (isRunning) {
 			pForRemove.add(p);
 			refreshContentNeeded = true;
@@ -190,18 +186,18 @@ public class Simulation implements Runnable {
 		interactionProcessor.recalculateNeighborsNeeded();
 	}
 
-	private synchronized void removeParticles(ParticleGroup pp) {
+	private synchronized void remove(ParticleGroup pp) {
 		if (!content.springs.isEmpty())
 			for (Particle p : pp)
-				removeSprings(content.springs.findAttachedSprings(p));
+				remove(content.springs.findAttachedSprings(p));
 		content.particles.removeAll(pp);
 		interactionProcessor.recalculateNeighborsNeeded();
 	}
 
-	public synchronized void removeParticlesSafety(ParticleGroup pp) {
+	public synchronized void removeSafety(ParticleGroup pp) {
 		if (!content.springs.isEmpty())
 			for (Particle p : pp)
-				removeSpringsSafety(content.springs.findAttachedSprings(p));
+				removeSafety(content.springs.findAttachedSprings(p));
 		if (isRunning) {
 			pForRemove.addAll(pp);
 			refreshContentNeeded = true;
@@ -212,7 +208,7 @@ public class Simulation implements Runnable {
 
 	public void removeRandomParticles(int number) {
 		for (int i = 0; i < number; i++)
-			removeParticleSafety(content.particle((int) Math.round(Math.random() * content.particles.size())));
+			removeSafety(content.particle((int) Math.round(Math.random() * content.particles.size())));
 	}
 
 	private void removeSpring(Spring s) {
@@ -220,7 +216,7 @@ public class Simulation implements Runnable {
 		content.springs.remove(s);
 	}
 
-	public void removeSpringSafety(Spring s) {
+	public void removeSafety(Spring s) {
 		if (isRunning) {
 			sForRemove.add(s);
 			refreshContentNeeded = true;
@@ -228,12 +224,12 @@ public class Simulation implements Runnable {
 			content.springs.remove(s);
 	}
 
-	private synchronized void removeSprings(SpringGroup ss) {
+	private synchronized void remove(SpringGroup ss) {
 		for (Spring s : ss)
 			removeSpring(s);
 	}
 
-	public void removeSpringsSafety(SpringGroup ss) {
+	public void removeSafety(SpringGroup ss) {
 		if (isRunning) {
 			sForRemove.addAll(ss);
 			refreshContentNeeded = true;
@@ -241,10 +237,10 @@ public class Simulation implements Runnable {
 			content.springs.removeAll(ss);
 	}
 
-	public void clearSimulation() {
+	public void clearAll() {
 		ConsoleWindow.clearConsole();
 		ConsoleWindow.print(GUIStrings.FORCE_SIMULATION_STOP + " ");
-		stopSimulationAndWait();
+		stopAndWait();
 		ConsoleWindow.println(GUIStrings.DONE);
 		reset();
 	}
@@ -270,10 +266,10 @@ public class Simulation implements Runnable {
 	}
 
 	private void refreshContent() {
-		removeParticles(pForRemove);
+		remove(pForRemove);
 		content.particles.addAll(pForAdd);
 		pForAdd.clear();
-		removeSprings(sForRemove);
+		remove(sForRemove);
 		content.springs.addAll(sForAdd);
 		sForAdd.clear();
 		refreshContentNeeded = false;
@@ -287,7 +283,7 @@ public class Simulation implements Runnable {
 		return content.particle(i).getY();
 	}
 
-	public double getTime() {
+	public double time() {
 		return time;
 	}
 
