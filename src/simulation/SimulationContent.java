@@ -1,7 +1,7 @@
 package simulation;
 
-import static constants.PhysicalConstants.cm;
-import static constants.PhysicalConstants.kg;
+import static calculation.constants.PhysicalConstants.cm;
+import static calculation.constants.PhysicalConstants.kg;
 
 import java.util.Iterator;
 

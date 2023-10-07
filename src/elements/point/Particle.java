@@ -4,10 +4,10 @@ import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
 
+import calculation.Functions;
 import elements.Element;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;
-import simulation.math.Functions;
 
 public class Particle extends PointMass implements Cloneable, Element {
 

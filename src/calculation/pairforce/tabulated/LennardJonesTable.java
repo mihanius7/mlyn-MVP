@@ -1,4 +1,4 @@
-package simulation.math;
+package calculation.pairforce.tabulated;
 
 public class LennardJonesTable extends TabulatedFunction {
 

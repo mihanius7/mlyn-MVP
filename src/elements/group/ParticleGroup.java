@@ -7,14 +7,14 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import calculation.Functions;
+import calculation.Vector;
 import elements.point.Particle;
 import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
 import simulation.Simulation;
-import simulation.math.Functions;
-import simulation.math.Vector;
 
 public class ParticleGroup extends ArrayList<Particle> implements Cloneable {
 

@@ -1,4 +1,4 @@
-package simulation.math;
+package calculation;
 
 import elements.point.PointMass;
 import simulation.Simulation;

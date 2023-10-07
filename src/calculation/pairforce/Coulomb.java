@@ -1,19 +1,19 @@
-package simulation.math.force;
+package calculation.pairforce;
 
-import static constants.PhysicalConstants.G;
+import static calculation.constants.PhysicalConstants.k;
 
 import elements.point.Particle;
 
-public class Gravity extends CentralForce {
+public class Coulomb extends PairForce {
 
 	@Override
 	public double calculatePotential(Particle p1, double r) {
-		return G * p1.getMass() / r;
+		return k * p1.getCharge() / r;
 	}
 
 	@Override
 	public double calculateForce(Particle p1, Particle p2, double r) {
-		return calculatePotential(p1, r) * p2.getMass() / r;
+		return calculatePotential(p1, r) * p2.getCharge() / r;
 	}
 
 	@Override
@@ -23,7 +23,12 @@ public class Gravity extends CentralForce {
 
 	@Override
 	public double calculatePotentialEnergy(Particle p1, Particle p2, double r) {
-		return calculatePotential(p1, r) * p2.getMass();
+		return calculatePotential(p1, r) * p2.getCharge();
 	}
+
+	@Override
+	public double distanceLimit() {
+		return 15.0;
+	}	
 
 }

@@ -2,10 +2,10 @@ package elements.group;
 
 import java.util.ArrayList;
 
+import calculation.Functions;
 import elements.line.Spring;
 import elements.point.Particle;
 import gui.shapes.SpringShape;
-import simulation.math.Functions;
 
 public class SpringGroup extends ArrayList<Spring> {
 

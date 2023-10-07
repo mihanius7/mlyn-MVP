@@ -1,23 +1,23 @@
 package elements.line;
 
-import static constants.PhysicalConstants.cm;
+import static calculation.Functions.cube;
+import static calculation.Functions.defineDistance;
+import static calculation.Functions.defineReducedMass;
+import static calculation.Functions.sqr;
+import static calculation.constants.PhysicalConstants.cm;
 import static java.lang.Math.PI;
 import static java.lang.Math.sqrt;
-import static simulation.math.Functions.cube;
-import static simulation.math.Functions.defineDistance;
-import static simulation.math.Functions.defineReducedMass;
-import static simulation.math.Functions.sqr;
 
 import java.awt.geom.Point2D;
 
-import constants.PhysicalConstants;
+import calculation.Functions;
+import calculation.constants.PhysicalConstants;
 import elements.Element;
 import elements.point.Particle;
 import gui.ConsoleWindow;
 import gui.lang.GUIStrings;
 import gui.shapes.SpringShape;
 import simulation.Simulation;
-import simulation.math.Functions;
 
 public class Spring extends Pair implements Element {
 

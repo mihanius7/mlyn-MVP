@@ -5,21 +5,23 @@ import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
+import calculation.Functions;
+import calculation.Vector;
+import calculation.pairforce.PairForce;
+import calculation.pairforce.PairForceFactory;
 import elements.point.Particle;
 import simulation.Simulation;
 import simulation.components.InteractionProcessor;
 import simulation.components.InteractionType;
-import simulation.math.Functions;
-import simulation.math.Vector;
-import simulation.math.force.CentralForce;
-import simulation.math.force.ForceFactory;
+
+import static simulation.Simulation.getInstance;
 
 public class HeatMap {
 
 	private int updateInterval = 3, resolution = 10, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
-	private CentralForce pairForce;
+	private PairForce pairForce;
 	private double range = 10000;
 	private double minValue, minField;
 	private double maxValue, maxField;
@@ -32,7 +34,7 @@ public class HeatMap {
 		height = h;
 		heatMapImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		heatMapCanvas = heatMapImage.createGraphics();
-		pairForce = ForceFactory.getCentralForce(InteractionProcessor.getInteractionType());
+		pairForce = PairForceFactory.getCentralForce(getInstance().interactionProcessor.getInteractionType());
 	}
 
 	public HeatMap(Viewport v) {
@@ -46,9 +48,9 @@ public class HeatMap {
 
 	public void updateHeatMapImage() {
 		updatesNumber++;
-		if (InteractionProcessor.getInteractionType() == InteractionType.GRAVITATION)
+		if (getInstance().interactionProcessor.getInteractionType() == InteractionType.GRAVITATION)
 			isGravityFieldMap = true;
-		else if (InteractionProcessor.getInteractionType() == InteractionType.COULOMB)
+		else if (getInstance().interactionProcessor.getInteractionType() == InteractionType.COULOMB)
 			isGravityFieldMap = false;
 		int ui = (Simulation.getInstance().isActive()) ? updateInterval : 15;
 		if (updatesNumber >= ui) {

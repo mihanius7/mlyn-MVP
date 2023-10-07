@@ -1,6 +1,6 @@
 package gui;
 
-import static constants.PhysicalConstants.cm;
+import static calculation.constants.PhysicalConstants.cm;
 
 import java.awt.Font;
 import java.io.File;

@@ -1,11 +1,11 @@
 package elements.line;
 
+import static calculation.Functions.defineDistance;
 import static java.lang.Math.min;
 import static simulation.Simulation.getInstance;
-import static simulation.math.Functions.defineDistance;
 
+import calculation.Functions;
 import elements.point.Particle;
-import simulation.math.Functions;
 
 public class Pair {
 

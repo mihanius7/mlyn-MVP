@@ -1,13 +1,13 @@
 package gui.shapes;
 
-import static constants.PhysicalConstants.cm;
+import static calculation.constants.PhysicalConstants.cm;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 
-import constants.PhysicalConstants;
+import calculation.constants.PhysicalConstants;
 import elements.Element;
 import elements.line.Spring;
 import elements.point.Particle;

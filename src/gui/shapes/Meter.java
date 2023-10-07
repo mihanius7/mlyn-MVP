@@ -4,12 +4,12 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import calculation.Functions;
 import elements.Element;
 import elements.point.Particle;
 import gui.viewport.CoordinateConverter;
 import gui.viewport.Viewport;
 import simulation.Simulation;
-import simulation.math.Functions;
 
 public class Meter extends Shape {
 

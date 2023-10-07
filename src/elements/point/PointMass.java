@@ -2,9 +2,9 @@ package elements.point;
 
 import java.awt.geom.Point2D;
 
+import calculation.TrajectoryIntegrator;
+import calculation.Vector;
 import simulation.Simulation;
-import simulation.math.TrajectoryIntegrator;
-import simulation.math.Vector;
 
 public class PointMass implements Cloneable {
 

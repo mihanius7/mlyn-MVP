@@ -1,6 +1,6 @@
 package gui.viewport;
 
-import static constants.PhysicalConstants.cm;
+import static calculation.constants.PhysicalConstants.cm;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import constants.PhysicalConstants;
+import calculation.Vector;
+import calculation.constants.PhysicalConstants;
 import elements.Element;
 import elements.point.PointMass;
 import gui.ConsoleWindow;
@@ -34,7 +35,6 @@ import gui.viewport.listeners.ViewportMouseListener;
 import gui.viewport.listeners.ViewportMouseListenersFactory;
 import simulation.Boundaries;
 import simulation.Simulation;
-import simulation.math.Vector;
 
 public class Viewport extends JPanel implements ActionListener, Runnable {
 
@@ -283,7 +283,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.setColor(Colors.FONT_TAGS);
 		int xc = Math.min(x1, x2) + (Math.max(x1, x2) - Math.min(x1, x2)) / 2;
 		int yc = Math.min(y1, y2) + (Math.max(y1, y2) - Math.min(y1, y2)) / 2;
-		alpha = simulation.math.Functions.fitAbsAngleRad(alpha);
+		alpha = calculation.Functions.fitAbsAngleRad(alpha);
 		targetG2d.translate(xc, yc);
 		targetG2d.rotate(alpha);
 		targetG2d.drawString(string, -(currentFontSize * string.length()) / 4, -currentFontSize / 2);
