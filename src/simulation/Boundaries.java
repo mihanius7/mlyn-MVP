@@ -1,7 +1,7 @@
 package simulation;
 
-import static constants.PhysicalConstants.cm;
-import static constants.PhysicalConstants.m;
+import static calculation.constants.PhysicalConstants.cm;
+import static calculation.constants.PhysicalConstants.m;
 import static java.lang.Math.abs;
 
 import elements.point.Particle;

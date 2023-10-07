@@ -1,4 +1,4 @@
-package simulation.math;
+package calculation.pairforce.tabulated;
 
 public abstract class TabulatedFunction {
 	protected double stepSize, minX, maxX, param1, param2;

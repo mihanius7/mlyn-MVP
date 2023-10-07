@@ -1,15 +1,18 @@
 package simulation.components;
 
-import static constants.PhysicalConstants.g;
-import static constants.PhysicalConstants.m;
+import static calculation.Functions.defineSquaredDistance;
+import static calculation.constants.PhysicalConstants.g;
 import static java.lang.Math.sqrt;
-import static simulation.math.Functions.defineSquaredDistance;
-import static simulation.math.Functions.sqr;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import calculation.Functions;
+import calculation.TrajectoryIntegrator;
+import calculation.pairforce.Collision;
+import calculation.pairforce.PairForce;
+import calculation.pairforce.PairForceFactory;
 import elements.group.ParticleGroup;
 import elements.group.SpringGroup;
 import elements.line.NeighborPair;
@@ -22,11 +25,6 @@ import gui.lang.GUIStrings;
 import simulation.ExternalForce;
 import simulation.Simulation;
 import simulation.SimulationContent;
-import simulation.math.Functions;
-import simulation.math.TrajectoryIntegrator;
-import simulation.math.force.CentralForce;
-import simulation.math.force.Collision;
-import simulation.math.force.ForceFactory;
 
 public class InteractionProcessor implements SimulationComponent {
 
@@ -37,11 +35,11 @@ public class InteractionProcessor implements SimulationComponent {
 
 	private ArrayList<Pair> pairs = new ArrayList<Pair>();
 
-	private static InteractionType interactionType;
-	private static CentralForce centralForce;
-	private static CentralForce collisionForce;
-	private static ParticleGroup particles;
-	private static SpringGroup springs;
+	private InteractionType interactionType;
+	private PairForce pariForce;
+	private PairForce collisionForce;
+	private ParticleGroup particles;
+	private SpringGroup springs;
 	private ExternalForce externalForce;
 	private Point2D.Double particleTargetXY = new Point2D.Double(0, 0);
 
@@ -55,9 +53,8 @@ public class InteractionProcessor implements SimulationComponent {
 	private boolean isAccelerateByMouse;
 	private double spaceFrictionCoefficient = 0.1;
 	private double timeStepReserveRatio;
-	private double df;
-	private double pairInteractionMinDistance = 1E-9;
-	private double pairInteractionMaxDistance = 1.5 * m;
+	private double pairInteractionMinDistance;
+	private double pairInteractionMaxDistance;
 	private double neighborRangeExtra = 1.1;
 	private double neighborRange = pairInteractionMaxDistance * neighborRangeExtra;
 	private long pairInteractionsNumber = 0;
@@ -95,18 +92,18 @@ public class InteractionProcessor implements SimulationComponent {
 	private void calculateForces() {
 		NeighborPair.maxPairForceCandidate = 0;
 		Spring.maxSpringForceCandidate = 0;
-		double reserve = Double.MAX_VALUE;
+		double minReserve = Double.MAX_VALUE;
 		Pair pair;
 		Iterator<Pair> it = pairs.iterator();
 		while (it.hasNext()) {
 			pair = it.next();
 			pair.doForce();
-			if (pair.getSafetyReserve() < reserve)
-				reserve = pair.getSafetyReserve();
+			if (pair.getSafetyReserve() < minReserve)
+				minReserve = pair.getSafetyReserve();
 		}
 		NeighborPair.maxPairForce = Math.abs(NeighborPair.maxPairForceCandidate);
 		Spring.maxSpringForce = Math.abs(Spring.maxSpringForceCandidate);
-		timeStepReserveRatio = reserve;
+		timeStepReserveRatio = minReserve;
 	}
 
 	private void calculateLocations() {
@@ -132,17 +129,18 @@ public class InteractionProcessor implements SimulationComponent {
 
 	private void recalculateNeighborsList() {
 		pairs.clear();
-		double sqDist, maxSqDist;
+		double squaredDistance;
+		double maxPairSquaredDistance;
 		if (usePPCollisions || useInterparticleForces) {
 			for (int i = 0; i < particles.size() - 1; i++) {
 				for (int j = i + 1; j < particles.size(); j++) {
-					maxSqDist = (useInterparticleForces)
+					maxPairSquaredDistance = useInterparticleForces
 							? pairInteractionMaxDistance
 							: neighborRangeExtra * (particles.get(i).getRadius() + particles.get(j).getRadius());
-					maxSqDist *= maxSqDist;
-					sqDist = defineSquaredDistance(i, j);
-					if (sqDist <= maxSqDist)
-						pairs.add(new NeighborPair(i, j, sqrt(sqDist)));
+					maxPairSquaredDistance *= maxPairSquaredDistance;
+					squaredDistance = defineSquaredDistance(i, j);
+					if (squaredDistance <= maxPairSquaredDistance)
+						pairs.add(new NeighborPair(i, j, sqrt(squaredDistance)));
 				}
 			}
 			neighborSearchesNumber++;
@@ -151,23 +149,6 @@ public class InteractionProcessor implements SimulationComponent {
 		pairInteractionsNumber = pairs.size();
 		recalculateNeighborsNeeded = false;
 		neighborSearchCurrentStep = 0;
-	}
-
-	public double applyPairInteraction(Particle p1, Particle p2, double distance) {
-		df = 0;
-		if (useInterparticleForces) {
-			df += centralForce.calculateForce(p1, p2, distance);
-		}
-		if (usePPCollisions) {
-			if (p1.isCanCollide() && p2.isCanCollide()) {
-				double collisionEventSquaredDistance = sqr(p1.getRadius() + p2.getRadius());
-				if (sqr(distance) < collisionEventSquaredDistance) {
-					df += collisionForce.calculateForce(p1, p2, distance);
-				}
-			}
-		}
-		Functions.addForce(p1, p2, df, distance);
-		return df;
 	}
 
 	private void moveSelectedParticle() {
@@ -279,14 +260,14 @@ public class InteractionProcessor implements SimulationComponent {
 	}
 
 	public void setInteractionType(InteractionType interactionType) {
-		centralForce = ForceFactory.getCentralForce(interactionType);
-		pairInteractionMaxDistance = centralForce.distanceLimit();
+		pariForce = PairForceFactory.getCentralForce(interactionType);
+		pairInteractionMaxDistance = pariForce.distanceLimit();
 		neighborRange = pairInteractionMaxDistance * 1.1;
-		InteractionProcessor.interactionType = interactionType;
+		this.interactionType = interactionType;
 		message();
 	}
 
-	public static InteractionType getInteractionType() {
+	public InteractionType getInteractionType() {
 		return interactionType;
 	}
 
@@ -353,10 +334,20 @@ public class InteractionProcessor implements SimulationComponent {
 	public double getTimeStepReserveRatio() {
 		return timeStepReserveRatio;
 	}
+	
+	public PairForce pairForceType() {
+		return pariForce;
+	}
+	
+	public PairForce collisionForceType() {
+		return collisionForce;
+	}
 
 	public void message() {
 		ConsoleWindow.println(
 				String.format(GUIStrings.MAX_INTERACTION_DEFINING_DISTANCE + ": %.1e m", pairInteractionMaxDistance));
 	}
+
+
 
 }

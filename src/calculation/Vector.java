@@ -1,4 +1,4 @@
-package simulation.math;
+package calculation;
 
 import static java.lang.Math.sqrt;
 

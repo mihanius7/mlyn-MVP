@@ -4,9 +4,9 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import calculation.Functions;
 import elements.Element;
 import gui.viewport.Viewport;
-import simulation.math.Functions;
 
 public class Rectangle extends Shape {
 

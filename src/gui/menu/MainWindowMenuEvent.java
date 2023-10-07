@@ -3,13 +3,13 @@ package gui.menu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import calculation.Vector;
 import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.shapes.ParticleShape;
 import gui.viewport.Viewport;
 import gui.viewport.listeners.MouseMode;
 import simulation.Simulation;
-import simulation.math.Vector;
 
 public class MainWindowMenuEvent implements ActionListener {
 
@@ -72,30 +72,25 @@ public class MainWindowMenuEvent implements ActionListener {
 		} else if (src.equals(mainWindowMenu.itemTracks)) {
 			viewport.setDrawTracks(mainWindowMenu.itemTracks.getState());			
 		} else if (src.equals(mainWindowMenu.itemClear)) {
-			Simulation.getInstance().clearSimulation();
+			Simulation.getInstance().clearAll();
 			viewport.reset();
 			viewport.scaleToBoundaries();
 		} else if (src.equals(mainWindowMenu.itemMouseSelect2)) {
 			viewport.setMouseMode(MouseMode.SELECT_PARTICLE);
-			Simulation.getInstance().content().setMaxSelectionNumber(Integer.MAX_VALUE);
 		} else if (src.equals(mainWindowMenu.itemMouseSelect1)) {
 			viewport.setMouseMode(MouseMode.SELECT_SPRING);
-			Simulation.getInstance().content().setMaxSelectionNumber(Integer.MAX_VALUE);
 		} else if (src.equals(mainWindowMenu.itemAdd1)) {
 			Simulation.getInstance().content().deselectAll();
 			viewport.setMouseMode(MouseMode.ADD_PARTICLE);
 		} else if (src.equals(mainWindowMenu.itemByPlace)) {
 			Simulation.getInstance().content().deselectAll();
 			viewport.setMouseMode(MouseMode.PARTICLE_ACT_DISPLACE);
-			Simulation.getInstance().content().setMaxSelectionNumber(1);
 		} else if (src.equals(mainWindowMenu.itemByForce)) {
 			Simulation.getInstance().content().deselectAll();
 			viewport.setMouseMode(MouseMode.PARTICLE_ACT_FORCE);
-			Simulation.getInstance().content().setMaxSelectionNumber(1);
 		} else if (src.equals(mainWindowMenu.itemAdd2)) {
 			Simulation.getInstance().content().deselectAll();
 			viewport.setMouseMode(MouseMode.ADD_SPRING);
-			Simulation.getInstance().content().setMaxSelectionNumber(1);
 		} else if (src.equals(mainWindowMenu.itemFix)) {
 			Simulation.getInstance().content().getSelectedParticles().fix();
 		} else if (src.equals(mainWindowMenu.itemColorizeByCharge)) {

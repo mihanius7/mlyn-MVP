@@ -1,4 +1,4 @@
-package constants;
+package calculation.constants;
 
 public interface PhysicalConstants {
 

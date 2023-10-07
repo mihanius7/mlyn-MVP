@@ -1,13 +1,13 @@
-package simulation.math.force;
+package calculation.pairforce;
 
-import static constants.PhysicalConstants.cm;
+import static calculation.constants.PhysicalConstants.cm;
 import static java.lang.Math.sqrt;
 
 import elements.point.Particle;
 import gui.ConsoleWindow;
 import gui.lang.GUIStrings;
 
-public class Collision extends CentralForce {
+public class Collision extends PairForce {
 
 	private double beta = (2.0 * 1E6 * sqrt(5 * cm * 5 * cm / (5 * cm + 5 * cm))) / (3 * (1 - 0.28 * 0.28));
 

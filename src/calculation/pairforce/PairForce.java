@@ -1,8 +1,8 @@
-package simulation.math.force;
+package calculation.pairforce;
 
 import elements.point.Particle;
 
-public abstract class CentralForce {
+public abstract class PairForce {
 	
 	public abstract double calculatePotential(Particle p1, double r);
 	
