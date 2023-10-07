@@ -10,9 +10,12 @@ import simulation.math.Functions;
 public class Pair {
 
 	protected final Particle p1, p2;
-	protected double force, oldForceSmoothed;
-	protected double distance, lastDistance = 0;
-	protected double criticalShift, angle;
+	protected double force;
+	protected double forceSmoothed;
+	protected double distance; 
+	protected double lastDistance;
+	protected double criticalShift; 
+	protected double angle;
 	private double timeStepReserve;
 
 	public Pair() {
@@ -45,8 +48,8 @@ public class Pair {
 	}
 
 	public double getForceSmoothed() {
-		oldForceSmoothed -= oldForceSmoothed - force;
-		return oldForceSmoothed;
+		forceSmoothed -= forceSmoothed - force;
+		return forceSmoothed;
 	}
 
 	public final Particle getFirstParticle() {

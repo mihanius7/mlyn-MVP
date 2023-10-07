@@ -1,5 +1,7 @@
 package simulation.math;
 
+import simulation.math.force.CentralForce;
+
 public class LennardJonesFunction extends TabulatedFunction {
 
 	public LennardJonesFunction(double minX, double maxX, double step) {
@@ -9,7 +11,7 @@ public class LennardJonesFunction extends TabulatedFunction {
 	@Override
 	public void calculateTable() {
 		double x = minX;
-		PairForce force = new PairForce();
+		CentralForce force = new CentralForce();
 		for (int i = 0; i < functionTable.length - 1; i++) {
 			x = minX + i * stepSize;
 			functionTable[i] = force.LennardJones(x, param1, param2);
