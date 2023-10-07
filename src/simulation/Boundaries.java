@@ -123,15 +123,15 @@ public class Boundaries implements Cloneable {
 		bottomContent = Double.MAX_VALUE;
 		rightContent = Double.MIN_VALUE;
 		upperContent = Double.MIN_VALUE;
-		for (int i = 0; i < Simulation.getInstance().getContent().getParticlesCount(); i++) {
-			if (Simulation.getInstance().getContent().getParticle(i).getX() - Simulation.getInstance().getContent().getParticle(i).getRadius() < leftContent)
-				leftContent = Simulation.getInstance().getContent().getParticle(i).getX() - Simulation.getInstance().getContent().getParticle(i).getRadius();
-			if (Simulation.getInstance().getContent().getParticle(i).getX() + Simulation.getInstance().getContent().getParticle(i).getRadius() > rightContent)
-				rightContent = Simulation.getInstance().getContent().getParticle(i).getX() + Simulation.getInstance().getContent().getParticle(i).getRadius();
-			if (Simulation.getInstance().getContent().getParticle(i).getY() - Simulation.getInstance().getContent().getParticle(i).getRadius() < bottomContent)
-				bottomContent = Simulation.getInstance().getContent().getParticle(i).getY() - Simulation.getInstance().getContent().getParticle(i).getRadius();
-			if (Simulation.getInstance().getContent().getParticle(i).getY() + Simulation.getInstance().getContent().getParticle(i).getRadius() > upperContent)
-				upperContent = Simulation.getInstance().getContent().getParticle(i).getY() + Simulation.getInstance().getContent().getParticle(i).getRadius();
+		for (int i = 0; i < Simulation.getInstance().content().getParticlesCount(); i++) {
+			if (Simulation.getInstance().content().particle(i).getX() - Simulation.getInstance().content().particle(i).getRadius() < leftContent)
+				leftContent = Simulation.getInstance().content().particle(i).getX() - Simulation.getInstance().content().particle(i).getRadius();
+			if (Simulation.getInstance().content().particle(i).getX() + Simulation.getInstance().content().particle(i).getRadius() > rightContent)
+				rightContent = Simulation.getInstance().content().particle(i).getX() + Simulation.getInstance().content().particle(i).getRadius();
+			if (Simulation.getInstance().content().particle(i).getY() - Simulation.getInstance().content().particle(i).getRadius() < bottomContent)
+				bottomContent = Simulation.getInstance().content().particle(i).getY() - Simulation.getInstance().content().particle(i).getRadius();
+			if (Simulation.getInstance().content().particle(i).getY() + Simulation.getInstance().content().particle(i).getRadius() > upperContent)
+				upperContent = Simulation.getInstance().content().particle(i).getY() + Simulation.getInstance().content().particle(i).getRadius();
 		}
 	}
 

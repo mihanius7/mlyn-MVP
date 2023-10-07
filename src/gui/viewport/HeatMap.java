@@ -12,6 +12,7 @@ import simulation.components.InteractionType;
 import simulation.math.Functions;
 import simulation.math.Vector;
 import simulation.math.force.CentralForce;
+import simulation.math.force.ForceFactory;
 
 public class HeatMap {
 
@@ -31,7 +32,7 @@ public class HeatMap {
 		height = h;
 		heatMapImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		heatMapCanvas = heatMapImage.createGraphics();
-		pairForce = new CentralForce();
+		pairForce = ForceFactory.getCentralForce(InteractionProcessor.getInteractionType());
 	}
 
 	public HeatMap(Viewport v) {
@@ -47,8 +48,7 @@ public class HeatMap {
 		updatesNumber++;
 		if (InteractionProcessor.getInteractionType() == InteractionType.GRAVITATION)
 			isGravityFieldMap = true;
-		else if (InteractionProcessor.getInteractionType() == InteractionType.COULOMB
-				|| InteractionProcessor.getInteractionType() == InteractionType.COULOMB_AND_GRAVITATION)
+		else if (InteractionProcessor.getInteractionType() == InteractionType.COULOMB)
 			isGravityFieldMap = false;
 		int ui = (Simulation.getInstance().isActive()) ? updateInterval : 15;
 		if (updatesNumber >= ui) {
@@ -94,11 +94,10 @@ public class HeatMap {
 		double distance;
 		double dF = 0;
 		int pNumber = 0;
-		while (Simulation.getInstance().getContent().getParticle(pNumber) != null) {
-			testParticle = Simulation.getInstance().getContent().getParticle(pNumber);
+		while (Simulation.getInstance().content().particle(pNumber) != null) {
+			testParticle = Simulation.getInstance().content().particle(pNumber);
 			distance = Functions.defineDistance(testParticle, x, y);
-			dF = (isGravityFieldMap) ? pairForce.defineGravitationFieldStrength(testParticle, distance)
-					: pairForce.defineCoulombFieldStrength(testParticle, distance);
+			dF = pairForce.calculatePotential(testParticle, distance);
 			field.addToX(dF * (x - testParticle.getX()) / distance);
 			field.addToY(dF * (y - testParticle.getY()) / distance);
 			pNumber++;

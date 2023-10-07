@@ -40,7 +40,7 @@ public class SimulationContent implements Cloneable {
 		return boundaries;
 	}
 
-	public Particle getParticle(int i) {
+	public Particle particle(int i) {
 		if (i < particles.size() && particles.get(i) != null)
 			return particles.get(i);
 		else {
@@ -56,14 +56,14 @@ public class SimulationContent implements Cloneable {
 		return referenceParticle;
 	}
 
-	public Particle getParticleWithLesserIndex(Particle p1, Particle p2) {
+	public Particle particleWithLesserIndex(Particle p1, Particle p2) {
 		if (getIndex(p1) > getIndex(p2))
 			return p2;
 		else
 			return p1;
 	}
 
-	public Particle getParticleWithLargerIndex(Particle p1, Particle p2) {
+	public Particle particleWithLargerIndex(Particle p1, Particle p2) {
 		if (getIndex(p1) > getIndex(p2))
 			return p1;
 		else

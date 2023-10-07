@@ -125,17 +125,17 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	private void checkShapesList() {
-		if (physicalShapes.size() != Simulation.getInstance().getContent().getParticlesCount()
-				+ Simulation.getInstance().getContent().getSpringsCount()) {
+		if (physicalShapes.size() != Simulation.getInstance().content().getParticlesCount()
+				+ Simulation.getInstance().content().getSpringsCount()) {
 			shapes.removeAll(physicalShapes);
 			physicalShapes.clear();
-			for (int i = 0; i < Simulation.getInstance().getContent().getParticlesCount(); i++) {
-				if (Simulation.getInstance().getContent().getParticle(i) != null)
-					physicalShapes.add(Simulation.getInstance().getContent().getParticle(i).getShape());
+			for (int i = 0; i < Simulation.getInstance().content().getParticlesCount(); i++) {
+				if (Simulation.getInstance().content().particle(i) != null)
+					physicalShapes.add(Simulation.getInstance().content().particle(i).getShape());
 			}
-			for (int i = 0; i < Simulation.getInstance().getContent().getSpringsCount(); i++) {
-				if (Simulation.getInstance().getContent().getSpring(i) != null)
-					physicalShapes.add(Simulation.getInstance().getContent().getSpring(i).getShape());
+			for (int i = 0; i < Simulation.getInstance().content().getSpringsCount(); i++) {
+				if (Simulation.getInstance().content().getSpring(i) != null)
+					physicalShapes.add(Simulation.getInstance().content().getSpring(i).getShape());
 			}
 			shapes.addAll(physicalShapes);
 		}
@@ -169,8 +169,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			graphics.drawImage(tracksImage, 0, 0, null);
 		drawBoundariesOn(graphics);
 		drawShapes(graphics);
-		if (Simulation.getInstance().getContent().getReferenceParticle().getShape().isVisible())
-			Simulation.getInstance().getContent().getReferenceParticle().getShape().paintShape(graphics, this);
+		if (Simulation.getInstance().content().getReferenceParticle().getShape().isVisible())
+			Simulation.getInstance().content().getReferenceParticle().getShape().paintShape(graphics, this);
 		if (camera.getFollowing() != null) {
 			Element following = camera.getFollowing();
 			drawCrossOn(graphics, following.getCenterPoint().x, following.getCenterPoint().y, false);
@@ -307,7 +307,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private void drawBoundariesOn(Graphics2D targetG2d) {
 		targetG2d.setColor(Colors.BOUNDARIES);
 		targetG2d.setStroke(arrowStroke);
-		Boundaries b = Simulation.getInstance().getContent().getBoundaries();
+		Boundaries b = Simulation.getInstance().content().getBoundaries();
 		int x1 = CoordinateConverter.toScreenX(b.getLeft());
 		int y1 = CoordinateConverter.toScreenY(b.getUpper());
 		int w = CoordinateConverter.toScreen(b.getWidth());
@@ -449,8 +449,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	public void scaleToAllParticles() {
-		if (Simulation.getInstance().getContent().getParticlesCount() > 0) {
-			Boundaries b = Simulation.getInstance().getContent().getBoundaries();
+		if (Simulation.getInstance().content().getParticlesCount() > 0) {
+			Boundaries b = Simulation.getInstance().content().getBoundaries();
 			b.refreshContentBoundaries();
 			double h = b.getContentHeight();
 			double w = b.getContentWidth();
@@ -466,7 +466,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	public void scaleToBoundaries() {
-		Boundaries b = Simulation.getInstance().getContent().getBoundaries();
+		Boundaries b = Simulation.getInstance().content().getBoundaries();
 		if (!b.isUseLeft() || !b.isUseRight() || !b.isUseBottom())
 			scaleToAllParticles();
 		else {
@@ -498,7 +498,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		addMouseListener(mouseListener);
 		addMouseMotionListener(mouseListener);
 		addMouseWheelListener(mouseListener);
-		Simulation.getInstance().getContent().deselectAll();
+		Simulation.getInstance().content().deselectAll();
 		mouseMode = newMouseMode;
 		ConsoleWindow.println(GUIStrings.MOUSE_MODE + ": " + mouseMode);
 	}

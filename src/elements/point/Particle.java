@@ -115,7 +115,7 @@ public class Particle extends PointMass implements Cloneable, Element {
 	@Override
 	public void doMovement() {
 		super.doMovement();
-		Simulation.getInstance().getContent().getBoundaries().applyTo(this);
+		Simulation.getInstance().content().getBoundaries().applyTo(this);
 	}
 
 	@Override

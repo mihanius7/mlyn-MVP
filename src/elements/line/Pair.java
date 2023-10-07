@@ -1,10 +1,10 @@
 package elements.line;
 
 import static java.lang.Math.min;
+import static simulation.Simulation.getInstance;
 import static simulation.math.Functions.defineDistance;
 
 import elements.point.Particle;
-import simulation.Simulation;
 import simulation.math.Functions;
 
 public class Pair {
@@ -16,27 +16,21 @@ public class Pair {
 	protected double lastDistance;
 	protected double criticalShift; 
 	protected double angle;
-	private double timeStepReserve;
-
-	public Pair() {
-		p1 = null;
-		p2 = null;
-	}
+	protected double timeStepReserve;
 
 	public Pair(Particle i, Particle j) {
-		p1 = Simulation.getInstance().getContent().getParticleWithLesserIndex(i, j);
-		p2 = Simulation.getInstance().getContent().getParticleWithLargerIndex(i, j);
+		p1 = getInstance().content().particleWithLesserIndex(i, j);
+		p2 = getInstance().content().particleWithLargerIndex(i, j);
 		setupCriticalShift();
-		distance = lastDistance + criticalShift;
 	}
 
 	public Pair(int i, int j) {
-		this(Simulation.getInstance().getContent().getParticleWithLesserIndex(
-				Simulation.getInstance().getContent().getParticle(i),
-				Simulation.getInstance().getContent().getParticle(j)),
-				Simulation.getInstance().getContent().getParticleWithLargerIndex(
-						Simulation.getInstance().getContent().getParticle(i),
-						Simulation.getInstance().getContent().getParticle(j)));
+		this(getInstance().content().particleWithLesserIndex(
+				getInstance().content().particle(i),
+				getInstance().content().particle(j)),
+				getInstance().content().particleWithLargerIndex(
+						getInstance().content().particle(i),
+						getInstance().content().particle(j)));
 	}
 
 	private void setupCriticalShift() {
@@ -78,7 +72,7 @@ public class Pair {
 	}
 
 	protected final double defineVelocityProjection() {
-		return (lastDistance - distance) / Simulation.getInstance().timeStepController.getTimeStepSize();
+		return (lastDistance - distance) / getInstance().timeStepController.getTimeStepSize();
 	}
 
 	public double getCriticalShift() {
@@ -98,7 +92,7 @@ public class Pair {
 		distance = defineDistance(p1, p2);
 		calculateTimeStepReserve();
 		if (timeStepReserve < 1) {
-			Simulation.getInstance().timeStepController.setAlarm();
+			getInstance().timeStepController.setAlarm();
 		}
 	}
 }

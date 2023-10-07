@@ -1,6 +1,6 @@
 package elements.line;
 
-import simulation.Simulation;
+import static simulation.Simulation.getInstance;
 
 public class NeighborPair extends Pair {
 	
@@ -16,7 +16,7 @@ public class NeighborPair extends Pair {
 	@Override
 	public void doForce() {
 		super.doForce();
-		force = Simulation.getInstance().interactionProcessor.applyPairInteraction(p1, p2, distance);
+		force = getInstance().interactionProcessor.applyPairInteraction(p1, p2, distance);
 		if (Math.abs(force) > maxPairForceCandidate)
 			maxPairForceCandidate = Math.abs(force);
 	}

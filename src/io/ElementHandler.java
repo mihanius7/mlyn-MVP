@@ -88,7 +88,7 @@ public class ElementHandler implements ContentHandler {
 			c = Double.parseDouble(attrs.getValue("ac"));
 			l0 = Double.parseDouble(attrs.getValue("a0"));
 		} else if (qName.equalsIgnoreCase("boundaries")) {
-			Boundaries b = Simulation.getInstance().getContent().getBoundaries();
+			Boundaries b = Simulation.getInstance().content().getBoundaries();
 			b.setUseLeft(Boolean.parseBoolean(attrs.getValue("use_left")));
 			b.setUseRight(Boolean.parseBoolean(attrs.getValue("use_right")));
 			b.setUseUpper(Boolean.parseBoolean(attrs.getValue("use_upper")));
