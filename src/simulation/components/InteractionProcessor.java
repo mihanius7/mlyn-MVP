@@ -26,9 +26,9 @@ import simulation.Simulation;
 import simulation.SimulationContent;
 import simulation.math.Functions;
 import simulation.math.LennardJonesFunction;
-import simulation.math.PairForce;
 import simulation.math.TabulatedFunction;
 import simulation.math.TrajectoryIntegrator;
+import simulation.math.force.CentralForce;
 
 public class InteractionProcessor implements SimulationComponent {
 
@@ -40,7 +40,7 @@ public class InteractionProcessor implements SimulationComponent {
 	private ArrayList<Pair> pairs = new ArrayList<Pair>();
 
 	private static InteractionType interactionType = InteractionType.COULOMB;
-	private static PairForce pairForce;
+	private static CentralForce pairForce;
 	private static TabulatedFunction forceTable;
 	private static ParticleGroup particles;
 	private static SpringGroup springs;
@@ -70,7 +70,7 @@ public class InteractionProcessor implements SimulationComponent {
 	public InteractionProcessor(SimulationContent content) {
 		new Functions();
 		new TrajectoryIntegrator();
-		pairForce = new PairForce();
+		pairForce = new CentralForce();
 		externalForce = new ExternalForce(0, -g);
 		particles = content.getParticles();
 		springs = content.getSprings();

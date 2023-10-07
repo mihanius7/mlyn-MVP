@@ -10,15 +10,15 @@ import simulation.Simulation;
 import simulation.components.InteractionProcessor;
 import simulation.components.InteractionType;
 import simulation.math.Functions;
-import simulation.math.PairForce;
 import simulation.math.Vector;
+import simulation.math.force.CentralForce;
 
 public class HeatMap {
 
 	private int updateInterval = 3, resolution = 10, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
-	private PairForce pairForce;
+	private CentralForce pairForce;
 	private double range = 10000;
 	private double minValue, minField;
 	private double maxValue, maxField;
@@ -31,7 +31,7 @@ public class HeatMap {
 		height = h;
 		heatMapImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		heatMapCanvas = heatMapImage.createGraphics();
-		pairForce = new PairForce();
+		pairForce = new CentralForce();
 	}
 
 	public HeatMap(Viewport v) {
