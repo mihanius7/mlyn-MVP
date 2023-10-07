@@ -86,7 +86,7 @@ public class SimulationContent implements Cloneable {
 	}
 
 	public void setMaxSelectionNumber(int i) {
-		maxSelectedNumber = i;
+		maxSelectedNumber = i == 0 ? maxSelectedNumber = Integer.MAX_VALUE : i;
 	}
 
 	public void select(Particle p) {

@@ -133,7 +133,7 @@ public class TimeStepController implements SimulationComponent {
 	public void setSkipStepsNumber(int skip) {
 	}
 
-	public void setAlarm() {
+	public void alarm() {
 		timeStepAlarm = true;
 	}
 
