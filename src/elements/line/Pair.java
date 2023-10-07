@@ -34,7 +34,7 @@ public class Pair {
 	}
 
 	private void setupCriticalShift() {
-		criticalShift = 0.25 * min(p1.getRadius(), p2.getRadius());
+		criticalShift = 0.125 * min(p1.getRadius(), p2.getRadius());
 	}
 
 	private void calculateTimeStepReserve() {
@@ -92,7 +92,7 @@ public class Pair {
 		distance = defineDistance(p1, p2);
 		calculateTimeStepReserve();
 		if (timeStepReserve < 1) {
-			getInstance().timeStepController.setAlarm();
+			getInstance().timeStepController.alarm();
 		}
 	}
 }
