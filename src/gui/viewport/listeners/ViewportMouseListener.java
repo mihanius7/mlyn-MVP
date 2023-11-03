@@ -22,16 +22,16 @@ import static simulation.Simulation.getInstance;
 public class ViewportMouseListener implements MouseListener, MouseMotionListener, MouseWheelListener {
 
 	private static final int MAX_SPRINGS_FOR_LABELING_AFTER_SELECTION = 8;
-	
+
 	protected int x1;
 	protected int y1;
 	protected int x2;
 	protected int y2;
-	
+
 	protected Viewport viewport;
 	protected MainWindow mainWindow;
-	
-	private Meter meter;	
+
+	private Meter meter;
 	private Rectangle selectionRectangle;
 
 	public ViewportMouseListener(Viewport v, MainWindow w) {
@@ -94,9 +94,8 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 				viewport.setCrossY(CoordinateConverter.fromScreenY(y1));
 			}
 		} else if (viewport.getMouseMode() == MouseMode.SELECT_SPRING) {
-			s = Simulation.getInstance().content().getSprings().findNearestSpring(
-					CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1),
-					CoordinateConverter.fromScreen(5));
+			s = Simulation.getInstance().content().getSprings().findNearestSpring(CoordinateConverter.fromScreenX(x1),
+					CoordinateConverter.fromScreenY(y1), CoordinateConverter.fromScreen(5));
 			if (!arg0.isControlDown()) {
 				mainWindow.clearSelection();
 			}
@@ -127,15 +126,17 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		x2 = arg0.getX();
-		y2 = arg0.getY();
-		selectionRectangle.setX1(x1);
-		selectionRectangle.setY1(y1);
-		selectionRectangle.setX2(x2);
-		selectionRectangle.setY2(y2);
-		Simulation.getInstance().content().getParticles().selectInRect(CoordinateConverter.fromScreenX(x1),
-				CoordinateConverter.fromScreenY(y1), CoordinateConverter.fromScreenX(x2),
-				CoordinateConverter.fromScreenY(y2));
+		if (viewport.getMouseMode() == MouseMode.SELECT_PARTICLE) {
+			x2 = arg0.getX();
+			y2 = arg0.getY();
+			selectionRectangle.setX1(x1);
+			selectionRectangle.setY1(y1);
+			selectionRectangle.setX2(x2);
+			selectionRectangle.setY2(y2);
+			Simulation.getInstance().content().getParticles().selectInRect(CoordinateConverter.fromScreenX(x1),
+					CoordinateConverter.fromScreenY(y1), CoordinateConverter.fromScreenX(x2),
+					CoordinateConverter.fromScreenY(y2));
+		}
 	}
 
 	@Override
@@ -150,14 +151,16 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent arg0) {
-		double wh = arg0.getWheelRotation() * Camera.CAMERA_ZOOM_INCREMENT;
-		double scale = viewport.getScale();
-		if (wh > 0) {
-			viewport.setScale(scale / wh);
-		} else {
-			viewport.setScale(-scale * wh);
-			viewport.getCamera().addXWithRollingMean(CoordinateConverter.fromScreenX(arg0.getX()));
-			viewport.getCamera().addYWithRollingMean(CoordinateConverter.fromScreenY(arg0.getY()));
+		if (arg0.isControlDown()) {
+			double wh = arg0.getWheelRotation() * Camera.CAMERA_ZOOM_INCREMENT;
+			double scale = viewport.getScale();
+			if (wh > 0) {
+				viewport.setScale(scale / wh);
+			} else {
+				viewport.setScale(-scale * wh);
+				viewport.getCamera().addXWithRollingMean(CoordinateConverter.fromScreenX(arg0.getX()));
+				viewport.getCamera().addYWithRollingMean(CoordinateConverter.fromScreenY(arg0.getY()));
+			}
 		}
 		if (meter != null) {
 			viewport.removeShape(meter);

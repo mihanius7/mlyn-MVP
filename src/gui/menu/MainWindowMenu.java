@@ -11,7 +11,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.KeyStroke;
 
-import gui.MainWindow;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
 import gui.viewport.Viewport;
