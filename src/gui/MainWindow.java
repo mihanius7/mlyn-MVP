@@ -187,7 +187,7 @@ public class MainWindow extends JFrame {
 		if (simulationThread == null || !simulationThread.isAlive()) {
 			Simulation.getInstance().interactionProcessor.recalculateNeighborsNeeded();
 			simulationThread = new Thread(simulation);
-			simulationThread.setPriority(5);
+			simulationThread.setPriority(3);
 			simulationThread.start();
 		}
 	}

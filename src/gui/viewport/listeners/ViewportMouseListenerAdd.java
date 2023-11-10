@@ -12,7 +12,7 @@ import gui.viewport.Viewport;
 import simulation.Simulation;
 
 public class ViewportMouseListenerAdd extends ViewportMouseListener {
-
+	
 	public ViewportMouseListenerAdd(Viewport v, MainWindow w) {
 		super(v, w);
 		getInstance().content().setMaxSelectionNumber(1);
@@ -92,5 +92,10 @@ public class ViewportMouseListenerAdd extends ViewportMouseListener {
 			}
 			mainWindow.clearSelection();
 		}
+	}
+	
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+		
 	}
 }

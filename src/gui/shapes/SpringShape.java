@@ -51,7 +51,7 @@ public class SpringShape extends Shape {
 			drawZigzag(targetG2d, x1, y1, s.getNominalLength(), s.defineAngle());
 		}
 		if (drawLabel || s.isSelected()) {
-			String label = String.format("%.3f kg", s.getForceSmoothed() / PhysicalConstants.kgf);
+			String label = String.format("%.3f kgf", s.getForceSmoothed() / PhysicalConstants.kgf);
 			viewport.drawStringTilted(targetG2d, label, x1, y1, x2, y2);
 		}
 	}
