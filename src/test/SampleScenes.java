@@ -48,6 +48,7 @@ public class SampleScenes {
 		Simulation.getInstance().interactionProcessor.setUseExternalForces(false);
 		Boundaries b = Simulation.getInstance().content().getBoundaries();
 		b.setBounds(0, 9.2, 4.2, 0);
+		b.setUseAll(false);
 		Simulation.getInstance()
 				.add(new Particle(301 * cm, 90 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
 		Simulation.getInstance()
