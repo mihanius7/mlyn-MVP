@@ -83,10 +83,10 @@ public class ParticleShape extends Shape {
 			viewport.drawArrowLine(targetG2d, x, y, p.getVelocityVector(), Colors.ARROW_VELOCITY, "m/s");
 		if (drawTags || p.isSelected()) {
 			targetG2d.setFont(viewport.labelsFont.deriveFont(viewport.getCurrentFontSize()));
-			targetG2d.setColor(Colors.FONT_TAGS);
+			targetG2d.setColor(viewport.getMainFontColor());
 			float stringsInterval = (float) (0.08 * viewport.getCurrentFontSize());
 			targetG2d.setFont(viewport.labelsFont.deriveFont(viewport.getCurrentFontSize()));
-			targetG2d.setColor(Colors.FONT_TAGS);
+			targetG2d.setColor(viewport.getMainFontColor());
 			x = (int) (CoordinateConverter.toScreenX(p.getX()) + r * 1);
 			y = (int) (CoordinateConverter.toScreenY(p.getY()) - r * 2);
 			y -= viewport.labelsFont.getSize() * stringsInterval;
