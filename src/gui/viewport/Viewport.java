@@ -62,7 +62,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private boolean drawInfo = true;
 	public boolean useGrid = true;
 	private boolean drawTracks = false;
-	private boolean drawHeatMap = false;
+	private boolean drawHeatMap = true;
 	public Font labelsFont;
 	private Font mainFont;
 	private int fps = 0;
@@ -271,16 +271,20 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	private void drawInfoStringsOn(Graphics2D targetG2d) {
-		targetG2d.setColor(drawHeatMap ? Color.WHITE : Colors.FONT_MAIN);
+		targetG2d.setColor(getMainFontColor());
 		targetG2d.setFont(mainFont);
 		targetG2d.drawString(infoString1, 2, 12);
 		targetG2d.drawString(infoString2, 2, 28);
+	}
+	
+	public Color getMainFontColor() {
+		return drawHeatMap ? Color.WHITE : Colors.FONT_MAIN;
 	}
 
 	public void drawStringTilted(Graphics2D targetG2d, String string, int x1, int y1, int x2, int y2) {
 		double alpha = Math.atan2(x2 - x1, y1 - y2) + Math.PI / 2;
 		targetG2d.setFont(labelsFont.deriveFont(getCurrentFontSize()));
-		targetG2d.setColor(Colors.FONT_TAGS);
+		targetG2d.setColor(getMainFontColor());
 		int xc = Math.min(x1, x2) + (Math.max(x1, x2) - Math.min(x1, x2)) / 2;
 		int yc = Math.min(y1, y2) + (Math.max(y1, y2) - Math.min(y1, y2)) / 2;
 		alpha = calculation.Functions.fitAbsAngleRad(alpha);
@@ -328,6 +332,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.setColor(Colors.CROSS);
 		targetG2d.drawLine(xc, yc + 8, xc, yc - 8);
 		targetG2d.drawLine(xc - 8, yc, xc + 8, yc);
+		targetG2d.setColor(getMainFontColor());
 		targetG2d.setFont(labelsFont);
 		targetG2d.setColor(Colors.CROSS);
 		if (drawTag)
@@ -444,7 +449,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		return drawHeatMap;
 	}
 
-	void initHeatMapImage() {
+	public void initHeatMapImage() {
 		heatMap = new HeatMap(this);
 	}
 

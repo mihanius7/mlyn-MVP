@@ -1,5 +1,7 @@
 package gui.viewport;
 
+import static simulation.Simulation.getInstance;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
@@ -7,22 +9,21 @@ import java.awt.image.BufferedImage;
 
 import calculation.Functions;
 import calculation.Vector;
+import calculation.constants.PhysicalConstants;
 import calculation.pairforce.PairForce;
 import calculation.pairforce.PairForceFactory;
 import elements.point.Particle;
 import simulation.Simulation;
-import simulation.components.InteractionProcessor;
 import simulation.components.InteractionType;
-
-import static simulation.Simulation.getInstance;
 
 public class HeatMap {
 
+	private static final int AUTORANGE_VALUE_DIVIDER = 2;
 	private int updateInterval = 3, resolution = 10, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
 	private PairForce pairForce;
-	private double range = 10000;
+	private double range = 1000;
 	private double minValue, minField;
 	private double maxValue, maxField;
 	private boolean isGravityFieldMap;
@@ -54,7 +55,7 @@ public class HeatMap {
 			isGravityFieldMap = false;
 		int ui = (Simulation.getInstance().isActive()) ? updateInterval : 15;
 		if (updatesNumber >= ui) {
-			defineRange();
+			adjustRange();
 			updatesNumber = 0;
 			int wSteps = (int) (width / resolution);
 			int hSteps = (int) (height / resolution);
@@ -65,16 +66,16 @@ public class HeatMap {
 					double yc = (CoordinateConverter.fromScreenY(stepY * resolution)
 							+ CoordinateConverter.fromScreenY((stepY + 1) * resolution)) / 2;
 					Vector fieldVector = defineField(xc, yc);
-					double field = Math.log10(fieldVector.norm() + 1);
-					heatMapCanvas.setColor(defineColor(field, range));
+					double fieldValue = fieldVector.X();
+					heatMapCanvas.setColor(defineColor(fieldValue, range));
 					heatMapCanvas.fill(
 							new Rectangle2D.Double(stepX * resolution, stepY * resolution, resolution, resolution));
 //					viewport.drawArrowLine(heatMapCanvas, (int) (stepX + 0.5) * resolution, (int) (stepY + 0.5) * resolution,
 //							fieldVector.multiply(0.0005), Color.BLACK, "");
-					if (field > maxValue)
-						maxValue = field;
-					else if (field < minValue)
-						minValue = field;
+					if (fieldValue > maxValue)
+						maxValue = fieldValue;
+					else if (fieldValue < minValue)
+						minValue = fieldValue;
 				}
 			}
 			minField = minValue;
@@ -82,11 +83,11 @@ public class HeatMap {
 		}
 	}
 
-	private void defineRange() {
+	private void adjustRange() {
 		if (isAdaptiveRange) {
 			minValue = Double.MAX_VALUE;
 			maxValue = Double.MIN_VALUE;
-			range = (Math.max(minField, maxField) - Math.min(minField, maxField)) / 64;
+			range = (Math.max(minField, maxField) - Math.min(minField, maxField)) / AUTORANGE_VALUE_DIVIDER;
 		}
 	}
 
@@ -99,9 +100,11 @@ public class HeatMap {
 		while (Simulation.getInstance().content().particle(pNumber) != null) {
 			testParticle = Simulation.getInstance().content().particle(pNumber);
 			distance = Functions.defineDistance(testParticle, x, y);
-			dF = pairForce.calculatePotential(testParticle, distance);
-			field.addToX(dF * (x - testParticle.getX()) / distance);
-			field.addToY(dF * (y - testParticle.getY()) / distance);
+			if (distance >= 4 * PhysicalConstants.cm) {
+				dF = pairForce.calculatePotential(testParticle, distance);
+				field.addToX(dF * (x - testParticle.getX()) / distance);
+				field.addToY(dF * (y - testParticle.getY()) / distance);
+			}
 			pNumber++;
 		}
 		return field;

@@ -65,7 +65,7 @@ public class MainWindow extends JFrame {
 		createButtons();
 		createDialogs();
 
-		changeLanguage(askForLanguage());
+		changeLanguage(Language.ENGLISH);
 		
 		consoleWindow = new ConsoleWindow();
 
@@ -166,6 +166,7 @@ public class MainWindow extends JFrame {
 	void resizeGUI() {
 		viewport.setBounds(0, 0, getWidth() - 14, getHeight() - 76 - buttonStart.getHeight());
 		viewport.initTracksImage();
+		viewport.initHeatMapImage();
 		int buttonsY = getHeight() - 92;
 		buttonStart.setBounds(getWidth() - 215, buttonsY, 192, 24);
 		labelTimeStep.setBounds(1, buttonsY + 4, 89, 16);
