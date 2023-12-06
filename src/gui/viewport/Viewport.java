@@ -42,9 +42,9 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public static final double ARROW_LENGTH_COEFFICIENT = 0.25;
 	public static final int REFRESH_MESSAGES_INTERVAL = 500;
 	public final int ARROW_DRAWING_MIN_THRESHOLD = 8;
-	public final float LABELS_MIN_FONT_SIZE = 10;
+	public final float LABELS_MIN_FONT_SIZE = 8;
 	public final int LABELS_FONT_SIZE = 12;
-	public final float LABELS_MAX_FONT_SIZE = 18;
+	public final float LABELS_MAX_FONT_SIZE = 16;
 	public final static double DEFAULT_GRID_SIZE = 20 * cm;
 	public final int FRAME_PAINT_DELAY = 20;
 	public final int AUTOSCALE_MARGIN = 75;
@@ -62,7 +62,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private boolean drawInfo = true;
 	public boolean useGrid = true;
 	private boolean drawTracks = false;
-	private boolean drawHeatMap = true;
+	private boolean drawHeatMap = false;
 	public Font labelsFont;
 	private Font mainFont;
 	private int fps = 0;
