@@ -52,18 +52,21 @@ public class MainWindow extends JFrame {
 
 	public MainWindow() {
 		instance = this;
+		
+		createButtons();
+		createDialogs();
+		
 		simulation = new Simulation();
+		
 		viewport = new Viewport(viewportInitWidth, viewportInitHeight, this);
 		viewport.setBackground(UIManager.getColor("Button.light"));
 		viewport.setBorder(null);
 		listener = new MainWindowEvent(this);
 		getContentPane().setLayout(null);
 		getContentPane().add(viewport);
-
+		
 		menuBar = new MainWindowMenu(viewport);
 		setJMenuBar(menuBar);
-		createButtons();
-		createDialogs();
 
 		changeLanguage(Language.ENGLISH);
 		
@@ -116,12 +119,12 @@ public class MainWindow extends JFrame {
 
 		getContentPane().add(labelTimeStep);
 
-		buttonDecrease = new JButton("<<");
+		buttonDecrease = new JButton("+");
 		buttonDecrease.addActionListener(listener);
 
 		getContentPane().add(buttonDecrease);
 
-		buttonIncrease = new JButton(">>");
+		buttonIncrease = new JButton("-");
 		buttonIncrease.addActionListener(listener);
 
 		getContentPane().add(buttonIncrease);
@@ -164,7 +167,7 @@ public class MainWindow extends JFrame {
 	}
 
 	void resizeGUI() {
-		viewport.setBounds(0, 0, getWidth() - 14, getHeight() - 76 - buttonStart.getHeight());
+		viewport.setBounds(0, 0, getWidth() - 14, getHeight() - 100 - buttonStart.getHeight());
 		viewport.initTracksImage();
 		viewport.initHeatMapImage();
 		int buttonsY = getHeight() - 92;
