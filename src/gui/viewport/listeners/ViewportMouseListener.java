@@ -10,6 +10,7 @@ import elements.group.SpringGroup;
 import elements.line.Spring;
 import elements.point.Particle;
 import gui.MainWindow;
+import gui.shapes.Crosshair;
 import gui.shapes.Meter;
 import gui.shapes.Rectangle;
 import gui.viewport.Camera;
@@ -33,15 +34,20 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 
 	private Meter meter;
 	private Rectangle selectionRectangle;
+	private Crosshair crosshair;
 
 	public ViewportMouseListener(Viewport v, MainWindow w) {
 		viewport = v;
 		mainWindow = w;
+		crosshair = new Crosshair();
+		v.addShape(crosshair);
 		getInstance().content().setMaxSelectionNumber(0);
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
+		crosshair.setX(arg0.getX());
+		crosshair.setY(arg0.getY());
 	}
 
 	@Override
