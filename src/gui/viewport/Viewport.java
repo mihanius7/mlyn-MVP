@@ -27,6 +27,7 @@ import elements.point.PointMass;
 import gui.ConsoleWindow;
 import gui.MainWindow;
 import gui.lang.GUIStrings;
+import gui.shapes.Crosshair;
 import gui.shapes.Shape;
 import gui.shapes.SpringShape;
 import gui.viewport.listeners.MouseMode;
@@ -38,6 +39,7 @@ import simulation.Simulation;
 
 public class Viewport extends JPanel implements ActionListener, Runnable {
 
+	private static final int CROSS_SIZE_PX = 8;
 	private static final int SCALE_LINE_MARGIN = 24;
 	public static final double ARROW_LENGTH_COEFFICIENT = 0.25;
 	public static final int REFRESH_MESSAGES_INTERVAL = 500;
@@ -56,6 +58,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	private static ArrayList<Shape> shapes;
 	private static ArrayList<Shape> physicalShapes;
+
+	public Crosshair crosshair;
 
 	private float currentFontSize = LABELS_FONT_SIZE;
 
@@ -82,8 +86,10 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private MainWindow mainWindow;
 
 	public Viewport(int initW, int initH, MainWindow mw) {
-		physicalShapes = new ArrayList<Shape>();
 		shapes = new ArrayList<Shape>();
+		physicalShapes = new ArrayList<Shape>();
+		crosshair = new Crosshair();
+		shapes.add(crosshair);
 		mainWindow = mw;
 		camera = new Camera(this);
 		new CoordinateConverter(this);
@@ -142,11 +148,20 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	public synchronized boolean addShape(Shape s) {
-		return shapes.add(s);
+		boolean result = false;
+		if (!shapes.contains(s)) {
+			shapes.add(s);
+			result = true;
+		}
+		return result;
 	}
 
 	public synchronized boolean removeShape(Shape s) {
 		return shapes.remove(s);
+	}
+
+	public synchronized boolean isContainsShape(Shape s) {
+		return shapes.contains(s);
 	}
 
 	@Override
@@ -276,7 +291,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.drawString(infoString1, 2, 12);
 		targetG2d.drawString(infoString2, 2, 28);
 	}
-	
+
 	public Color getMainFontColor() {
 		return drawHeatMap ? Color.WHITE : Colors.FONT_MAIN;
 	}
@@ -330,8 +345,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		int xc = CoordinateConverter.toScreenX(x);
 		int yc = CoordinateConverter.toScreenY(y);
 		targetG2d.setColor(Colors.CROSS);
-		targetG2d.drawLine(xc, yc + 8, xc, yc - 8);
-		targetG2d.drawLine(xc - 8, yc, xc + 8, yc);
+		targetG2d.drawLine(xc, yc + CROSS_SIZE_PX, xc, yc - CROSS_SIZE_PX);
+		targetG2d.drawLine(xc - CROSS_SIZE_PX, yc, xc + CROSS_SIZE_PX, yc);
 		targetG2d.setColor(getMainFontColor());
 		targetG2d.setFont(labelsFont);
 		targetG2d.setColor(Colors.CROSS);
@@ -450,7 +465,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	public void initHeatMapImage() {
-		heatMap = new HeatMap(this);
+		if (drawHeatMap)
+			heatMap = new HeatMap(this);
 	}
 
 	public void scaleToAllParticles() {

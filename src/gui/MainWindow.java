@@ -52,27 +52,22 @@ public class MainWindow extends JFrame {
 
 	public MainWindow() {
 		instance = this;
-		
-		createButtons();
-		createDialogs();
-		
 		simulation = new Simulation();
-		
 		viewport = new Viewport(viewportInitWidth, viewportInitHeight, this);
 		viewport.setBackground(UIManager.getColor("Button.light"));
 		viewport.setBorder(null);
 		listener = new MainWindowEvent(this);
 		getContentPane().setLayout(null);
 		getContentPane().add(viewport);
-		
+
 		menuBar = new MainWindowMenu(viewport);
 		setJMenuBar(menuBar);
+		createButtons();
+		createDialogs();
 
 		changeLanguage(Language.ENGLISH);
 		
 		consoleWindow = new ConsoleWindow();
-
-		setFocusTo(Simulation.getInstance().content().getReferenceParticle());
 
 		setResizable(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -167,7 +162,7 @@ public class MainWindow extends JFrame {
 	}
 
 	void resizeGUI() {
-		viewport.setBounds(0, 0, getWidth() - 14, getHeight() - 100 - buttonStart.getHeight());
+		viewport.setBounds(0, 0, getWidth() - 14, getHeight() - 76 - buttonStart.getHeight());
 		viewport.initTracksImage();
 		viewport.initHeatMapImage();
 		int buttonsY = getHeight() - 92;

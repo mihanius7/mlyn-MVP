@@ -93,9 +93,5 @@ public class ViewportMouseListenerAdd extends ViewportMouseListener {
 			mainWindow.clearSelection();
 		}
 	}
-	
-	@Override
-	public void mouseMoved(MouseEvent arg0) {
-		
-	}
+
 }

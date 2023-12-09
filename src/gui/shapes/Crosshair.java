@@ -5,10 +5,13 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import elements.Element;
+import gui.viewport.CoordinateConverter;
 import gui.viewport.Viewport;
 
 public class Crosshair extends Shape {
 	
+	private static final int COORDINATES_MARGIN_PX = 8;
+
 	public static final Color CROSSHAIR = new Color(128, 128, 128);
 	
 	private int x;
@@ -20,6 +23,10 @@ public class Crosshair extends Shape {
 		g.setStroke(new BasicStroke(2.0f));
 		g.drawLine(x, 0, x, viewport.getHeight());
 		g.drawLine(0, y, viewport.getWidth(), y);
+		g.setColor(viewport.getMainFontColor());
+		g.drawString(String.format("%.2f m", CoordinateConverter.fromScreenX(x)), x + COORDINATES_MARGIN_PX, viewport.getHeight() - COORDINATES_MARGIN_PX);
+		g.drawString(String.format("%.2f m", CoordinateConverter.fromScreenY(y)), COORDINATES_MARGIN_PX, y - COORDINATES_MARGIN_PX);
+
 	}
 
 	@Override
