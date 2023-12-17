@@ -12,6 +12,7 @@ import java.awt.TexturePaint;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -64,9 +65,10 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private float currentFontSize = LABELS_FONT_SIZE;
 
 	private boolean drawInfo = true;
-	public boolean useGrid = true;
+	public boolean drawGrid = true;
 	private boolean drawTracks = false;
 	private boolean drawHeatMap = false;
+	private boolean drawCrosshair = false;
 	public Font labelsFont;
 	private Font mainFont;
 	private int fps = 0;
@@ -79,7 +81,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private String infoString1 = "N/A", infoString2 = "N/A";
 	private Timer refreshLabelsTimer;
 	private BufferedImage tracksImage;
-	private static HeatMap heatMap;
+	public HeatMap heatMap;
 	private BasicStroke arrowStroke = new BasicStroke(2f);
 	public BasicStroke crossStroke = new BasicStroke(3f);
 	private MouseMode mouseMode;
@@ -88,8 +90,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public Viewport(int initW, int initH, MainWindow mw) {
 		shapes = new ArrayList<Shape>();
 		physicalShapes = new ArrayList<Shape>();
-		crosshair = new Crosshair();
-		shapes.add(crosshair);
 		mainWindow = mw;
 		camera = new Camera(this);
 		new CoordinateConverter(this);
@@ -99,7 +99,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		setBounds(0, 0, initW, initH);
 		setDoubleBuffered(true);
 		initTracksImage();
-		initHeatMapImage();
+		setDrawFields(true);
 		mainFont = new Font("Tahoma", Font.TRUETYPE_FONT, 14);
 		labelsFont = new Font("Arial", Font.TRUETYPE_FONT, LABELS_FONT_SIZE);
 		refreshLabelsTimer = new Timer(REFRESH_MESSAGES_INTERVAL, this);
@@ -243,7 +243,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	void drawBackgroundOn(Graphics2D targetG2d) {
-		if (useGrid) {
+		if (drawGrid) {
 			double gridStep = scale * gridSize;
 			int gridMinorStep = (int) gridStep;
 			if (gridStep >= 15 && gridStep < getWidth() * 2) {
@@ -458,6 +458,8 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	public void setDrawFields(boolean b) {
 		drawHeatMap = b;
+		initHeatMapImage();
+		setDrawCrosshair(b);
 	}
 
 	public boolean isDrawFields() {
@@ -467,6 +469,17 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public void initHeatMapImage() {
 		if (drawHeatMap)
 			heatMap = new HeatMap(this);
+	}
+
+	public void setDrawCrosshair(boolean b) {
+		if (b) {
+			crosshair = new Crosshair();
+			shapes.add(crosshair);
+		} else {
+			shapes.remove(crosshair);
+			crosshair = null;
+		}
+		drawCrosshair = b;
 	}
 
 	public void scaleToAllParticles() {
@@ -551,5 +564,12 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		scale = 1e-6;
 		setCrossX(0);
 		setCrossY(0);
+	}
+
+	public void updateCrosshair(int x, int y) {
+		if (crosshair != null) {
+			crosshair.setX(x);
+			crosshair.setY(y);
+		}
 	}
 }

@@ -91,7 +91,7 @@ public class HeatMap {
 		}
 	}
 
-	private Vector defineField(double x, double y) {
+	public Vector defineField(double x, double y) {
 		Particle testParticle;
 		Vector field = new Vector();
 		double distance;
@@ -108,6 +108,10 @@ public class HeatMap {
 			pNumber++;
 		}
 		return field;
+	}
+	
+	public Vector defineField(int x, int y) {
+		return defineField(CoordinateConverter.fromScreenX(x), CoordinateConverter.fromScreenY(y));
 	}
 
 	public Color defineColor(double value, double range) {
