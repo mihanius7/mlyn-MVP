@@ -11,8 +11,8 @@ import gui.viewport.CoordinateConverter;
 import gui.viewport.Viewport;
 import simulation.Simulation;
 
-public class ViewportMouseListenerAct extends ViewportMouseListener{
-	
+public class ViewportMouseListenerAct extends ViewportMouseListener {
+
 	protected int radiusX;
 	protected int radiusY;
 
@@ -42,8 +42,7 @@ public class ViewportMouseListenerAct extends ViewportMouseListener{
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		x2 = arg0.getX();
-		y2 = arg0.getY();
+		super.mouseDragged(arg0);
 		if (viewport.getMouseMode() == MouseMode.PARTICLE_ACT_DISPLACE
 				&& Simulation.getInstance().content().getSelectedParticle(0) != null) {
 			if (!Simulation.getInstance().isActive()) {
@@ -51,12 +50,14 @@ public class ViewportMouseListenerAct extends ViewportMouseListener{
 						.setX(CoordinateConverter.fromScreenX(x2 + radiusX));
 				Simulation.getInstance().content().getSelectedParticle(0)
 						.setY(CoordinateConverter.fromScreenY(y2 + radiusY));
-				if (viewport.useGrid)
+				if (arg0.isControlDown())
 					Simulation.getInstance().content().getSelectedParticle(0).snapToGrid(viewport.getGridSize());
 				Simulation.getInstance().perfomStep(2, false);
 			} else {
 				Simulation.getInstance().interactionProcessor.setParticleTargetXY(new Point2D.Double(
 						CoordinateConverter.fromScreenX(x2 + radiusX), CoordinateConverter.fromScreenY(y2 + radiusY)));
+				if (arg0.isControlDown())
+					Simulation.getInstance().content().getSelectedParticle(0).snapToGrid(viewport.getGridSize());
 				Simulation.getInstance().interactionProcessor.setMoveToMouse(true);
 			}
 		} else if (viewport.getMouseMode() == MouseMode.PARTICLE_ACT_FORCE
@@ -74,8 +75,8 @@ public class ViewportMouseListenerAct extends ViewportMouseListener{
 		Simulation.getInstance().interactionProcessor.setMoveToMouse(false);
 		Simulation.getInstance().interactionProcessor.setAccelerateByMouse(false);
 		radiusX = 0;
-		radiusY = 0;		
+		radiusY = 0;
 		mainWindow.clearSelection();
-	}	
+	}
 
 }

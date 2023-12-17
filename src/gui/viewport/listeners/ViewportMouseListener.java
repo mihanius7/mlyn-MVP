@@ -44,12 +44,7 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
-		updateCrosshair(arg0);
-	}
-
-	private void updateCrosshair(MouseEvent arg0) {
-		viewport.crosshair.setX(arg0.getX());
-		viewport.crosshair.setY(arg0.getY());
+		viewport.updateCrosshair(arg0.getX(), arg0.getY());
 	}
 
 	@Override
@@ -134,10 +129,10 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		updateCrosshair(arg0);
+		viewport.updateCrosshair(arg0.getX(), arg0.getY());
+		x2 = arg0.getX();
+		y2 = arg0.getY();
 		if (viewport.getMouseMode() == MouseMode.SELECT_PARTICLE) {
-			x2 = arg0.getX();
-			y2 = arg0.getY();
 			selectionRectangle.setX1(x1);
 			selectionRectangle.setY1(y1);
 			selectionRectangle.setX2(x2);

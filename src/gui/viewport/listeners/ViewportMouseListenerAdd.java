@@ -12,7 +12,7 @@ import gui.viewport.Viewport;
 import simulation.Simulation;
 
 public class ViewportMouseListenerAdd extends ViewportMouseListener {
-	
+
 	public ViewportMouseListenerAdd(Viewport v, MainWindow w) {
 		super(v, w);
 		getInstance().content().setMaxSelectionNumber(1);
@@ -31,7 +31,7 @@ public class ViewportMouseListenerAdd extends ViewportMouseListener {
 			Simulation.getInstance().content().getReferenceParticle().setX(CoordinateConverter.fromScreenX(x1));
 			Simulation.getInstance().content().getReferenceParticle().setY(CoordinateConverter.fromScreenY(y1));
 			Simulation.getInstance();
-			if (viewport.useGrid && !Simulation.getInstance().isActive())
+			if (arg0.isControlDown())
 				Simulation.getInstance().content().getReferenceParticle().snapToGrid(viewport.getGridSize());
 			Simulation.getInstance().content().getReferenceParticle().getShape().setVisible(true);
 			mainWindow.clearSelection();
@@ -46,14 +46,13 @@ public class ViewportMouseListenerAdd extends ViewportMouseListener {
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		x2 = arg0.getX();
-		y2 = arg0.getY();
+		super.mouseDragged(arg0);
 		if (viewport.getMouseMode() == MouseMode.ADD_PARTICLE
 				&& Simulation.getInstance().content().getReferenceParticle().getShape().isVisible()) {
 			Simulation.getInstance().content().getReferenceParticle().setX(CoordinateConverter.fromScreenX(x2));
 			Simulation.getInstance().content().getReferenceParticle().setY(CoordinateConverter.fromScreenY(y2));
 			Simulation.getInstance();
-			if (viewport.useGrid && !Simulation.getInstance().isActive())
+			if (arg0.isControlDown())
 				Simulation.getInstance().content().getReferenceParticle().snapToGrid(viewport.getGridSize());
 		}
 	}
@@ -67,6 +66,8 @@ public class ViewportMouseListenerAdd extends ViewportMouseListener {
 			Particle newP = new Particle(refP.getX(), refP.getY(), refP);
 			Simulation.getInstance().add(newP);
 			Simulation.getInstance().content().select(newP);
+			if (!Simulation.getInstance().isActive())
+				Simulation.getInstance().perfomStep(2, false);
 			mainWindow.setFocusTo(newP);
 		} else if (viewport.getMouseMode() == MouseMode.ADD_SPRING
 				&& Simulation.getInstance().content().getSelectedParticles().size() > 0) {
@@ -80,7 +81,7 @@ public class ViewportMouseListenerAdd extends ViewportMouseListener {
 				Simulation.getInstance().add(p2);
 				p2.setX(CoordinateConverter.fromScreenX(x2));
 				p2.setY(CoordinateConverter.fromScreenY(y2));
-				if (viewport.useGrid)
+				if (viewport.drawGrid)
 					p2.snapToGrid(viewport.getGridSize());
 				p = p2;
 			}
