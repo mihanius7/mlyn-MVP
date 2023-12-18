@@ -27,6 +27,7 @@ import elements.Element;
 import elements.point.PointMass;
 import gui.ConsoleWindow;
 import gui.MainWindow;
+import gui.heatmap.HeatMap;
 import gui.lang.GUIStrings;
 import gui.shapes.Crosshair;
 import gui.shapes.Shape;
