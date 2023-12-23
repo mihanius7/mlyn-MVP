@@ -22,7 +22,6 @@ public class Camera {
 
 	public void setX(double cameraX) {
 		x = cameraX;
-		viewport.clearTracksImage();
 	}
 
 	public double getY() {
@@ -31,7 +30,6 @@ public class Camera {
 
 	public void setY(double cameraY) {
 		y = cameraY;
-		viewport.clearTracksImage();
 	}
 
 	public Element getFollowing() {
@@ -40,7 +38,7 @@ public class Camera {
 
 	public void setFollowing(Element element) {
 		this.following = element;
-		if (following!= null) {
+		if (following != null) {
 			viewport.initBackgroundImage();
 		}
 	}
@@ -57,18 +55,24 @@ public class Camera {
 		return vx;
 	}
 
-	public void setVx(double vx) {
-		this.vx = vx;
-		viewport.clearTracksImage();
+	public void setVx(double newVx) {
+		this.vx = newVx;
+		if (newVx == 0) {
+			viewport.clearTracksImage();
+			viewport.initBackgroundImage();
+		}
 	}
 
 	public double getVy() {
 		return vy;
 	}
 
-	public void setVy(double vy) {
-		this.vy = vy;
-		viewport.clearTracksImage();
+	public void setVy(double newVy) {
+		this.vy = newVy;
+		if (newVy == 0) {
+			viewport.clearTracksImage();
+			viewport.initBackgroundImage();
+		}
 	}
 
 	public void follow() {
