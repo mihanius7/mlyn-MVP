@@ -68,6 +68,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private boolean drawInfo = true;
 	public boolean drawGrid = true;
 	private boolean drawTracks = false;
+	private boolean firstTracksDrawing = true;
 	private boolean drawHeatMap = false;
 	private boolean drawCrosshair = false;
 	public Font labelsFont;
@@ -98,12 +99,11 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		setBounds(0, 0, initW, initH);
-		setDoubleBuffered(true);
-		initTracksImage();
-		setDrawFields(true);
+		setDoubleBuffered(false);
 		mainFont = new Font("Tahoma", Font.TRUETYPE_FONT, 14);
 		labelsFont = new Font("Arial", Font.TRUETYPE_FONT, LABELS_FONT_SIZE);
 		refreshLabelsTimer = new Timer(REFRESH_MESSAGES_INTERVAL, this);
+		reset();
 	}
 
 	@Override
@@ -273,7 +273,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		tracksCanvas.setStroke(new BasicStroke(2f));
 		tracksCanvas.setRenderingHints(rh);
 		clearTracksImage();
-
 	}
 
 	private void drawShapes(Graphics2D targetG2d) {
@@ -284,6 +283,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 				shape.paintShape(targetG2d, this);
 			}
 		}
+		firstTracksDrawing = false;
 	}
 
 	private void drawInfoStringsOn(Graphics2D targetG2d) {
@@ -422,6 +422,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	public void clearTracksImage() {
 		if (drawTracks) {
+			firstTracksDrawing = true;
 			scale = targetScale;
 			drawBackgroundOn((Graphics2D) tracksImage.getGraphics());
 		}
@@ -441,7 +442,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	public void setGridSize(double size) {
 		if (size < 0)
-			size = 20 * cm;
+			size = 5 * cm;
 		gridSize = size;
 		MainWindow.getInstance().refreshGUIControls();
 		ConsoleWindow.println(String.format(GUIStrings.GRID_SIZE + " %.2e m", gridSize));
@@ -453,7 +454,9 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	public void setDrawTracks(boolean b) {
 		drawTracks = b;
-		clearTracksImage();
+		if (drawTracks) {
+			initTracksImage();
+		}
 		ConsoleWindow.println(GUIStrings.DRAW_TRACKS + ": " + b);
 	}
 
@@ -566,6 +569,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		scale = 1e-6;
 		setCrossX(0);
 		setCrossY(0);
+		setDrawFields(false);
 	}
 
 	public void updateCrosshair(int x, int y) {
@@ -573,5 +577,9 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			crosshair.setX(x);
 			crosshair.setY(y);
 		}
+	}
+
+	public boolean isFirstTracksDrawing() {
+		return firstTracksDrawing;
 	}
 }

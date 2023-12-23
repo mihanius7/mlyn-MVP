@@ -1,7 +1,6 @@
 /gui/
-/evaluation/
-/main/
+/calculation/
 /elements/
-/file/
+/io/
 /simulation/
-/constants/
+/test/
