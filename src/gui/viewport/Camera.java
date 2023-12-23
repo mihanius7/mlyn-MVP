@@ -7,11 +7,11 @@ public class Camera {
 	public static final int CAMERA_WATCH_SMOOTH = 12;
 	public static final int CAMERA_KEYBOARD_SPEED = 15;
 	public static final float CAMERA_ZOOM_INCREMENT = 1.25f;
-	double x, y; 
+	double x, y;
 	double vx = 0, vy = 0;
 	private Element following;
 	private Viewport viewport;
-	
+
 	public Camera(Viewport v) {
 		this.viewport = v;
 	}
@@ -22,7 +22,6 @@ public class Camera {
 
 	public void setX(double cameraX) {
 		x = cameraX;
-		viewport.clearTracksImage();
 	}
 
 	public double getY() {
@@ -31,7 +30,6 @@ public class Camera {
 
 	public void setY(double cameraY) {
 		y = cameraY;
-		viewport.clearTracksImage();
 	}
 
 	public Element getFollowing() {
@@ -40,6 +38,9 @@ public class Camera {
 
 	public void setFollowing(Element element) {
 		this.following = element;
+		if (following != null) {
+			viewport.initBackgroundImage();
+		}
 	}
 
 	public void addXWithRollingMean(double dx) {
@@ -54,18 +55,24 @@ public class Camera {
 		return vx;
 	}
 
-	public void setVx(double vx) {
-		this.vx = vx;
-		viewport.clearTracksImage();
+	public void setVx(double newVx) {
+		this.vx = newVx;
+		if (newVx == 0) {
+			viewport.clearTracksImage();
+			viewport.initBackgroundImage();
+		}
 	}
 
 	public double getVy() {
 		return vy;
 	}
 
-	public void setVy(double vy) {
-		this.vy = vy;
-		viewport.clearTracksImage();
+	public void setVy(double newVy) {
+		this.vy = newVy;
+		if (newVy == 0) {
+			viewport.clearTracksImage();
+			viewport.initBackgroundImage();
+		}
 	}
 
 	public void follow() {
@@ -78,6 +85,10 @@ public class Camera {
 			x += vx;
 			y += vy;
 		}
+	}
+
+	public boolean isFollowing() {
+		return following != null;
 	}
 
 }

@@ -69,8 +69,6 @@ public class MainWindow extends JFrame {
 		
 		consoleWindow = new ConsoleWindow();
 
-		setFocusTo(Simulation.getInstance().content().getReferenceParticle());
-
 		setResizable(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -116,12 +114,12 @@ public class MainWindow extends JFrame {
 
 		getContentPane().add(labelTimeStep);
 
-		buttonDecrease = new JButton("<<");
+		buttonDecrease = new JButton("-");
 		buttonDecrease.addActionListener(listener);
 
 		getContentPane().add(buttonDecrease);
 
-		buttonIncrease = new JButton(">>");
+		buttonIncrease = new JButton("+");
 		buttonIncrease.addActionListener(listener);
 
 		getContentPane().add(buttonIncrease);
@@ -165,14 +163,15 @@ public class MainWindow extends JFrame {
 
 	void resizeGUI() {
 		viewport.setBounds(0, 0, getWidth() - 14, getHeight() - 76 - buttonStart.getHeight());
+		viewport.initBackgroundImage();
 		viewport.initTracksImage();
 		viewport.initHeatMapImage();
 		int buttonsY = getHeight() - 92;
 		buttonStart.setBounds(getWidth() - 215, buttonsY, 192, 24);
 		labelTimeStep.setBounds(1, buttonsY + 4, 89, 16);
-		buttonDecrease.setBounds(228, buttonsY, 48, 24);
-		buttonIncrease.setBounds(288, buttonsY, 48, 24);
-		buttonRealScale.setBounds(348, buttonsY, 56, 24);
+		buttonDecrease.setBounds(223, buttonsY, 56, 24);
+		buttonIncrease.setBounds(286, buttonsY, 56, 24);
+		buttonRealScale.setBounds(348, buttonsY, 64, 24);
 		buttonTimeStepMode.setBounds(108, buttonsY, 108, 24);
 	}
 
@@ -233,7 +232,6 @@ public class MainWindow extends JFrame {
 	public void refreshGUIDisplays() {
 		if (Simulation.getInstance().isActive())
 			refreshTimeStepReserveDisplay();
-		viewport.getScale();
 	}
 
 	private void refreshTimeStepReserveDisplay() {

@@ -1,4 +1,4 @@
-package gui.viewport;
+package gui.images;
 
 import static simulation.Simulation.getInstance;
 
@@ -13,13 +13,16 @@ import calculation.constants.PhysicalConstants;
 import calculation.pairforce.PairForce;
 import calculation.pairforce.PairForceFactory;
 import elements.point.Particle;
+import gui.viewport.Colors;
+import gui.viewport.CoordinateConverter;
+import gui.viewport.Viewport;
 import simulation.Simulation;
 import simulation.components.InteractionType;
 
 public class HeatMap {
 
 	private static final int AUTORANGE_VALUE_DIVIDER = 2;
-	private int updateInterval = 3, resolution = 10, updatesNumber = 0, width, height;
+	private int updateInterval = 5, resolution = 8, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
 	private PairForce pairForce;
@@ -29,13 +32,14 @@ public class HeatMap {
 	private boolean isGravityFieldMap;
 	private boolean isAdaptiveRange = true;
 	private Viewport viewport;
+	private HeatMapType mapType = HeatMapType.STRENGTH;
+	private ProjectionType projectionType = ProjectionType.MAGNITUDE;
 
 	public HeatMap(int w, int h) {
 		width = w;
 		height = h;
 		heatMapImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 		heatMapCanvas = heatMapImage.createGraphics();
-		pairForce = PairForceFactory.getCentralForce(getInstance().interactionProcessor.getInteractionType());
 	}
 
 	public HeatMap(Viewport v) {
@@ -43,11 +47,11 @@ public class HeatMap {
 		this.viewport = v;
 	}
 
-	public BufferedImage getHeatMapImage() {
+	public BufferedImage getImage() {
 		return heatMapImage;
 	}
 
-	public void updateHeatMapImage() {
+	public void updateImage() {
 		updatesNumber++;
 		if (getInstance().interactionProcessor.getInteractionType() == InteractionType.GRAVITATION)
 			isGravityFieldMap = true;
@@ -66,7 +70,7 @@ public class HeatMap {
 					double yc = (CoordinateConverter.fromScreenY(stepY * resolution)
 							+ CoordinateConverter.fromScreenY((stepY + 1) * resolution)) / 2;
 					Vector fieldVector = defineField(xc, yc);
-					double fieldValue = fieldVector.X();
+					double fieldValue = defineProjection(fieldVector);
 					heatMapCanvas.setColor(defineColor(fieldValue, range));
 					heatMapCanvas.fill(
 							new Rectangle2D.Double(stepX * resolution, stepY * resolution, resolution, resolution));
@@ -91,8 +95,9 @@ public class HeatMap {
 		}
 	}
 
-	private Vector defineField(double x, double y) {
+	public Vector defineField(double x, double y) {
 		Particle testParticle;
+		pairForce = PairForceFactory.getCentralForce(getInstance().interactionProcessor.getInteractionType());
 		Vector field = new Vector();
 		double distance;
 		double dF = 0;
@@ -100,14 +105,32 @@ public class HeatMap {
 		while (Simulation.getInstance().content().particle(pNumber) != null) {
 			testParticle = Simulation.getInstance().content().particle(pNumber);
 			distance = Functions.defineDistance(testParticle, x, y);
-			if (distance >= 4 * PhysicalConstants.cm) {
-				dF = pairForce.calculatePotential(testParticle, distance);
+			if (distance >= 0.9 * testParticle.getRadius()) {
+				if (mapType == HeatMapType.POTENTIAL)
+					dF = pairForce.calculatePotential(testParticle, distance);
+				else if (mapType == HeatMapType.STRENGTH)
+					dF = pairForce.calculateStrength(testParticle, distance);
 				field.addToX(dF * (x - testParticle.getX()) / distance);
 				field.addToY(dF * (y - testParticle.getY()) / distance);
 			}
 			pNumber++;
 		}
 		return field;
+	}
+
+	public Vector defineField(int x, int y) {
+		return defineField(CoordinateConverter.fromScreenX(x), CoordinateConverter.fromScreenY(y));
+	}
+
+	public double defineProjection(Vector v) {
+		double result = 0;
+		if (projectionType == ProjectionType.MAGNITUDE)
+			result = v.norm();
+		else if (projectionType == ProjectionType.X)
+			result = v.X();
+		if (projectionType == ProjectionType.Y)
+			result = v.Y();
+		return result;
 	}
 
 	public Color defineColor(double value, double range) {
@@ -142,6 +165,22 @@ public class HeatMap {
 
 	public void setRange(double range) {
 		this.range = range;
+	}
+
+	public HeatMapType getMapType() {
+		return mapType;
+	}
+
+	public void setMapType(HeatMapType mapType) {
+		this.mapType = mapType;
+	}
+
+	public ProjectionType getProjectionType() {
+		return projectionType;
+	}
+
+	public void setProjectionType(ProjectionType projectionType) {
+		this.projectionType = projectionType;
 	}
 
 }

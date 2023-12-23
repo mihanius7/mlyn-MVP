@@ -328,7 +328,7 @@ public class MainWindowMenu extends JMenuBar {
 		itemForces.setSelected(ParticleShape.drawForces);
 		itemPretty.setSelected(ParticleShape.drawGradientParticles);
 		itemTags.setSelected(ParticleShape.drawTags);
-		itemGrid.setSelected(viewport.useGrid);
+		itemGrid.setSelected(viewport.drawGrid);
 		itemTracks.setSelected(viewport.isDrawTracks());
 		if (viewport.getMouseMode() == MouseMode.SELECT_PARTICLE)
 			itemMouseSelect2.setSelected(true);

@@ -51,7 +51,7 @@ public class ParticleShape extends Shape {
 			targetG2d.setPaint(new GradientPaint(x, y - r, Color.WHITE, x + r, y + r,
 					p.isSelected() ? PARTICLE_SELECTED : color, false));
 		targetG2d.fillOval(x - r, y - r, r * 2, r * 2);
-		if (viewport.isDrawTracks()) {
+		if (viewport.isDrawTracks() && viewport.isScaled()) {
 			viewport.tracksCanvas.setColor(color);
 			viewport.tracksCanvas.drawLine(lastPaintedX, lastPaintedY, x, y);
 		}

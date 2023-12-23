@@ -68,7 +68,7 @@ public class MainWindowMenuEvent implements ActionListener {
 		} else if (src.equals(mainWindowMenu.itemTags)) {
 			ParticleShape.drawTags = mainWindowMenu.itemTags.getState();
 		} else if (src.equals(mainWindowMenu.itemGrid)) {
-			viewport.useGrid = mainWindowMenu.itemGrid.getState();
+			viewport.setDrawGrid(mainWindowMenu.itemGrid.getState());
 		} else if (src.equals(mainWindowMenu.itemTracks)) {
 			viewport.setDrawTracks(mainWindowMenu.itemTracks.getState());			
 		} else if (src.equals(mainWindowMenu.itemClear)) {
