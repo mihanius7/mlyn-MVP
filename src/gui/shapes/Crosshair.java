@@ -24,9 +24,9 @@ public class Crosshair extends Shape {
 		g.drawLine(x, 0, x, viewport.getHeight());
 		g.drawLine(0, y, viewport.getWidth(), y);
 		g.setColor(viewport.getMainFontColor());
-		g.drawString(String.format("V = %.2e [V]", viewport.heatMap.defineField(x, y).norm()), x + COORDINATES_MARGIN_PX, y - COORDINATES_MARGIN_PX);
-		g.drawString(String.format("%.2f m", CoordinateConverter.fromScreenX(x)), x + COORDINATES_MARGIN_PX, viewport.getHeight() - COORDINATES_MARGIN_PX);
-		g.drawString(String.format("%.2f m", CoordinateConverter.fromScreenY(y)), COORDINATES_MARGIN_PX, y - COORDINATES_MARGIN_PX);
+		g.drawString(String.format("E = %.2e [N/C]", viewport.heatMap.defineField(x, y).norm()), x + COORDINATES_MARGIN_PX, y - COORDINATES_MARGIN_PX);
+		g.drawString(String.format("%.1f cm", CoordinateConverter.fromScreenX(x) * 100.0), x + COORDINATES_MARGIN_PX, viewport.getHeight() - COORDINATES_MARGIN_PX);
+		g.drawString(String.format("%.1f cm", CoordinateConverter.fromScreenY(y) * 100.0), COORDINATES_MARGIN_PX, y - COORDINATES_MARGIN_PX);
 
 	}
 

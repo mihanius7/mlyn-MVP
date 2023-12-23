@@ -468,8 +468,9 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	public void initHeatMapImage() {
-		if (drawHeatMap)
+		if (drawHeatMap) {
 			heatMap = new HeatMap(this);
+		}
 	}
 
 	public void setDrawCrosshair(boolean b) {

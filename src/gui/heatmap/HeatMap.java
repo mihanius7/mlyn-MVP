@@ -32,7 +32,8 @@ public class HeatMap {
 	private boolean isGravityFieldMap;
 	private boolean isAdaptiveRange = true;
 	private Viewport viewport;
-	private HeatMapType mapType = HeatMapType.POTENTIAL;
+	private HeatMapType mapType = HeatMapType.STRENGTH;
+	private ProjectionType projectionType = ProjectionType.MAGNITUDE;
 
 	public HeatMap(int w, int h) {
 		width = w;
@@ -69,7 +70,7 @@ public class HeatMap {
 					double yc = (CoordinateConverter.fromScreenY(stepY * resolution)
 							+ CoordinateConverter.fromScreenY((stepY + 1) * resolution)) / 2;
 					Vector fieldVector = defineField(xc, yc);
-					double fieldValue = fieldVector.X();
+					double fieldValue = defineProjection(fieldVector);
 					heatMapCanvas.setColor(defineColor(fieldValue, range));
 					heatMapCanvas.fill(
 							new Rectangle2D.Double(stepX * resolution, stepY * resolution, resolution, resolution));
@@ -104,7 +105,7 @@ public class HeatMap {
 		while (Simulation.getInstance().content().particle(pNumber) != null) {
 			testParticle = Simulation.getInstance().content().particle(pNumber);
 			distance = Functions.defineDistance(testParticle, x, y);
-			if (distance >= 4 * PhysicalConstants.cm) {
+			if (distance >= 0.9 * testParticle.getRadius()) {
 				if (mapType == HeatMapType.POTENTIAL)
 					dF = pairForce.calculatePotential(testParticle, distance);
 				else if (mapType == HeatMapType.STRENGTH)
@@ -119,6 +120,17 @@ public class HeatMap {
 
 	public Vector defineField(int x, int y) {
 		return defineField(CoordinateConverter.fromScreenX(x), CoordinateConverter.fromScreenY(y));
+	}
+
+	public double defineProjection(Vector v) {
+		double result = 0;
+		if (projectionType == ProjectionType.MAGNITUDE)
+			result = v.norm();
+		else if (projectionType == ProjectionType.X)
+			result = v.X();
+		if (projectionType == ProjectionType.Y)
+			result = v.Y();
+		return result;
 	}
 
 	public Color defineColor(double value, double range) {
@@ -161,6 +173,14 @@ public class HeatMap {
 
 	public void setMapType(HeatMapType mapType) {
 		this.mapType = mapType;
+	}
+
+	public ProjectionType getProjectionType() {
+		return projectionType;
+	}
+
+	public void setProjectionType(ProjectionType projectionType) {
+		this.projectionType = projectionType;
 	}
 
 }
