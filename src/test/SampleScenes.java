@@ -18,7 +18,7 @@ import simulation.components.TimeStepController.TimeStepMode;
 public class SampleScenes {
 
 	public void initializeScene() {
-		scenePreset1();
+		scenePreset2();
 	}
 
 	public void emptyScene() {
@@ -49,35 +49,28 @@ public class SampleScenes {
 		Boundaries b = Simulation.getInstance().content().getBoundaries();
 		b.setBounds(0, 9.2, 4.2, 0);
 		b.setUseAll(false);
-		Simulation.getInstance()
-				.add(new Particle(301 * cm, 90 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
-		Simulation.getInstance()
-				.add(new Particle(299 * cm, 30 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
-		Simulation.getInstance()
-				.add(new Particle(300 * cm, 120 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
-		Simulation.getInstance()
-				.add(new Particle(300 * cm, 10 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
+		Simulation.getInstance().add(new Particle(301 * cm, 90 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
+		Simulation.getInstance().add(new Particle(299 * cm, 30 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
+		Simulation.getInstance().add(new Particle(300 * cm, 120 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
+		Simulation.getInstance().add(new Particle(300 * cm, 10 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
 		Simulation.getInstance().content().getLastAddedParticle().setMovable(false);
-		Simulation.getInstance()
-				.add(new Particle(310 * cm, 100 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
-		Simulation.getInstance()
-				.add(new Particle(290 * cm, 100 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
-		Simulation.getInstance()
-				.add(new Particle(320 * cm, 130 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
+		Simulation.getInstance().add(new Particle(310 * cm, 100 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
+		Simulation.getInstance().add(new Particle(290 * cm, 100 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
+		Simulation.getInstance().add(new Particle(320 * cm, 130 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
 		ParticleShape.drawForces = true;
 	}
 
 	public void scenePreset2() {
 		Simulation.getInstance().timeStepController.setModeAndReset(TimeStepMode.DYNAMIC);
-		Simulation.getInstance().timeStepController.setTimeScale(0.001);
+		Simulation.getInstance().timeStepController.setTimeScale(1E-6);
 		Simulation.getInstance().interactionProcessor.setUsePPCollisions(true);
 		Simulation.getInstance().interactionProcessor.setUseExternalForces(false);
 		Simulation.getInstance().interactionProcessor.setInteractionType(InteractionType.COULOMB);
 		Simulation.getInstance().content().getBoundaries().setUseAll(false);
-		Simulation.getInstance()
-				.add(new Particle(20 * cm, 0 * cm, 1 * kg, 2.1E-8, 0, 0, 5 * cm, Color.RED));
-		Simulation.getInstance()
-				.add(new Particle(70 * cm, 0 * cm, 1 * kg, -8.4E-8, 0, 0, 5 * cm, Color.BLUE));
+		Simulation.getInstance().add(new Particle(0 * cm, 0 * cm, 1 * kg, 2.0E-6, 0, 0, 1 * cm, Color.RED));
+		Simulation.getInstance().add(new Particle(6 * cm, 0 * cm, 1 * kg, -2.0E-6, 0, 0, 1 * cm, Color.BLUE));
+		Simulation.getInstance().add(new Particle(0 * cm, -4 * cm, 1 * kg, 4.0E-6, 0, 0, 1 * cm, Color.RED));
+		Simulation.getInstance().add(new Particle(6 * cm, -4 * cm, 1 * kg, 1.0E-6, 0, 0, 1 * cm, Color.RED));
 	}
 
 	public void scenePreset3() {
@@ -88,8 +81,7 @@ public class SampleScenes {
 		Simulation.getInstance().interactionProcessor.setInteractionType(InteractionType.GRAVITATION);
 		Simulation.getInstance().content().getBoundaries().setUseAll(false);
 		Simulation.getInstance().add(new Particle(0, 0, 5.97E24, 0, 0, 0, 6397000, Color.BLUE));
-		Simulation.getInstance()
-				.add(new Particle(384400000, 0, 7.35E22, 0, 0, 1022, 1794400, Color.LIGHT_GRAY));
+		Simulation.getInstance().add(new Particle(384400000, 0, 7.35E22, 0, 0, 1022, 1794400, Color.LIGHT_GRAY));
 	}
 
 }
