@@ -1,4 +1,4 @@
-package gui.heatmap;
+package gui.images;
 
 import static simulation.Simulation.getInstance;
 
@@ -47,11 +47,11 @@ public class HeatMap {
 		this.viewport = v;
 	}
 
-	public BufferedImage getHeatMapImage() {
+	public BufferedImage getImage() {
 		return heatMapImage;
 	}
 
-	public void updateHeatMapImage() {
+	public void updateImage() {
 		updatesNumber++;
 		if (getInstance().interactionProcessor.getInteractionType() == InteractionType.GRAVITATION)
 			isGravityFieldMap = true;

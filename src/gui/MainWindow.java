@@ -163,6 +163,7 @@ public class MainWindow extends JFrame {
 
 	void resizeGUI() {
 		viewport.setBounds(0, 0, getWidth() - 14, getHeight() - 76 - buttonStart.getHeight());
+		viewport.initBackgroundImage();
 		viewport.initTracksImage();
 		viewport.initHeatMapImage();
 		int buttonsY = getHeight() - 92;
@@ -231,7 +232,6 @@ public class MainWindow extends JFrame {
 	public void refreshGUIDisplays() {
 		if (Simulation.getInstance().isActive())
 			refreshTimeStepReserveDisplay();
-		viewport.getScale();
 	}
 
 	private void refreshTimeStepReserveDisplay() {

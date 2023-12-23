@@ -8,12 +8,9 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.TexturePaint;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +24,8 @@ import elements.Element;
 import elements.point.PointMass;
 import gui.ConsoleWindow;
 import gui.MainWindow;
-import gui.heatmap.HeatMap;
+import gui.images.Background;
+import gui.images.HeatMap;
 import gui.lang.GUIStrings;
 import gui.shapes.Crosshair;
 import gui.shapes.Shape;
@@ -41,6 +39,8 @@ import simulation.Simulation;
 
 public class Viewport extends JPanel implements ActionListener, Runnable {
 
+	private static final int SMOOTH_SCALING_STOPING_DIFFERENCE = 4;
+	private static final int SMOOTH_SCALING_COEFFICIENT = 2;
 	private static final int CROSS_SIZE_PX = 8;
 	private static final int SCALE_LINE_MARGIN = 24;
 	public static final double ARROW_LENGTH_COEFFICIENT = 0.25;
@@ -71,6 +71,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private boolean firstTracksDrawing = true;
 	private boolean drawHeatMap = false;
 	private boolean drawCrosshair = false;
+	private boolean scaled;
 	public Font labelsFont;
 	private Font mainFont;
 	private int fps = 0;
@@ -84,6 +85,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private Timer refreshLabelsTimer;
 	private BufferedImage tracksImage;
 	public HeatMap heatMap;
+	public Background background;
 	private BasicStroke arrowStroke = new BasicStroke(2f);
 	public BasicStroke crossStroke = new BasicStroke(3f);
 	private MouseMode mouseMode;
@@ -100,6 +102,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		setBounds(0, 0, initW, initH);
 		setDoubleBuffered(false);
+		background = new Background(this);
 		mainFont = new Font("Tahoma", Font.TRUETYPE_FONT, 14);
 		labelsFont = new Font("Arial", Font.TRUETYPE_FONT, LABELS_FONT_SIZE);
 		refreshLabelsTimer = new Timer(REFRESH_MESSAGES_INTERVAL, this);
@@ -167,22 +170,23 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	@Override
 	public void paintComponent(Graphics g) {
-		scale += (targetScale - scale) / 2;
 		canvas = (Graphics2D) g;
 		canvas.setRenderingHints(rh);
 		renderFrameOn(canvas);
 	}
 
 	private void renderFrameOn(Graphics2D graphics) {
+		scaleSmooth();
 		camera.follow();
 		currentFontSize = scaleLabelsFont();
 		drawBackgroundOn(graphics);
-		if (drawHeatMap && Simulation.getInstance().interactionProcessor.isUseInterparticleForces()) {
-			heatMap.updateHeatMapImage();
-			graphics.drawImage(heatMap.getHeatMapImage(), 0, 0, null);
+		if (drawHeatMap && scaled) {
+			heatMap.updateImage();
+			graphics.drawImage(heatMap.getImage(), 0, 0, null);
 		}
-		if (drawTracks)
+		if (drawTracks && scaled) {
 			graphics.drawImage(tracksImage, 0, 0, null);
+		}
 		drawBoundariesOn(graphics);
 		drawShapes(graphics);
 		if (Simulation.getInstance().content().getReferenceParticle().getShape().isVisible())
@@ -244,35 +248,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	void drawBackgroundOn(Graphics2D targetG2d) {
-		if (drawGrid) {
-			double gridStep = scale * gridSize;
-			int gridMinorStep = (int) gridStep;
-			if (gridStep >= 15 && gridStep < getWidth() * 2) {
-				BufferedImage bi = new BufferedImage(gridMinorStep, gridMinorStep, BufferedImage.TYPE_INT_RGB);
-				Graphics2D big2d = bi.createGraphics();
-				big2d.setRenderingHints(rh);
-				big2d.setColor(Colors.BACKGROUND);
-				big2d.fillRect(0, 0, gridMinorStep, gridMinorStep);
-				big2d.setColor(Colors.GRID);
-				big2d.drawLine(0, 0, gridMinorStep, 0);
-				big2d.drawLine(0, 0, 0, gridMinorStep);
-				TexturePaint tp = new TexturePaint(bi, new Rectangle2D.Double(CoordinateConverter.toScreenX(0),
-						CoordinateConverter.toScreenY(0), gridStep, gridStep));
-				targetG2d.setPaint(tp);
-			} else {
-				targetG2d.setColor(Colors.BACKGROUND);
-			}
-		} else
-			targetG2d.setColor(Colors.BACKGROUND);
-		targetG2d.fillRect(0, 0, getWidth(), getHeight());
-	}
-
-	public void initTracksImage() {
-		tracksImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
-		tracksCanvas = tracksImage.createGraphics();
-		tracksCanvas.setStroke(new BasicStroke(2f));
-		tracksCanvas.setRenderingHints(rh);
-		clearTracksImage();
+		targetG2d.drawImage(background.getImage(), 0, 0, null);
 	}
 
 	private void drawShapes(Graphics2D targetG2d) {
@@ -411,21 +387,35 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		targetG2d.fillPolygon(xpoints, ypoints, 3);
 	}
 
+	private void scaleSmooth() {
+		if (!scaled) {
+			if (Math.abs(targetScale - scale) >= SMOOTH_SCALING_STOPING_DIFFERENCE) {
+				scale += (targetScale - scale) / SMOOTH_SCALING_COEFFICIENT;
+			} else {
+				scale = targetScale;
+				scaled = true;
+				initBackgroundImage();
+			}
+		}
+	}
+
 	public double getScale() {
 		return scale;
 	}
 
 	public void setScale(double newTargetScale) {
 		targetScale = newTargetScale;
+		scaled = false;
+		firstTracksDrawing = true;
 		clearTracksImage();
 	}
-
-	public void clearTracksImage() {
-		if (drawTracks) {
-			firstTracksDrawing = true;
-			scale = targetScale;
-			drawBackgroundOn((Graphics2D) tracksImage.getGraphics());
-		}
+	
+	public boolean isScaled() {
+		return scaled;
+	}
+	
+	public void setScaledToFalse() {
+		scaled = false;
 	}
 
 	public void setCrossX(double crossX) {
@@ -460,13 +450,28 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		ConsoleWindow.println(GUIStrings.DRAW_TRACKS + ": " + b);
 	}
 
-	public void setDrawFields(boolean b) {
+	public void initTracksImage() {
+		tracksImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+		tracksCanvas = tracksImage.createGraphics();
+		tracksCanvas.setStroke(new BasicStroke(2f));
+		tracksCanvas.setRenderingHints(rh);
+		clearTracksImage();
+	}
+
+	public void clearTracksImage() {
+		if (drawTracks) {
+			firstTracksDrawing = true;
+			drawBackgroundOn((Graphics2D) tracksImage.getGraphics());
+		}
+	}
+
+	public void setDrawHeatMap(boolean b) {
 		drawHeatMap = b;
 		initHeatMapImage();
 		setDrawCrosshair(b);
 	}
 
-	public boolean isDrawFields() {
+	public boolean isDrawHeatMap() {
 		return drawHeatMap;
 	}
 
@@ -474,6 +479,19 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		if (drawHeatMap) {
 			heatMap = new HeatMap(this);
 		}
+	}
+
+	public void setDrawGrid(boolean b) {
+		drawGrid = b;
+		initBackgroundImage();
+	}
+
+	public boolean isDrawGrid() {
+		return drawGrid;
+	}
+
+	public void initBackgroundImage() {
+		background.updateImage();
 	}
 
 	public void setDrawCrosshair(boolean b) {
@@ -566,10 +584,12 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	public void reset() {
 		refreshLabelsTimer.restart();
-		scale = 1e-6;
+		scale = 1e-3;
 		setCrossX(0);
 		setCrossY(0);
-		setDrawFields(false);
+		setDrawGrid(true);
+		setDrawHeatMap(false);
+		initTracksImage();
 	}
 
 	public void updateCrosshair(int x, int y) {
