@@ -7,11 +7,11 @@ public class Camera {
 	public static final int CAMERA_WATCH_SMOOTH = 12;
 	public static final int CAMERA_KEYBOARD_SPEED = 15;
 	public static final float CAMERA_ZOOM_INCREMENT = 1.25f;
-	double x, y; 
+	double x, y;
 	double vx = 0, vy = 0;
 	private Element following;
 	private Viewport viewport;
-	
+
 	public Camera(Viewport v) {
 		this.viewport = v;
 	}
@@ -40,6 +40,9 @@ public class Camera {
 
 	public void setFollowing(Element element) {
 		this.following = element;
+		if (following!= null) {
+			viewport.initBackgroundImage();
+		}
 	}
 
 	public void addXWithRollingMean(double dx) {
@@ -78,6 +81,10 @@ public class Camera {
 			x += vx;
 			y += vy;
 		}
+	}
+
+	public boolean isFollowing() {
+		return following != null;
 	}
 
 }

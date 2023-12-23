@@ -180,11 +180,11 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		camera.follow();
 		currentFontSize = scaleLabelsFont();
 		drawBackgroundOn(graphics);
-		if (drawHeatMap && scaled) {
+		if (drawHeatMap && scaled && !camera.isFollowing()) {
 			heatMap.updateImage();
 			graphics.drawImage(heatMap.getImage(), 0, 0, null);
 		}
-		if (drawTracks && scaled) {
+		if (drawTracks && scaled && !camera.isFollowing()) {
 			graphics.drawImage(tracksImage, 0, 0, null);
 		}
 		drawBoundariesOn(graphics);
@@ -487,7 +487,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	public boolean isDrawGrid() {
-		return drawGrid;
+		return drawGrid && !camera.isFollowing();
 	}
 
 	public void initBackgroundImage() {
