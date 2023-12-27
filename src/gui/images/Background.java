@@ -17,7 +17,8 @@ public class Background {
 
 	public Background(Viewport v) {
 		this.viewport = v;
-		rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 	}
 
 	public BufferedImage getImage() {
@@ -27,10 +28,11 @@ public class Background {
 	public void updateImage() {
 		backImage = new BufferedImage(viewport.getWidth(), viewport.getHeight(), BufferedImage.TYPE_INT_RGB);
 		Graphics2D backCanvas = backImage.createGraphics();
+		backCanvas.setRenderingHints(rh);
 		if (viewport.isDrawGrid()) {
 			double gridStep = viewport.getScale() * viewport.getGridSize();
 			int gridMinorStep = (int) gridStep;
-			if (gridStep >= 15 && gridStep < viewport.getWidth() * 2) {
+			if (gridStep >= 8 && gridStep < viewport.getWidth() * 2) {
 				System.out.println("Painting grid... Step " + gridMinorStep + " px.");
 				BufferedImage bi = new BufferedImage(gridMinorStep, gridMinorStep, BufferedImage.TYPE_INT_RGB);
 				Graphics2D big2d = bi.createGraphics();

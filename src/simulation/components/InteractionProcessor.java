@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 import calculation.Functions;
 import calculation.TrajectoryIntegrator;
+import calculation.Vector;
 import calculation.pairforce.Collision;
 import calculation.pairforce.PairForce;
 import calculation.pairforce.PairForceFactory;
@@ -21,7 +22,9 @@ import elements.line.Spring;
 import elements.point.Particle;
 import elements.point.PointMass;
 import gui.ConsoleWindow;
+import gui.images.FieldType;
 import gui.lang.GUIStrings;
+import gui.viewport.CoordinateConverter;
 import simulation.ExternalForce;
 import simulation.Simulation;
 import simulation.SimulationContent;
@@ -36,7 +39,7 @@ public class InteractionProcessor implements SimulationComponent {
 	private ArrayList<Pair> pairs = new ArrayList<Pair>();
 
 	private InteractionType interactionType;
-	private PairForce pariForce;
+	private PairForce pairForce;
 	private PairForce collisionForce;
 	private ParticleGroup particles;
 	private SpringGroup springs;
@@ -116,6 +119,33 @@ public class InteractionProcessor implements SimulationComponent {
 			pm.clearForce();
 		}
 		PointMass.maxVelocity = Math.sqrt(PointMass.maxSquaredVelocityCandidate);
+	}
+	
+	public Vector calculateField(double x, double y, FieldType fieldType) {
+		Particle testParticle;
+		pairForce = PairForceFactory.getCentralForce(getInteractionType());
+		Vector field = new Vector();
+		double distance;
+		double dF = 0;
+		int pNumber = 0;
+		while (Simulation.getInstance().content().particle(pNumber) != null) {
+			testParticle = Simulation.getInstance().content().particle(pNumber);
+			distance = Functions.defineDistance(testParticle, x, y);
+			if (distance >= 0.9 * testParticle.getRadius()) {
+				if (fieldType == FieldType.POTENTIAL)
+					dF = pairForce.calculatePotential(testParticle, distance);
+				else if (fieldType == FieldType.STRENGTH)
+					dF = pairForce.calculateStrength(testParticle, distance);
+				field.addToX(dF * (x - testParticle.getX()) / distance);
+				field.addToY(dF * (y - testParticle.getY()) / distance);
+			}
+			pNumber++;
+		}
+		return field;
+	}
+
+	public Vector calculateField(int x, int y, FieldType mapType) {
+		return calculateField(CoordinateConverter.fromScreenX(x), CoordinateConverter.fromScreenY(y), mapType);
 	}
 
 	private void adjustNeighborsSearchPeriod() {
@@ -260,8 +290,8 @@ public class InteractionProcessor implements SimulationComponent {
 	}
 
 	public void setInteractionType(InteractionType interactionType) {
-		pariForce = PairForceFactory.getCentralForce(interactionType);
-		pairInteractionMaxDistance = pariForce.distanceLimit();
+		pairForce = PairForceFactory.getCentralForce(interactionType);
+		pairInteractionMaxDistance = pairForce.distanceLimit();
 		neighborRange = pairInteractionMaxDistance * 1.1;
 		this.interactionType = interactionType;
 		message();
@@ -336,7 +366,7 @@ public class InteractionProcessor implements SimulationComponent {
 	}
 	
 	public PairForce pairForceType() {
-		return pariForce;
+		return pairForce;
 	}
 	
 	public PairForce collisionForceType() {

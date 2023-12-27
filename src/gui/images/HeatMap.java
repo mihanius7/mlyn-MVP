@@ -9,10 +9,6 @@ import java.awt.image.BufferedImage;
 
 import calculation.Functions;
 import calculation.Vector;
-import calculation.constants.PhysicalConstants;
-import calculation.pairforce.PairForce;
-import calculation.pairforce.PairForceFactory;
-import elements.point.Particle;
 import gui.viewport.Colors;
 import gui.viewport.CoordinateConverter;
 import gui.viewport.Viewport;
@@ -25,14 +21,13 @@ public class HeatMap {
 	private int updateInterval = 5, resolution = 8, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
-	private PairForce pairForce;
 	private double range = 1000;
 	private double minValue, minField;
 	private double maxValue, maxField;
 	private boolean isGravityFieldMap;
 	private boolean isAdaptiveRange = true;
 	private Viewport viewport;
-	private HeatMapType mapType = HeatMapType.STRENGTH;
+	private FieldType fieldType = FieldType.STRENGTH;
 	private ProjectionType projectionType = ProjectionType.MAGNITUDE;
 
 	public HeatMap(int w, int h) {
@@ -69,7 +64,7 @@ public class HeatMap {
 							+ CoordinateConverter.fromScreenX((stepX + 1) * resolution)) / 2;
 					double yc = (CoordinateConverter.fromScreenY(stepY * resolution)
 							+ CoordinateConverter.fromScreenY((stepY + 1) * resolution)) / 2;
-					Vector fieldVector = defineField(xc, yc);
+					Vector fieldVector = Simulation.getInstance().interactionProcessor.calculateField(xc, yc, fieldType);
 					double fieldValue = defineProjection(fieldVector);
 					heatMapCanvas.setColor(defineColor(fieldValue, range));
 					heatMapCanvas.fill(
@@ -93,33 +88,6 @@ public class HeatMap {
 			maxValue = Double.MIN_VALUE;
 			range = (Math.max(minField, maxField) - Math.min(minField, maxField)) / AUTORANGE_VALUE_DIVIDER;
 		}
-	}
-
-	public Vector defineField(double x, double y) {
-		Particle testParticle;
-		pairForce = PairForceFactory.getCentralForce(getInstance().interactionProcessor.getInteractionType());
-		Vector field = new Vector();
-		double distance;
-		double dF = 0;
-		int pNumber = 0;
-		while (Simulation.getInstance().content().particle(pNumber) != null) {
-			testParticle = Simulation.getInstance().content().particle(pNumber);
-			distance = Functions.defineDistance(testParticle, x, y);
-			if (distance >= 0.9 * testParticle.getRadius()) {
-				if (mapType == HeatMapType.POTENTIAL)
-					dF = pairForce.calculatePotential(testParticle, distance);
-				else if (mapType == HeatMapType.STRENGTH)
-					dF = pairForce.calculateStrength(testParticle, distance);
-				field.addToX(dF * (x - testParticle.getX()) / distance);
-				field.addToY(dF * (y - testParticle.getY()) / distance);
-			}
-			pNumber++;
-		}
-		return field;
-	}
-
-	public Vector defineField(int x, int y) {
-		return defineField(CoordinateConverter.fromScreenX(x), CoordinateConverter.fromScreenY(y));
 	}
 
 	public double defineProjection(Vector v) {
@@ -167,12 +135,12 @@ public class HeatMap {
 		this.range = range;
 	}
 
-	public HeatMapType getMapType() {
-		return mapType;
+	public FieldType getFieldType() {
+		return fieldType;
 	}
 
-	public void setMapType(HeatMapType mapType) {
-		this.mapType = mapType;
+	public void setFieldType(FieldType fieldType) {
+		this.fieldType = fieldType;
 	}
 
 	public ProjectionType getProjectionType() {

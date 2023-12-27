@@ -1,5 +1,5 @@
 package gui.images;
 
-public enum HeatMapType {
+public enum FieldType {
 	POTENTIAL, STRENGTH
 }
