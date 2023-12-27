@@ -179,14 +179,13 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		scaleSmooth();
 		camera.follow();
 		currentFontSize = scaleLabelsFont();
-		drawBackgroundOn(graphics);
-		if (drawHeatMap && scaled && !camera.isFollowing()) {
+		if (drawHeatMap && !camera.isFollowing()) {
 			heatMap.updateImage();
 			graphics.drawImage(heatMap.getImage(), 0, 0, null);
-		}
-		if (drawTracks && scaled && !camera.isFollowing()) {
+		} else if (drawTracks && scaled && !camera.isFollowing()) {
 			graphics.drawImage(tracksImage, 0, 0, null);
-		}
+		} else
+			drawBackgroundOn(graphics);
 		drawBoundariesOn(graphics);
 		drawShapes(graphics);
 		if (Simulation.getInstance().content().getReferenceParticle().getShape().isVisible())
@@ -409,11 +408,11 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		firstTracksDrawing = true;
 		clearTracksImage();
 	}
-	
+
 	public boolean isScaled() {
 		return scaled;
 	}
-	
+
 	public void setScaledToFalse() {
 		scaled = false;
 	}

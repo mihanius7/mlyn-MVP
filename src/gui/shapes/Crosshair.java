@@ -5,8 +5,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import elements.Element;
+import gui.images.FieldType;
 import gui.viewport.CoordinateConverter;
 import gui.viewport.Viewport;
+import simulation.Simulation;
 
 public class Crosshair extends Shape {
 	
@@ -24,7 +26,7 @@ public class Crosshair extends Shape {
 		g.drawLine(x, 0, x, viewport.getHeight());
 		g.drawLine(0, y, viewport.getWidth(), y);
 		g.setColor(viewport.getMainFontColor());
-		g.drawString(String.format("E = %.2e [N/C]", viewport.heatMap.defineField(x, y).norm()), x + COORDINATES_MARGIN_PX, y - COORDINATES_MARGIN_PX);
+		g.drawString(String.format("E = %.2e [N/C]", Simulation.getInstance().interactionProcessor.calculateField(x, y, FieldType.STRENGTH).norm()), x + COORDINATES_MARGIN_PX, y - COORDINATES_MARGIN_PX);
 		g.drawString(String.format("%.1f cm", CoordinateConverter.fromScreenX(x) * 100.0), x + COORDINATES_MARGIN_PX, viewport.getHeight() - COORDINATES_MARGIN_PX);
 		g.drawString(String.format("%.1f cm", CoordinateConverter.fromScreenY(y) * 100.0), COORDINATES_MARGIN_PX, y - COORDINATES_MARGIN_PX);
 
