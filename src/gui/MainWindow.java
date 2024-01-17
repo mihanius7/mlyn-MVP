@@ -163,6 +163,7 @@ public class MainWindow extends JFrame {
 
 	void resizeGUI() {
 		viewport.setBounds(0, 0, getWidth() - 14, getHeight() - 76 - buttonStart.getHeight());
+		viewport.resizeFrameImage();
 		viewport.initBackgroundImage();
 		viewport.initTracksImage();
 		viewport.initHeatMapImage();

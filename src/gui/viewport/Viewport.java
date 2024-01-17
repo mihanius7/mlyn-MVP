@@ -7,8 +7,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.Image;
 import java.awt.RenderingHints;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -54,8 +55,10 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public final int AUTOSCALE_MARGIN = 75;
 
 	Camera camera;
-	private Graphics2D canvas;
-	public Graphics2D tracksCanvas;
+	private BufferedImage frameImage;
+	private Graphics2D frameGraphics;
+	private BufferedImage tracksImage;
+	public Graphics2D tracksFrame;
 	private RenderingHints rh;
 
 	private static ArrayList<Shape> shapes;
@@ -83,7 +86,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private long renderTime, dt;
 	private String infoString1 = "N/A", infoString2 = "N/A";
 	private Timer refreshLabelsTimer;
-	private BufferedImage tracksImage;
 	public HeatMap heatMap;
 	public Background background;
 	private BasicStroke arrowStroke = new BasicStroke(2f);
@@ -92,14 +94,16 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private MainWindow mainWindow;
 
 	public Viewport(int initW, int initH, MainWindow mw) {
+		new CoordinateConverter(this);
 		shapes = new ArrayList<Shape>();
 		physicalShapes = new ArrayList<Shape>();
 		mainWindow = mw;
-		camera = new Camera(this);
-		new CoordinateConverter(this);
-		setMouseMode(MouseMode.SELECT_PARTICLE);
+		camera = new Camera(this);;
+		// GraphicsConfiguration.createCompatibleImage(initW, initH);
+		// createBufferStrategy(2);
 		rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		setMouseMode(MouseMode.SELECT_PARTICLE);
 		setBounds(0, 0, initW, initH);
 		setDoubleBuffered(false);
 		background = new Background(this);
@@ -107,6 +111,45 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		labelsFont = new Font("Arial", Font.TRUETYPE_FONT, LABELS_FONT_SIZE);
 		refreshLabelsTimer = new Timer(REFRESH_MESSAGES_INTERVAL, this);
 		reset();
+		setDrawHeatMap(true);
+	}
+
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		g.drawImage(renderFrame(), 0, 0, null);
+		fps++;
+	}
+
+	private Image renderFrame() {
+		scaleSmooth();
+		camera.follow();
+		currentFontSize = scaleLabelsFont();
+		frameGraphics = (Graphics2D) frameImage.getGraphics();
+		if (drawHeatMap && !camera.isFollowing()) {
+			heatMap.updateImage();
+			frameGraphics.drawImage(heatMap.getImage(), 0, 0, null);
+		} else if (drawTracks && scaled && !camera.isFollowing()) {
+			frameGraphics.drawImage(tracksImage, 0, 0, null);
+		} else
+			drawBackgroundOn(frameGraphics);
+		drawBoundariesOn(frameGraphics);
+		drawShapes(frameGraphics);
+		if (Simulation.getInstance().content().getReferenceParticle().getShape().isVisible())
+			Simulation.getInstance().content().getReferenceParticle().getShape().paintShape(frameGraphics, this);
+		if (camera.getFollowing() != null) {
+			Element following = camera.getFollowing();
+			drawCrossOn(frameGraphics, following.getCenterPoint().x, following.getCenterPoint().y, false);
+		}
+		frameGraphics.setColor(Colors.FONT_TAGS);
+		frameGraphics.setStroke(arrowStroke);
+		drawCrossOn(frameGraphics, crossX, crossY, true);
+		drawAxisOn(frameGraphics);
+		drawScaleLineOn(frameGraphics);
+		if (drawInfo)
+			drawInfoStringsOn(frameGraphics);
+		frameGraphics.dispose();
+		return frameImage;
 	}
 
 	@Override
@@ -166,44 +209,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 
 	public synchronized boolean isContainsShape(Shape s) {
 		return shapes.contains(s);
-	}
-
-	@Override
-	public void paintComponent(Graphics g) {
-		canvas = (Graphics2D) g;
-		canvas.setRenderingHints(rh);
-		renderFrameOn(canvas);
-	}
-
-	private void renderFrameOn(Graphics2D graphics) {
-		scaleSmooth();
-		camera.follow();
-		currentFontSize = scaleLabelsFont();
-		if (drawHeatMap && !camera.isFollowing()) {
-			heatMap.updateImage();
-			graphics.drawImage(heatMap.getImage(), 0, 0, null);
-		} else if (drawTracks && scaled && !camera.isFollowing()) {
-			graphics.drawImage(tracksImage, 0, 0, null);
-		} else
-			drawBackgroundOn(graphics);
-		drawBoundariesOn(graphics);
-		drawShapes(graphics);
-		if (Simulation.getInstance().content().getReferenceParticle().getShape().isVisible())
-			Simulation.getInstance().content().getReferenceParticle().getShape().paintShape(graphics, this);
-		if (camera.getFollowing() != null) {
-			Element following = camera.getFollowing();
-			drawCrossOn(graphics, following.getCenterPoint().x, following.getCenterPoint().y, false);
-		}
-		graphics.setColor(Colors.FONT_TAGS);
-		graphics.setStroke(arrowStroke);
-		drawCrossOn(graphics, crossX, crossY, true);
-		drawAxisOn(graphics);
-		drawScaleLineOn(graphics);
-		if (drawInfo)
-			drawInfoStringsOn(graphics);
-		Toolkit.getDefaultToolkit().sync();
-		// graphics.dispose();
-		fps++;
 	}
 
 	@Override
@@ -449,11 +454,15 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		ConsoleWindow.println(GUIStrings.DRAW_TRACKS + ": " + b);
 	}
 
+	public void resizeFrameImage() {
+		frameImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+	}
+
 	public void initTracksImage() {
 		tracksImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
-		tracksCanvas = tracksImage.createGraphics();
-		tracksCanvas.setStroke(new BasicStroke(2f));
-		tracksCanvas.setRenderingHints(rh);
+		tracksFrame = tracksImage.createGraphics();
+		tracksFrame.setStroke(new BasicStroke(2f));
+		tracksFrame.setRenderingHints(rh);
 		clearTracksImage();
 	}
 
@@ -560,21 +569,17 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	}
 
 	public void saveScreenshot() {
-		BufferedImage buffer = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
-		Graphics2D ig2 = buffer.createGraphics();
-		ig2.setRenderingHints(rh);
-		renderFrameOn(ig2);
 		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fñ.png", Simulation.getInstance().time());
 		try {
-			if (javax.imageio.ImageIO.write(buffer, "png", new java.io.File(fileName)))
+			if (javax.imageio.ImageIO.write(frameImage, "png", new java.io.File(fileName)))
 				ConsoleWindow.println(GUIStrings.IMAGE_SAVED_TO + " " + fileName);
 		} catch (IOException e) {
 			MainWindow.imageWriteErrorMessage(fileName);
 		}
 	}
 
-	public Graphics2D getCanvas() {
-		return canvas;
+	public BufferedImage getFrameImage() {
+		return frameImage;
 	}
 
 	public Camera getCamera() {
