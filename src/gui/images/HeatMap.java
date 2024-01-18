@@ -18,7 +18,7 @@ import simulation.components.InteractionType;
 public class HeatMap {
 
 	private static final int AUTORANGE_VALUE_DIVIDER = 2;
-	private int updateInterval = 5, resolution = 8, updatesNumber = 0, width, height;
+	private int updateInterval = 3, resolution = 8, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
 	private double range = 1000;
