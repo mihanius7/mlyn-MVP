@@ -53,7 +53,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	public final int LABELS_FONT_SIZE = 12;
 	public final float LABELS_MAX_FONT_SIZE = 16;
 	public final static double DEFAULT_GRID_SIZE = 20 * cm;
-	public final int FRAME_PAINT_DELAY = 17;
+	public final int FRAME_PAINT_MIN_DELAY = 17;
 	public final int AUTOSCALE_MARGIN = 75;
 
 	Camera camera;
@@ -177,9 +177,9 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 
 	private void waitForNextRender(long renderingTime) {
 		long sleep;
-		sleep = FRAME_PAINT_DELAY - renderingTime;
+		sleep = FRAME_PAINT_MIN_DELAY - renderingTime;
 		if (sleep < 0)
-			sleep = FRAME_PAINT_DELAY;
+			sleep = FRAME_PAINT_MIN_DELAY;
 		try {
 			Thread.sleep(sleep);
 		} catch (InterruptedException e) {
