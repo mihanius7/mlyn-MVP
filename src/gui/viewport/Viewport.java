@@ -73,7 +73,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private boolean drawTracks = false;
 	private boolean firstTracksDrawing = true;
 	private boolean drawHeatMap = false;
-	private boolean drawCrosshair = false;
 	private boolean scaled;
 	public Font labelsFont;
 	private Font mainFont;
@@ -98,9 +97,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		shapes = new ArrayList<Shape>();
 		physicalShapes = new ArrayList<Shape>();
 		mainWindow = mw;
-		camera = new Camera(this);;
-		// GraphicsConfiguration.createCompatibleImage(initW, initH);
-		// createBufferStrategy(2);
+		camera = new Camera(this);
 		rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		setMouseMode(MouseMode.SELECT_PARTICLE);
@@ -126,6 +123,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		camera.follow();
 		currentFontSize = scaleLabelsFont();
 		frameGraphics = (Graphics2D) frameImage.getGraphics();
+		frameGraphics.setRenderingHints(rh);
 		if (drawHeatMap && !camera.isFollowing()) {
 			heatMap.updateImage();
 			frameGraphics.drawImage(heatMap.getImage(), 0, 0, null);
@@ -510,7 +508,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 			shapes.remove(crosshair);
 			crosshair = null;
 		}
-		drawCrosshair = b;
 	}
 
 	public void scaleToAllParticles() {
