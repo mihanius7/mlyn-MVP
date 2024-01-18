@@ -53,7 +53,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	public final int LABELS_FONT_SIZE = 12;
 	public final float LABELS_MAX_FONT_SIZE = 16;
 	public final static double DEFAULT_GRID_SIZE = 20 * cm;
-	public final int FRAME_PAINT_DELAY = 15;
+	public final int FRAME_PAINT_DELAY = 17;
 	public final int AUTOSCALE_MARGIN = 75;
 
 	Camera camera;
@@ -85,7 +85,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	private double gridSize = DEFAULT_GRID_SIZE;
 	private double crossX = 0;
 	private double crossY = 0;
-	private long renderTime, dt;
+	private long time;
 	private String infoString1 = "N/A", infoString2 = "N/A";
 	private Timer refreshLabelsTimer;
 	public HeatMap heatMap;
@@ -107,6 +107,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		GraphicsDevice device = env.getDefaultScreenDevice();
 		GraphicsConfiguration config = device.getDefaultConfiguration();
 		frameImage = config.createCompatibleImage(initW, initH);
+//		frameImage = new BufferedImage(initW, initH, BufferedImage.TYPE_INT_RGB);
 		setMouseMode(MouseMode.SELECT_PARTICLE);
 		setBounds(0, 0, initW, initH);
 		background = new Background(this);
@@ -164,21 +165,21 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		ConsoleWindow.println(GUIStrings.RENDERING_THREAD_STARTED);
 		strategy = getBufferStrategy();
 		while (true) {
-			dt = System.currentTimeMillis() - renderTime;
+			time = System.currentTimeMillis();
 			checkShapesList();
 			scaleSmooth();
 			camera.follow();
 			paint();
-			waitForNextRender();
-			renderTime = System.currentTimeMillis();
+			long renderingTime = System.currentTimeMillis() - time;
+			waitForNextRender(renderingTime);
 		}
 	}
 
-	private void waitForNextRender() {
+	private void waitForNextRender(long renderingTime) {
 		long sleep;
-		sleep = FRAME_PAINT_DELAY - dt;
+		sleep = FRAME_PAINT_DELAY - renderingTime;
 		if (sleep < 0)
-			sleep = 2;
+			sleep = FRAME_PAINT_DELAY;
 		try {
 			Thread.sleep(sleep);
 		} catch (InterruptedException e) {
