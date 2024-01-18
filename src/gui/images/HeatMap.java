@@ -28,7 +28,7 @@ public class HeatMap {
 	private boolean isAdaptiveRange = true;
 	private Viewport viewport;
 	private FieldType fieldType = FieldType.STRENGTH;
-	private ProjectionType projectionType = ProjectionType.MAGNITUDE;
+	private ProjectionType projectionType = ProjectionType.X;
 
 	public HeatMap(int w, int h) {
 		width = w;
