@@ -96,6 +96,8 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	private MainWindow mainWindow;
 
 	public Viewport(int initW, int initH, MainWindow mw) {
+		setMouseMode(MouseMode.SELECT_PARTICLE);
+		setBounds(0, 0, initW, initH);
 		new CoordinateConverter(this);
 		shapes = new ArrayList<Shape>();
 		physicalShapes = new ArrayList<Shape>();
@@ -103,13 +105,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		camera = new Camera(this);
 		rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice device = env.getDefaultScreenDevice();
-		GraphicsConfiguration config = device.getDefaultConfiguration();
-		frameImage = config.createCompatibleImage(initW, initH);
-//		frameImage = new BufferedImage(initW, initH, BufferedImage.TYPE_INT_RGB);
-		setMouseMode(MouseMode.SELECT_PARTICLE);
-		setBounds(0, 0, initW, initH);
+		resizeFrameImage();
 		background = new Background(this);
 		mainFont = new Font("Tahoma", Font.TRUETYPE_FONT, 14);
 		labelsFont = new Font("Arial", Font.TRUETYPE_FONT, LABELS_FONT_SIZE);
@@ -125,8 +121,8 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 				frameGraphics.drawImage(renderFrame(), 0, 0, null);
 				frameGraphics.dispose();
 			} while (strategy.contentsRestored());
-				strategy.show();
-				fps++;
+			strategy.show();
+			fps++;
 		} while (strategy.contentsLost());
 	}
 
@@ -162,8 +158,8 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	@Override
 	public void run() {
 		refreshLabelsTimer.start();
-		ConsoleWindow.println(GUIStrings.RENDERING_THREAD_STARTED);
 		strategy = getBufferStrategy();
+		ConsoleWindow.println(GUIStrings.RENDERING_THREAD_STARTED);
 		while (true) {
 			time = System.currentTimeMillis();
 			checkShapesList();
@@ -465,7 +461,10 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	}
 
 	public void resizeFrameImage() {
-		frameImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
+		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice device = env.getDefaultScreenDevice();
+		GraphicsConfiguration config = device.getDefaultConfiguration();
+		frameImage = config.createCompatibleImage(getWidth(), getHeight());
 	}
 
 	public void initTracksImage() {
