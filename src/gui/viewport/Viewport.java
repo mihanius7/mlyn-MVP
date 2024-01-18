@@ -6,9 +6,10 @@ import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
@@ -18,7 +19,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import calculation.Vector;
@@ -53,7 +53,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	public final int LABELS_FONT_SIZE = 12;
 	public final float LABELS_MAX_FONT_SIZE = 16;
 	public final static double DEFAULT_GRID_SIZE = 20 * cm;
-	public final int FRAME_PAINT_DELAY = 20;
+	public final int FRAME_PAINT_DELAY = 15;
 	public final int AUTOSCALE_MARGIN = 75;
 
 	Camera camera;
@@ -103,6 +103,10 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		camera = new Camera(this);
 		rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		GraphicsDevice device = env.getDefaultScreenDevice();
+		GraphicsConfiguration config = device.getDefaultConfiguration();
+		frameImage = config.createCompatibleImage(initW, initH);
 		setMouseMode(MouseMode.SELECT_PARTICLE);
 		setBounds(0, 0, initW, initH);
 		background = new Background(this);
@@ -119,9 +123,9 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 				frameGraphics = (Graphics2D) strategy.getDrawGraphics();
 				frameGraphics.drawImage(renderFrame(), 0, 0, null);
 				frameGraphics.dispose();
-				fps++;
 			} while (strategy.contentsRestored());
-			strategy.show();
+				strategy.show();
+				fps++;
 		} while (strategy.contentsLost());
 	}
 
