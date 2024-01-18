@@ -57,7 +57,6 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		viewport.grabFocus();
 	}
 
 	@Override
