@@ -3,6 +3,7 @@ package gui.viewport;
 import static calculation.constants.PhysicalConstants.cm;
 
 import java.awt.BasicStroke;
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -12,6 +13,7 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +40,7 @@ import gui.viewport.listeners.ViewportMouseListenersFactory;
 import simulation.Boundaries;
 import simulation.Simulation;
 
-public class Viewport extends JPanel implements ActionListener, Runnable {
+public class Viewport extends Canvas implements ActionListener, Runnable {
 
 	private static final int SMOOTH_SCALING_STOPING_DIFFERENCE = 4;
 	private static final int SMOOTH_SCALING_COEFFICIENT = 2;
@@ -60,6 +62,7 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	private BufferedImage tracksImage;
 	public Graphics2D tracksFrame;
 	private RenderingHints rh;
+	private BufferStrategy strategy;
 
 	private static ArrayList<Shape> shapes;
 	private static ArrayList<Shape> physicalShapes;
@@ -102,7 +105,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		rh.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		setMouseMode(MouseMode.SELECT_PARTICLE);
 		setBounds(0, 0, initW, initH);
-		setDoubleBuffered(false);
 		background = new Background(this);
 		mainFont = new Font("Tahoma", Font.TRUETYPE_FONT, 14);
 		labelsFont = new Font("Arial", Font.TRUETYPE_FONT, LABELS_FONT_SIZE);
@@ -111,16 +113,19 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		setDrawHeatMap(true);
 	}
 
-	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		g.drawImage(renderFrame(), 0, 0, null);
-		fps++;
+	public void paint() {
+		do {
+			do {
+				frameGraphics = (Graphics2D) strategy.getDrawGraphics();
+				frameGraphics.drawImage(renderFrame(), 0, 0, null);
+				frameGraphics.dispose();
+				fps++;
+			} while (strategy.contentsRestored());
+			strategy.show();
+		} while (strategy.contentsLost());
 	}
 
 	private Image renderFrame() {
-		scaleSmooth();
-		camera.follow();
 		currentFontSize = scaleLabelsFont();
 		frameGraphics = (Graphics2D) frameImage.getGraphics();
 		frameGraphics.setRenderingHints(rh);
@@ -146,7 +151,6 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 		drawScaleLineOn(frameGraphics);
 		if (drawInfo)
 			drawInfoStringsOn(frameGraphics);
-		frameGraphics.dispose();
 		return frameImage;
 	}
 
@@ -154,10 +158,13 @@ public class Viewport extends JPanel implements ActionListener, Runnable {
 	public void run() {
 		refreshLabelsTimer.start();
 		ConsoleWindow.println(GUIStrings.RENDERING_THREAD_STARTED);
+		strategy = getBufferStrategy();
 		while (true) {
 			dt = System.currentTimeMillis() - renderTime;
 			checkShapesList();
-			repaint();
+			scaleSmooth();
+			camera.follow();
+			paint();
 			waitForNextRender();
 			renderTime = System.currentTimeMillis();
 		}

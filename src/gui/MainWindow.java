@@ -55,7 +55,6 @@ public class MainWindow extends JFrame {
 		simulation = new Simulation();
 		viewport = new Viewport(viewportInitWidth, viewportInitHeight, this);
 		viewport.setBackground(UIManager.getColor("Button.light"));
-		viewport.setBorder(null);
 		listener = new MainWindowEvent(this);
 		getContentPane().setLayout(null);
 		getContentPane().add(viewport);
@@ -77,8 +76,6 @@ public class MainWindow extends JFrame {
 		setLocationRelativeTo(null);
 		setVisible(true);
 		setCaption(GUIStrings.NEW_PROJECT_NAME);
-
-		viewport.grabFocus();
 
 		new SampleScenes().initializeScene();
 		refreshGUIControls();
@@ -198,6 +195,7 @@ public class MainWindow extends JFrame {
 	}
 
 	public void startViewportRepaintThread() {
+		viewport.createBufferStrategy(2);
 		renderingThread = new Thread(viewport);
 		renderingThread.setPriority(5);
 		renderingThread.start();
