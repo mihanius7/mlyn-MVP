@@ -49,8 +49,8 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	public static final double ARROW_LENGTH_COEFFICIENT = 0.25;
 	public static final int REFRESH_MESSAGES_INTERVAL = 500;
 	public final int ARROW_DRAWING_MIN_THRESHOLD = 8;
-	public final float LABELS_MIN_FONT_SIZE = 8;
-	public final int LABELS_FONT_SIZE = 12;
+	public final float LABELS_MIN_FONT_SIZE = 12;
+	public final int LABELS_FONT_SIZE = 14;
 	public final float LABELS_MAX_FONT_SIZE = 16;
 	public final static double DEFAULT_GRID_SIZE = 20 * cm;
 	public final int FRAME_PAINT_MIN_DELAY = 17;
@@ -151,7 +151,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		}
 		frameGraphics.setColor(Colors.FONT_TAGS);
 		frameGraphics.setStroke(arrowStroke);
-		drawCrossOn(frameGraphics, crossX, crossY, true);
+		drawCrossOn(frameGraphics, crossX, crossY, false);
 		drawAxisOn(frameGraphics);
 		drawScaleLineOn(frameGraphics);
 		if (drawInfo)
@@ -302,7 +302,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	}
 
 	private float scaleLabelsFont() {
-		float size = (float) (scale * SpringShape.fontSize * PhysicalConstants.cm);
+		float size = (float) (scale * LABELS_FONT_SIZE * PhysicalConstants.cm);
 		if (size > LABELS_MAX_FONT_SIZE)
 			size = LABELS_MAX_FONT_SIZE;
 		else if (size < LABELS_MIN_FONT_SIZE)
@@ -350,7 +350,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		int y0 = getHeight() - SCALE_LINE_MARGIN;
 		int x1 = x0 + 50;
 		int y1 = y0 - 50;
-		targetG2d.setColor(Colors.FONT_MAIN);
+		targetG2d.setColor(getMainFontColor());
 		drawArrowLine(targetG2d, x0, y0, x1, y0, 10, 4);
 		drawArrowLine(targetG2d, x0, y0, x0, y1, 10, 4);
 		targetG2d.drawString("X", x1, y0 - 4);
@@ -358,12 +358,12 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	}
 
 	private void drawScaleLineOn(Graphics2D targetG2d) {
+		targetG2d.setColor(getMainFontColor());
 		int l = 50;
 		targetG2d.drawLine(getWidth() - l - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN,
 				getWidth() - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN);
-		drawStringTilted(targetG2d, String.format("%.1e m", CoordinateConverter.fromScreen(l)),
-				getWidth() - l - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN, getWidth() - SCALE_LINE_MARGIN,
-				getHeight() - SCALE_LINE_MARGIN);
+		targetG2d.drawString(String.format("%.1e m", CoordinateConverter.fromScreen(l)),
+				getWidth() - l - SCALE_LINE_MARGIN, getHeight() - SCALE_LINE_MARGIN - 4);
 	}
 
 	public void drawArrowLine(Graphics2D targetG2d, int x1, int y1, Vector v, Color arrowColor, String label) {
