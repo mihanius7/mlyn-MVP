@@ -120,24 +120,26 @@ public class InteractionProcessor implements SimulationComponent {
 		}
 		PointMass.maxVelocity = Math.sqrt(PointMass.maxSquaredVelocityCandidate);
 	}
-	
+
 	public Vector calculateField(double x, double y, FieldType fieldType) {
 		Particle testParticle;
 		pairForce = PairForceFactory.getCentralForce(getInteractionType());
 		Vector field = new Vector();
 		double distance;
-		double dF = 0;
+		double increment = 0;
 		int pNumber = 0;
 		while (Simulation.getInstance().content().particle(pNumber) != null) {
 			testParticle = Simulation.getInstance().content().particle(pNumber);
 			distance = Functions.defineDistance(testParticle, x, y);
 			if (distance >= 0.9 * testParticle.getRadius()) {
 				if (fieldType == FieldType.POTENTIAL)
-					dF = pairForce.calculatePotential(testParticle, distance);
+					increment = pairForce.calculatePotential(testParticle, distance);
 				else if (fieldType == FieldType.STRENGTH)
-					dF = pairForce.calculateStrength(testParticle, distance);
-				field.addToX(dF * (x - testParticle.getX()) / distance);
-				field.addToY(dF * (y - testParticle.getY()) / distance);
+					increment = pairForce.calculateStrength(testParticle, distance);
+				else if (fieldType == FieldType.SPL)
+					increment = Math.sin(distance * 100 / 343 * 3.1415);
+				field.addToX(increment * (x - testParticle.getX()) / distance);
+				field.addToY(increment * (y - testParticle.getY()) / distance);
 			}
 			pNumber++;
 		}
@@ -164,8 +166,7 @@ public class InteractionProcessor implements SimulationComponent {
 		if (usePPCollisions || useInterparticleForces) {
 			for (int i = 0; i < particles.size() - 1; i++) {
 				for (int j = i + 1; j < particles.size(); j++) {
-					maxPairSquaredDistance = useInterparticleForces
-							? pairInteractionMaxDistance
+					maxPairSquaredDistance = useInterparticleForces ? pairInteractionMaxDistance
 							: neighborRangeExtra * (particles.get(i).getRadius() + particles.get(j).getRadius());
 					maxPairSquaredDistance *= maxPairSquaredDistance;
 					squaredDistance = defineSquaredDistance(i, j);
@@ -364,11 +365,11 @@ public class InteractionProcessor implements SimulationComponent {
 	public double getTimeStepReserveRatio() {
 		return timeStepReserveRatio;
 	}
-	
+
 	public PairForce pairForceType() {
 		return pairForce;
 	}
-	
+
 	public PairForce collisionForceType() {
 		return collisionForce;
 	}
@@ -377,7 +378,5 @@ public class InteractionProcessor implements SimulationComponent {
 		ConsoleWindow.println(
 				String.format(GUIStrings.MAX_INTERACTION_DEFINING_DISTANCE + ": %.1e m", pairInteractionMaxDistance));
 	}
-
-
 
 }

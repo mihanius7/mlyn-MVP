@@ -17,17 +17,17 @@ import simulation.components.InteractionType;
 
 public class HeatMap {
 
-	private static final int AUTORANGE_VALUE_DIVIDER = 2;
+	private static final int AUTORANGE_VALUE_DIVIDER = 1;
 	private int updateInterval = 3, resolution = 8, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
-	private double range = 1000;
+	private double range = 0.5;
 	private double minValue, minField;
 	private double maxValue, maxField;
 	private boolean isGravityFieldMap;
 	private boolean isAdaptiveRange = true;
 	private Viewport viewport;
-	private FieldType fieldType = FieldType.STRENGTH;
+	private FieldType fieldType = FieldType.SPL;
 	private ProjectionType projectionType = ProjectionType.X;
 
 	public HeatMap(int w, int h) {
