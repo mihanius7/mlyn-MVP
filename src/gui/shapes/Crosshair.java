@@ -11,11 +11,11 @@ import gui.viewport.Viewport;
 import simulation.Simulation;
 
 public class Crosshair extends Shape {
-	
+
 	private static final int COORDINATES_MARGIN_PX = 8;
 
 	public static final Color CROSSHAIR = new Color(128, 128, 128);
-	
+
 	private int x;
 	private int y;
 
@@ -26,9 +26,13 @@ public class Crosshair extends Shape {
 		g.drawLine(x, 0, x, viewport.getHeight());
 		g.drawLine(0, y, viewport.getWidth(), y);
 		g.setColor(viewport.getMainFontColor());
-		g.drawString(String.format("P = %.2e [Pa]", Simulation.getInstance().interactionProcessor.calculateField(x, y, FieldType.SPL).norm()), x + COORDINATES_MARGIN_PX, y - COORDINATES_MARGIN_PX);
-		g.drawString(String.format("%.2e m", CoordinateConverter.fromScreenX(x)), x + COORDINATES_MARGIN_PX, viewport.getHeight() - COORDINATES_MARGIN_PX);
-		g.drawString(String.format("%.2e m", CoordinateConverter.fromScreenY(y)), COORDINATES_MARGIN_PX, y - COORDINATES_MARGIN_PX);
+		double value = Math.abs(Simulation.getInstance().interactionProcessor.calculateField(x, y, FieldType.SPL).X());
+		g.drawString(String.format("SPL = %.1f [dB]", 20 * Math.log10(Math.max(value, 0.00002) / 0.00002)), x + COORDINATES_MARGIN_PX,
+				y - COORDINATES_MARGIN_PX);
+		g.drawString(String.format("%.2f m", CoordinateConverter.fromScreenX(x)), x + COORDINATES_MARGIN_PX,
+				viewport.getHeight() - COORDINATES_MARGIN_PX);
+		g.drawString(String.format("%.2f m", CoordinateConverter.fromScreenY(y)), COORDINATES_MARGIN_PX,
+				y - COORDINATES_MARGIN_PX);
 
 	}
 
@@ -40,9 +44,9 @@ public class Crosshair extends Shape {
 	public void setX(int x) {
 		this.x = x;
 	}
-	
+
 	public void setY(int y) {
 		this.y = y;
 	}
-	
+
 }
