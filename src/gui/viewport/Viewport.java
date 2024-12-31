@@ -32,7 +32,6 @@ import gui.images.HeatMap;
 import gui.lang.GUIStrings;
 import gui.shapes.Crosshair;
 import gui.shapes.Shape;
-import gui.shapes.SpringShape;
 import gui.viewport.listeners.MouseMode;
 import gui.viewport.listeners.ViewportKeyListener;
 import gui.viewport.listeners.ViewportMouseListener;
@@ -42,6 +41,7 @@ import simulation.Simulation;
 
 public class Viewport extends Canvas implements ActionListener, Runnable {
 
+	private static final long serialVersionUID = -1071873059037478882L;
 	private static final int SMOOTH_SCALING_STOPING_DIFFERENCE = 4;
 	private static final int SMOOTH_SCALING_COEFFICIENT = 2;
 	private static final int CROSS_SIZE_PX = 8;
@@ -66,6 +66,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 
 	private static ArrayList<Shape> shapes;
 	private static ArrayList<Shape> physicalShapes;
+	Boundaries b;
 
 	public Crosshair crosshair;
 
@@ -108,6 +109,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		GraphicsConfiguration config = device.getDefaultConfiguration();
 		frameImage = config.createCompatibleImage(initW, initH);
 //		frameImage = new BufferedImage(initW, initH, BufferedImage.TYPE_INT_RGB);
+		b = Simulation.getInstance().content().getBoundaries();
 		setMouseMode(MouseMode.SELECT_PARTICLE);
 		setBounds(0, 0, initW, initH);
 		background = new Background(this);
@@ -115,6 +117,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		labelsFont = new Font("Arial", Font.TRUETYPE_FONT, LABELS_FONT_SIZE);
 		refreshLabelsTimer = new Timer(REFRESH_MESSAGES_INTERVAL, this);
 		reset();
+		
 		setDrawHeatMap(true);
 	}
 
@@ -136,7 +139,10 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		frameGraphics.setRenderingHints(rh);
 		if (drawHeatMap && !camera.isFollowing()) {
 			heatMap.updateImage();
-			frameGraphics.drawImage(heatMap.getImage(), 0, 0, null);
+			drawBackgroundOn(frameGraphics);
+			int x0 = CoordinateConverter.toScreenX(b.getLeft());
+			int y0 = CoordinateConverter.toScreenY(b.getUpper());
+			frameGraphics.drawImage(heatMap.getImage(), x0, y0, null);
 		} else if (drawTracks && scaled && !camera.isFollowing()) {
 			frameGraphics.drawImage(tracksImage, 0, 0, null);
 		} else
@@ -236,7 +242,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		Simulation.getInstance().timeStepController.updateTimeScale();
 		double r = Simulation.getInstance().interactionProcessor.getTimeStepReserveRatio();
 		double timeScale = Simulation.getInstance().timeStepController.getMeasuredTimeScale();
-		String displayedTimeScale = "нявызначаны";
+		String displayedTimeScale = "undefined";
 		infoString1 = String.format("t = %.3f c, ", Simulation.getInstance().time())
 				+ String.format("dt = %.4f", Simulation.getInstance().timeStepController.getTimeStepSize() * 1000)
 				+ " ms, " + String.format("Vmax = %.2f m/s", PointMass.maxVelocity) + ", fps = "
@@ -284,7 +290,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	}
 
 	public Color getMainFontColor() {
-		return drawHeatMap ? Color.WHITE : Colors.FONT_MAIN;
+		return drawHeatMap ? Color.DARK_GRAY : Colors.FONT_MAIN;
 	}
 
 	public void drawStringTilted(Graphics2D targetG2d, String string, int x1, int y1, int x2, int y2) {
@@ -317,7 +323,6 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	private void drawBoundariesOn(Graphics2D targetG2d) {
 		targetG2d.setColor(Colors.BOUNDARIES);
 		targetG2d.setStroke(arrowStroke);
-		Boundaries b = Simulation.getInstance().content().getBoundaries();
 		int x1 = CoordinateConverter.toScreenX(b.getLeft());
 		int y1 = CoordinateConverter.toScreenY(b.getUpper());
 		int w = CoordinateConverter.toScreen(b.getWidth());
@@ -409,6 +414,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 				scale = targetScale;
 				scaled = true;
 				initBackgroundImage();
+				initHeatMapImage();
 			}
 		}
 	}
@@ -578,7 +584,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	}
 
 	public void saveScreenshot() {
-		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fс.png", Simulation.getInstance().time());
+		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fпїЅ.png", Simulation.getInstance().time());
 		try {
 			if (javax.imageio.ImageIO.write(frameImage, "png", new java.io.File(fileName)))
 				ConsoleWindow.println(GUIStrings.IMAGE_SAVED_TO + " " + fileName);

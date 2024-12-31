@@ -27,8 +27,10 @@ public class Crosshair extends Shape {
 		g.drawLine(0, y, viewport.getWidth(), y);
 		g.setColor(viewport.getMainFontColor());
 		double value = Math.abs(Simulation.getInstance().interactionProcessor.calculateField(x, y, FieldType.SPL).X());
-		g.drawString(String.format("SPL = %.1f [dB]", 20 * Math.log10(Math.max(value, 0.00002) / 0.00002)), x + COORDINATES_MARGIN_PX,
-				y - COORDINATES_MARGIN_PX);
+		if (Simulation.getInstance().content().getBoundaries().isInside(CoordinateConverter.fromScreenX(x),
+				CoordinateConverter.fromScreenY(y)))
+			g.drawString(String.format("SPL = %.1f [dB]", 20 * Math.log10(Math.max(value, 0.00002) / 0.00002)),
+					x + COORDINATES_MARGIN_PX, y - COORDINATES_MARGIN_PX);
 		g.drawString(String.format("%.2f m", CoordinateConverter.fromScreenX(x)), x + COORDINATES_MARGIN_PX,
 				viewport.getHeight() - COORDINATES_MARGIN_PX);
 		g.drawString(String.format("%.2f m", CoordinateConverter.fromScreenY(y)), COORDINATES_MARGIN_PX,
