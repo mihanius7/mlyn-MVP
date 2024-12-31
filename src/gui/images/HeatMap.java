@@ -64,7 +64,9 @@ public class HeatMap {
 							+ CoordinateConverter.fromScreenX((stepX + 1) * resolution)) / 2;
 					double yc = (CoordinateConverter.fromScreenY(stepY * resolution)
 							+ CoordinateConverter.fromScreenY((stepY + 1) * resolution)) / 2;
-					Vector fieldVector = Simulation.getInstance().interactionProcessor.calculateField(xc, yc, fieldType);
+					Vector fieldVector = new Vector();
+					if (Simulation.getInstance().content().getBoundaries().isInside(xc, yc))
+						fieldVector = Simulation.getInstance().interactionProcessor.calculateField(xc, yc, fieldType);
 					double fieldValue = defineProjection(fieldVector);
 					heatMapCanvas.setColor(defineColor(fieldValue, range));
 					heatMapCanvas.fill(
