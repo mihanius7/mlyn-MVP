@@ -137,7 +137,7 @@ public class InteractionProcessor implements SimulationComponent {
 				else if (fieldType == FieldType.STRENGTH)
 					increment = pairForce.calculateStrength(testParticle, distance);
 				else if (fieldType == FieldType.SPL)
-					increment = Math.sin(2 * Math.PI * testParticle.getMass() * 1000.0 * distance / 343) / distance;
+					increment = Math.sin((2 * Math.PI * testParticle.getMass() * 1000.0) * (distance / 343 + Simulation.getInstance().time())) / distance;
 				if (fieldType != FieldType.SPL) {
 					field.addToX(increment * (x - testParticle.getX()) / distance);
 					field.addToY(increment * (y - testParticle.getY()) / distance);
