@@ -22,11 +22,11 @@ public class HeatMap {
 	private int updateInterval = 3, resolution = 12, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
-	private double range = 0.5;
+	private double range = 6;
 	private double minValue, minField;
 	private double maxValue, maxField;
 	private boolean isGravityFieldMap;
-	private boolean isAdaptiveRange = true;
+	private boolean isAdaptiveRange = false;
 	private FieldType fieldType = FieldType.SPL;
 	private ProjectionType projectionType = ProjectionType.X;
 	private Boundaries b;
@@ -110,8 +110,8 @@ public class HeatMap {
 		int colorIndex;
 		colorIndex = (isGravityFieldMap) ? (int) Functions.linear2DInterpolation(0, 0, range, 255, value)
 				: (int) Functions.linear2DInterpolation(-range / 2, 0, range / 2, 255, value);
-		c1 = new Color(Colors.TURBO_SRGB_BYTES[colorIndex][0], Colors.TURBO_SRGB_BYTES[colorIndex][1],
-				Colors.TURBO_SRGB_BYTES[colorIndex][2]);
+		c1 = new Color(Colors.RWB_SRGB_BYTES[colorIndex][0], Colors.RWB_SRGB_BYTES[colorIndex][1],
+				Colors.RWB_SRGB_BYTES[colorIndex][2]);
 		return c1;
 	}
 
