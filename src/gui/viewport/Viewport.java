@@ -78,6 +78,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	private boolean firstTracksDrawing = true;
 	private boolean drawHeatMap = false;
 	private boolean scaled;
+	private boolean saveScreenshot;
 	public Font labelsFont;
 	private Font mainFont;
 	private int fps = 0;
@@ -117,7 +118,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		labelsFont = new Font("Arial", Font.TRUETYPE_FONT, LABELS_FONT_SIZE);
 		refreshLabelsTimer = new Timer(REFRESH_MESSAGES_INTERVAL, this);
 		reset();
-		
+
 		setDrawHeatMap(true);
 	}
 
@@ -128,8 +129,8 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 				frameGraphics.drawImage(renderFrame(), 0, 0, null);
 				frameGraphics.dispose();
 			} while (strategy.contentsRestored());
-				strategy.show();
-				fps++;
+			strategy.show();
+			fps++;
 		} while (strategy.contentsLost());
 	}
 
@@ -162,6 +163,10 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		drawScaleLineOn(frameGraphics);
 		if (drawInfo)
 			drawInfoStringsOn(frameGraphics);
+		if (saveScreenshot) {
+			saveScreenshot();
+			saveScreenshot = false;
+		}
 		return frameImage;
 	}
 
@@ -583,8 +588,12 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		ConsoleWindow.println(GUIStrings.MOUSE_MODE + ": " + mouseMode);
 	}
 
-	public void saveScreenshot() {
-		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6f�.png", Simulation.getInstance().time());
+	public void prepareScreenshotAndSave() {
+		saveScreenshot = true;
+	}
+
+	private void saveScreenshot() {
+		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fs.png", Simulation.getInstance().time());
 		try {
 			if (javax.imageio.ImageIO.write(frameImage, "png", new java.io.File(fileName)))
 				ConsoleWindow.println(GUIStrings.IMAGE_SAVED_TO + " " + fileName);

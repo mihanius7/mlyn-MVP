@@ -318,6 +318,6 @@ public class MainWindow extends JFrame {
 	}
 
 	public void saveImageToFile() {
-		viewport.saveScreenshot();
+		viewport.prepareScreenshotAndSave();
 	}
 }
