@@ -141,8 +141,8 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		if (drawHeatMap && !camera.isFollowing()) {
 			heatMap.updateImage();
 			drawBackgroundOn(frameGraphics);
-			int x0 = CoordinateConverter.toScreenX(b.getLeft());
-			int y0 = CoordinateConverter.toScreenY(b.getUpper());
+			int x0 = Math.max(0, CoordinateConverter.toScreenX(b.getLeft()));
+			int y0 = Math.max(0, CoordinateConverter.toScreenY(b.getUpper()));
 			frameGraphics.drawImage(heatMap.getImage(), x0, y0, null);
 		} else if (drawTracks && scaled && !camera.isFollowing()) {
 			frameGraphics.drawImage(tracksImage, 0, 0, null);

@@ -18,11 +18,11 @@ import simulation.components.InteractionType;
 
 public class HeatMap {
 
-	private static final int AUTORANGE_VALUE_DIVIDER = 1;
+	private static final float AUTORANGE_VALUE_DIVIDER = 0.5f;
 	private int updateInterval = 3, resolution = 12, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
-	private double range = 6;
+	private double range = 9;
 	private double minValue, minField;
 	private double maxValue, maxField;
 	private boolean isGravityFieldMap;
@@ -30,6 +30,7 @@ public class HeatMap {
 	private FieldType fieldType = FieldType.SPL;
 	private ProjectionType projectionType = ProjectionType.X;
 	private Boundaries b;
+	public static final int palette[][] = Colors.WBW;
 
 	public HeatMap(int w, int h) {
 		b = Simulation.getInstance().content().getBoundaries();
@@ -59,8 +60,8 @@ public class HeatMap {
 			updatesNumber = 0;
 			int wSteps = (int) (width / resolution);
 			int hSteps = (int) (height / resolution);
-			int x0 = (int) CoordinateConverter.toScreenX(b.getLeft());
-			int y0 = (int) CoordinateConverter.toScreenY(b.getUpper());
+			int x0 = (int) Math.max(0, CoordinateConverter.toScreenX(b.getLeft()));
+			int y0 = (int) Math.max(0, CoordinateConverter.toScreenY(b.getUpper()));
 			for (int stepX = 0; stepX <= wSteps; stepX++) {
 				for (int stepY = 0; stepY <= hSteps; stepY++) {
 					double xc = (CoordinateConverter.fromScreenX(stepX * resolution + x0)
@@ -110,8 +111,8 @@ public class HeatMap {
 		int colorIndex;
 		colorIndex = (isGravityFieldMap) ? (int) Functions.linear2DInterpolation(0, 0, range, 255, value)
 				: (int) Functions.linear2DInterpolation(-range / 2, 0, range / 2, 255, value);
-		c1 = new Color(Colors.RWB_SRGB_BYTES[colorIndex][0], Colors.RWB_SRGB_BYTES[colorIndex][1],
-				Colors.RWB_SRGB_BYTES[colorIndex][2]);
+		c1 = new Color(palette[colorIndex][0], palette[colorIndex][1],
+				palette[colorIndex][2]);
 		return c1;
 	}
 
