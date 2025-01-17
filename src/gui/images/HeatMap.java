@@ -18,19 +18,19 @@ import simulation.components.InteractionType;
 
 public class HeatMap {
 
-	private static final float AUTORANGE_VALUE_DIVIDER = 0.5f;
-	private int updateInterval = 3, resolution = 12, updatesNumber = 0, width, height;
+	private static final float AUTORANGE_VALUE_DIVIDER = 0.75f;
+	private int updateInterval = 3, resolution = 5, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
 	private double range = 9;
 	private double minValue, minField;
 	private double maxValue, maxField;
 	private boolean isGravityFieldMap;
-	private boolean isAdaptiveRange = false;
+	private boolean isAdaptiveRange = true;
 	private FieldType fieldType = FieldType.SPL;
 	private ProjectionType projectionType = ProjectionType.X;
 	private Boundaries b;
-	public static final int palette[][] = Colors.WBW;
+	public static final int palette[][] = Colors.RWB;
 
 	public HeatMap(int w, int h) {
 		b = Simulation.getInstance().content().getBoundaries();
@@ -58,22 +58,23 @@ public class HeatMap {
 		if (updatesNumber >= ui) {
 			adjustRange();
 			updatesNumber = 0;
-			int wSteps = (int) (width / resolution);
-			int hSteps = (int) (height / resolution);
+			int dh = CoordinateConverter.toScreen(resolution / 100.0);
+			int wSteps = (int) (width / dh);
+			int hSteps = (int) (height / dh);
 			int x0 = (int) Math.max(0, CoordinateConverter.toScreenX(b.getLeft()));
 			int y0 = (int) Math.max(0, CoordinateConverter.toScreenY(b.getUpper()));
 			for (int stepX = 0; stepX <= wSteps; stepX++) {
 				for (int stepY = 0; stepY <= hSteps; stepY++) {
-					double xc = (CoordinateConverter.fromScreenX(stepX * resolution + x0)
-							+ CoordinateConverter.fromScreenX((stepX + 1) * resolution + x0)) / 2;
-					double yc = (CoordinateConverter.fromScreenY(stepY * resolution + y0)
-							+ CoordinateConverter.fromScreenY((stepY + 1) * resolution + y0)) / 2;
+					double xc = (CoordinateConverter.fromScreenX(stepX * dh + x0)
+							+ CoordinateConverter.fromScreenX((stepX + 1) * dh + x0)) / 2;
+					double yc = (CoordinateConverter.fromScreenY(stepY * dh + y0)
+							+ CoordinateConverter.fromScreenY((stepY + 1) * dh + y0)) / 2;
 					Vector fieldVector = new Vector();
 					fieldVector = Simulation.getInstance().interactionProcessor.calculateField(xc, yc, fieldType);
 					double fieldValue = defineProjection(fieldVector);
 					heatMapCanvas.setColor(defineColor(fieldValue, range));
 					heatMapCanvas.fill(
-							new Rectangle2D.Double(stepX * resolution, stepY * resolution, resolution, resolution));
+							new Rectangle2D.Double(stepX * dh, stepY * dh, dh, dh));
 //					viewport.drawArrowLine(heatMapCanvas, (int) (stepX + 0.5) * resolution, (int) (stepY + 0.5) * resolution,
 //							fieldVector.multiply(0.5), Color.BLACK, "");
 					if (fieldValue > maxValue)
@@ -111,8 +112,7 @@ public class HeatMap {
 		int colorIndex;
 		colorIndex = (isGravityFieldMap) ? (int) Functions.linear2DInterpolation(0, 0, range, 255, value)
 				: (int) Functions.linear2DInterpolation(-range / 2, 0, range / 2, 255, value);
-		c1 = new Color(palette[colorIndex][0], palette[colorIndex][1],
-				palette[colorIndex][2]);
+		c1 = new Color(palette[colorIndex][0], palette[colorIndex][1], palette[colorIndex][2]);
 		return c1;
 	}
 

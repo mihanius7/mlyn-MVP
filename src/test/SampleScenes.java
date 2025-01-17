@@ -67,12 +67,12 @@ public class SampleScenes {
 		Simulation.getInstance().interactionProcessor.setUseExternalForces(false);
 		Simulation.getInstance().interactionProcessor.setInteractionType(InteractionType.COULOMB);
 		Boundaries b = Simulation.getInstance().content().getBoundaries();
-		b.setBounds(0, 5.0, 4.0, 0);
+		b.setBounds(0, 4.2, 2.4, 0);
 		b.setUseAll(true);
-		Simulation.getInstance().add(new Particle(150 * cm, 350 * cm, 0.065 * kg, 2.0E-6, 0, 0, 8 * cm, Color.RED));
-		Simulation.getInstance().add(new Particle(350 * cm, 350 * cm, 0.065 * kg, -2.0E-6, 0, 0, 8 * cm, Color.BLUE));
-		Simulation.getInstance().add(new Particle(100 * cm, 300 * cm, 0.250 * kg, 4.0E-6, 0, 0, 8 * cm, Color.RED));
-		Simulation.getInstance().add(new Particle(400 * cm, 300 * cm, 0.250 * kg, 1.0E-6, 0, 0, 8 * cm, Color.RED));
+		Simulation.getInstance().add(new Particle(50 * cm, 50 * cm, 0.161 * kg, 2.0E-6, 0, 0, 8 * cm, Color.CYAN));
+		Simulation.getInstance().add(new Particle(50 * cm, 240 * cm - 50 * cm, 0.161 * kg, -2.0E-6, 0, 0, 8 * cm, Color.CYAN));
+		//Simulation.getInstance().add(new Particle(100 * cm, 300 * cm, 0.250 * kg, 4.0E-6, 0, 0, 8 * cm, Color.RED));
+		//Simulation.getInstance().add(new Particle(400 * cm, 300 * cm, 0.250 * kg, 1.0E-6, 0, 0, 8 * cm, Color.RED));
 	}
 
 	public void scenePreset3() {
