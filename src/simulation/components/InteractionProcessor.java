@@ -121,39 +121,6 @@ public class InteractionProcessor implements SimulationComponent {
 		PointMass.maxVelocity = Math.sqrt(PointMass.maxSquaredVelocityCandidate);
 	}
 
-	public Vector calculateField(double x, double y, FieldType fieldType) {
-		Particle testParticle;
-		pairForce = PairForceFactory.getCentralForce(getInteractionType());
-		Vector field = new Vector();
-		double distance;
-		double increment = 0;
-		int pNumber = 0;
-		while (Simulation.getInstance().content().particle(pNumber) != null) {
-			testParticle = Simulation.getInstance().content().particle(pNumber);
-			distance = Functions.defineDistance(testParticle, x, y);
-			if (distance >= 0.9 * testParticle.getRadius()) {
-				if (fieldType == FieldType.POTENTIAL)
-					increment = pairForce.calculatePotential(testParticle, distance);
-				else if (fieldType == FieldType.STRENGTH)
-					increment = pairForce.calculateStrength(testParticle, distance);
-				else if (fieldType == FieldType.SPL)
-					increment = Math.sin((2 * Math.PI * testParticle.getMass() * 1000.0) * (0 * Simulation.getInstance().time() - distance / 343)) / distance;
-				if (fieldType != FieldType.SPL) {
-					field.addToX(increment * (x - testParticle.getX()) / distance);
-					field.addToY(increment * (y - testParticle.getY()) / distance);
-				} else {
-					field.addToX(increment);
-				}
-			}
-			pNumber++;
-		}
-		return field;
-	}
-
-	public Vector calculateField(int px, int py, FieldType fieldType) {
-		return calculateField(CoordinateConverter.fromScreenX(px), CoordinateConverter.fromScreenY(py), fieldType);
-	}
-
 	private void adjustNeighborsSearchPeriod() {
 		if (usePPCollisions || useInterparticleForces) {
 			double t1 = getNeighborRangeExtra() / PointMass.maxVelocity;

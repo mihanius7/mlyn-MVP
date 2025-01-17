@@ -20,19 +20,19 @@ public class Crosshair extends Shape {
 	private int y;
 
 	@Override
-	public void paintShape(Graphics2D g, Viewport viewport) {
+	public void paintShape(Graphics2D g, Viewport v) {
 		g.setColor(CROSSHAIR);
 		g.setStroke(new BasicStroke(2.0f));
-		g.drawLine(x, 0, x, viewport.getHeight());
-		g.drawLine(0, y, viewport.getWidth(), y);
-		g.setColor(viewport.getMainFontColor());
-		double value = Math.abs(Simulation.getInstance().interactionProcessor.calculateField(x, y, FieldType.SPL).X());
+		g.drawLine(x, 0, x, v.getHeight());
+		g.drawLine(0, y, v.getWidth(), y);
+		g.setColor(v.getMainFontColor());
+		double value = Math.abs(v.heatMap.calculateField(x, y, FieldType.SPL).X());
 		if (Simulation.getInstance().content().getBoundaries().isInside(CoordinateConverter.fromScreenX(x),
 				CoordinateConverter.fromScreenY(y)))
 			g.drawString(String.format("SPL = %.1f [dB]", 20 * Math.log10(Math.max(value, 0.00002) / 0.00002)),
 					x + COORDINATES_MARGIN_PX, y - COORDINATES_MARGIN_PX);
 		g.drawString(String.format("%.2f m", CoordinateConverter.fromScreenX(x)), x + COORDINATES_MARGIN_PX,
-				viewport.getHeight() - COORDINATES_MARGIN_PX);
+				v.getHeight() - COORDINATES_MARGIN_PX);
 		g.drawString(String.format("%.2f m", CoordinateConverter.fromScreenY(y)), COORDINATES_MARGIN_PX,
 				y - COORDINATES_MARGIN_PX);
 
