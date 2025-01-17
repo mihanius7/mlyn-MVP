@@ -62,7 +62,7 @@ public class HeatMap {
 		if (updatesNumber >= ui) {
 			adjustRange();
 			updatesNumber = 0;
-			int dh = CoordinateConverter.toScreen(resolution / 100.0);
+			int dh = Math.max(CoordinateConverter.toScreen(resolution / 100.0), 4);
 			int wSteps = (int) (width / dh);
 			int hSteps = (int) (height / dh);
 			int x0 = (int) Math.max(0, CoordinateConverter.toScreenX(b.getLeft()));
@@ -100,7 +100,7 @@ public class HeatMap {
 		}
 	}
 
-	public double defineProjection(Vector v) {
+	private double defineProjection(Vector v) {
 		double result = 0;
 		if (projectionType == ProjectionType.MAGNITUDE)
 			result = v.norm();
@@ -130,7 +130,7 @@ public class HeatMap {
 		while (Simulation.getInstance().content().particle(pNumber) != null) {
 			testParticle = Simulation.getInstance().content().particle(pNumber);
 			distance = Functions.defineDistance(testParticle, x, y);
-			if (distance >= 0.9 * testParticle.getRadius()) {
+			if (distance >= 0.8 * testParticle.getRadius()) {
 				if (fieldType == FieldType.POTENTIAL)
 					increment = pairForce.calculatePotential(testParticle, distance);
 				else if (fieldType == FieldType.STRENGTH)
