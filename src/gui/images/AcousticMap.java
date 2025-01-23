@@ -16,7 +16,7 @@ public class AcousticMap extends HeatMap {
 	}
 
 	@Override
-	protected double calculatePixel(double x, double y, FieldType fieldType, Particle testParticle, Vector field,
+	protected double calculatePixel(double x, double y, Particle testParticle, Vector field,
 			double distance, double increment) {
 		increment = Math.sin((2 * Math.PI * testParticle.getMass() * 1000.0)
 				* (0 * Simulation.getInstance().time() - distance / 343)) / distance;

@@ -1,7 +1,5 @@
 package gui.images;
 
-import static simulation.Simulation.getInstance;
-
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
@@ -17,23 +15,21 @@ import gui.viewport.CoordinateConverter;
 import gui.viewport.Viewport;
 import simulation.Boundaries;
 import simulation.Simulation;
-import simulation.components.InteractionType;
 
 public class HeatMap {
 
 	private static final int MIN_PIXEL_SIZE = 4;
-	private static final double MINIMAL_DISTANCE_COEF = 0.8;
+	private static final double MINIMAL_DISTANCE_COEF = 0.75;
 	private static final float AUTORANGE_VALUE_DIVIDER = 0.75f;
-	private int updateInterval = 3, updatesNumber = 0, width, height;
+	private int updateInterval = 5, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
 	private double range = 10;
 	private double resolution = 0.1;
 	private double minValue, minField;
 	private double maxValue, maxField;
-	private boolean isGravityFieldMap;
 	private boolean isAdaptiveRange = true;
-	private FieldType fieldType = FieldType.SPL;
+	private FieldType fieldType = FieldType.STRENGTH;
 	private ProjectionType projectionType = ProjectionType.X;
 	private Boundaries b;
 	private PairForce pairForce;
@@ -57,10 +53,6 @@ public class HeatMap {
 
 	public void updateImage() {
 		updatesNumber++;
-		if (getInstance().interactionProcessor.getInteractionType() == InteractionType.GRAVITATION)
-			isGravityFieldMap = true;
-		else if (getInstance().interactionProcessor.getInteractionType() == InteractionType.COULOMB)
-			isGravityFieldMap = false;
 		int ui = (Simulation.getInstance().isActive()) ? updateInterval : 15;
 		if (updatesNumber >= ui) {
 			adjustRange();
@@ -77,7 +69,7 @@ public class HeatMap {
 					double yc = (CoordinateConverter.fromScreenY(stepY * dh + y0)
 							+ CoordinateConverter.fromScreenY((stepY + 1) * dh + y0)) / 2;
 					Vector fieldVector = new Vector();
-					fieldVector = calculateField(xc, yc, fieldType);
+					fieldVector = calculateField(xc, yc);
 					double fieldValue = defineProjection(fieldVector);
 					heatMapCanvas.setColor(defineColor(fieldValue, range));
 					heatMapCanvas.fill(new Rectangle2D.Double(stepX * dh, stepY * dh, dh, dh));
@@ -116,13 +108,12 @@ public class HeatMap {
 	public Color defineColor(double value, double range) {
 		Color c1;
 		int colorIndex;
-		colorIndex = (isGravityFieldMap) ? (int) Functions.linear2DInterpolation(0, 0, range, 255, value)
-				: (int) Functions.linear2DInterpolation(-range / 2, 0, range / 2, 255, value);
+		colorIndex = (int) Functions.linear2DInterpolation(-range / 2, 0, range / 2, 255, value);
 		c1 = new Color(palette[colorIndex][0], palette[colorIndex][1], palette[colorIndex][2]);
 		return c1;
 	}
 
-	private Vector calculateField(double x, double y, FieldType fieldType) {
+	private Vector calculateField(double x, double y) {
 		Particle testParticle;
 		pairForce = PairForceFactory
 				.getCentralForce(Simulation.getInstance().interactionProcessor.getInteractionType());
@@ -134,14 +125,14 @@ public class HeatMap {
 			testParticle = Simulation.getInstance().content().particle(pNumber);
 			distance = Functions.defineDistance(testParticle, x, y);
 			if (distance >= MINIMAL_DISTANCE_COEF * testParticle.getRadius()) {
-				increment = calculatePixel(x, y, fieldType, testParticle, field, distance, increment);
+				increment = calculatePixel(x, y, testParticle, field, distance, increment);
 			}
 			pNumber++;
 		}
 		return field;
 	}
 
-	protected double calculatePixel(double x, double y, FieldType fieldType, Particle testParticle, Vector field,
+	protected double calculatePixel(double x, double y, Particle testParticle, Vector field,
 			double distance, double increment) {
 		if (fieldType == FieldType.POTENTIAL)
 			increment = pairForce.calculatePotential(testParticle, distance);
@@ -152,8 +143,8 @@ public class HeatMap {
 		return increment;
 	}
 
-	public Vector calculateField(int px, int py, FieldType fieldType) {
-		return calculateField(CoordinateConverter.fromScreenX(px), CoordinateConverter.fromScreenY(py), fieldType);
+	public Vector calculateField(int px, int py) {
+		return calculateField(CoordinateConverter.fromScreenX(px), CoordinateConverter.fromScreenY(py));
 	}
 
 	public int getUpdateInterval() {
