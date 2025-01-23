@@ -21,11 +21,14 @@ import simulation.components.InteractionType;
 
 public class HeatMap {
 
+	private static final int MIN_PIXEL_SIZE = 4;
+	private static final double MINIMAL_DISTANCE_COEF = 0.8;
 	private static final float AUTORANGE_VALUE_DIVIDER = 0.75f;
-	private int updateInterval = 3, resolution = 5, updatesNumber = 0, width, height;
+	private int updateInterval = 3, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
-	private double range = 9;
+	private double range = 10;
+	private double resolution = 0.1;
 	private double minValue, minField;
 	private double maxValue, maxField;
 	private boolean isGravityFieldMap;
@@ -62,7 +65,7 @@ public class HeatMap {
 		if (updatesNumber >= ui) {
 			adjustRange();
 			updatesNumber = 0;
-			int dh = Math.max(CoordinateConverter.toScreen(resolution / 100.0), 4);
+			int dh = Math.max(CoordinateConverter.toScreen(resolution), MIN_PIXEL_SIZE);
 			int wSteps = (int) (width / dh);
 			int hSteps = (int) (height / dh);
 			int x0 = (int) Math.max(0, CoordinateConverter.toScreenX(b.getLeft()));
@@ -77,8 +80,7 @@ public class HeatMap {
 					fieldVector = calculateField(xc, yc, fieldType);
 					double fieldValue = defineProjection(fieldVector);
 					heatMapCanvas.setColor(defineColor(fieldValue, range));
-					heatMapCanvas.fill(
-							new Rectangle2D.Double(stepX * dh, stepY * dh, dh, dh));
+					heatMapCanvas.fill(new Rectangle2D.Double(stepX * dh, stepY * dh, dh, dh));
 //					viewport.drawArrowLine(heatMapCanvas, (int) (stepX + 0.5) * resolution, (int) (stepY + 0.5) * resolution,
 //							fieldVector.multiply(0.5), Color.BLACK, "");
 					if (fieldValue > maxValue)
@@ -119,10 +121,11 @@ public class HeatMap {
 		c1 = new Color(palette[colorIndex][0], palette[colorIndex][1], palette[colorIndex][2]);
 		return c1;
 	}
-	
-	public Vector calculateField(double x, double y, FieldType fieldType) {
+
+	private Vector calculateField(double x, double y, FieldType fieldType) {
 		Particle testParticle;
-		pairForce = PairForceFactory.getCentralForce(Simulation.getInstance().interactionProcessor.getInteractionType());
+		pairForce = PairForceFactory
+				.getCentralForce(Simulation.getInstance().interactionProcessor.getInteractionType());
 		Vector field = new Vector();
 		double distance;
 		double increment = 0;
@@ -130,23 +133,23 @@ public class HeatMap {
 		while (Simulation.getInstance().content().particle(pNumber) != null) {
 			testParticle = Simulation.getInstance().content().particle(pNumber);
 			distance = Functions.defineDistance(testParticle, x, y);
-			if (distance >= 0.8 * testParticle.getRadius()) {
-				if (fieldType == FieldType.POTENTIAL)
-					increment = pairForce.calculatePotential(testParticle, distance);
-				else if (fieldType == FieldType.STRENGTH)
-					increment = pairForce.calculateStrength(testParticle, distance);
-				else if (fieldType == FieldType.SPL)
-					increment = Math.sin((2 * Math.PI * testParticle.getMass() * 1000.0) * (0 * Simulation.getInstance().time() - distance / 343)) / distance;
-				if (fieldType != FieldType.SPL) {
-					field.addToX(increment * (x - testParticle.getX()) / distance);
-					field.addToY(increment * (y - testParticle.getY()) / distance);
-				} else {
-					field.addToX(increment);
-				}
+			if (distance >= MINIMAL_DISTANCE_COEF * testParticle.getRadius()) {
+				increment = calculatePixel(x, y, fieldType, testParticle, field, distance, increment);
 			}
 			pNumber++;
 		}
 		return field;
+	}
+
+	protected double calculatePixel(double x, double y, FieldType fieldType, Particle testParticle, Vector field,
+			double distance, double increment) {
+		if (fieldType == FieldType.POTENTIAL)
+			increment = pairForce.calculatePotential(testParticle, distance);
+		else if (fieldType == FieldType.STRENGTH)
+			increment = pairForce.calculateStrength(testParticle, distance);
+		field.addToX(increment * (x - testParticle.getX()) / distance);
+		field.addToY(increment * (y - testParticle.getY()) / distance);
+		return increment;
 	}
 
 	public Vector calculateField(int px, int py, FieldType fieldType) {
@@ -161,11 +164,11 @@ public class HeatMap {
 		this.updateInterval = updateInterval;
 	}
 
-	public int getResolution() {
+	public double getResolution() {
 		return resolution;
 	}
 
-	public void setResolution(int resolution) {
+	public void setResolution(double resolution) {
 		this.resolution = resolution;
 	}
 

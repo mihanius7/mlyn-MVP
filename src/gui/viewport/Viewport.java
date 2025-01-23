@@ -27,6 +27,7 @@ import elements.Element;
 import elements.point.PointMass;
 import gui.ConsoleWindow;
 import gui.MainWindow;
+import gui.images.AcousticMap;
 import gui.images.Background;
 import gui.images.HeatMap;
 import gui.lang.GUIStrings;
@@ -506,7 +507,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 
 	public void initHeatMapImage() {
 		if (drawHeatMap) {
-			heatMap = new HeatMap(this);
+			heatMap = new AcousticMap(this);
 		}
 	}
 
