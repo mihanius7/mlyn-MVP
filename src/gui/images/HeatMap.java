@@ -21,11 +21,11 @@ public class HeatMap {
 	private static final int MIN_PIXEL_SIZE = 4;
 	private static final double MINIMAL_DISTANCE_COEF = 0.75;
 	private static final float AUTORANGE_VALUE_DIVIDER = 0.75f;
-	private int updateInterval = 5, updatesNumber = 0, width, height;
+	private int updateInterval = 4, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
 	private double range = 10;
-	private double resolution = 0.1;
+	private double resolution = 0.05;
 	private double minValue, minField;
 	private double maxValue, maxField;
 	private boolean isAdaptiveRange = true;
