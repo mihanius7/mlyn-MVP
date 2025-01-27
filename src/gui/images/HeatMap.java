@@ -28,7 +28,7 @@ public class HeatMap {
 	private double resolution = 0.05;
 	private double minValue, minField;
 	private double maxValue, maxField;
-	private boolean isAdaptiveRange = true;
+	private boolean isAdaptiveRange = false;
 	private FieldType fieldType = FieldType.STRENGTH;
 	private ProjectionType projectionType = ProjectionType.X;
 	private Boundaries b;

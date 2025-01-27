@@ -1,13 +1,12 @@
 package elements.point;
 
-import java.awt.geom.Point2D;
-
 import calculation.TrajectoryIntegrator;
 import calculation.Vector;
 import simulation.Simulation;
 
 public class PointMass implements Cloneable {
 
+	private static final double MIN_VELOCITY_THRESHOLD = 1e-15;
 	protected double m;
 	protected double x, y, lastx, lasty;
 	protected double oldVelocitySmoothed;
@@ -277,7 +276,7 @@ public class PointMass implements Cloneable {
 	}
 
 	public boolean isMoving() {
-		return velocity.normSquared() > 1e-15;
+		return velocity.normSquared() > MIN_VELOCITY_THRESHOLD;
 	}
 	
 	public double getFrictionForce() {

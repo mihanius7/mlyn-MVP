@@ -4,19 +4,19 @@ import calculation.Vector;
 import elements.point.Particle;
 import gui.viewport.Viewport;
 
-public class AcousticMap extends HeatMap {
+public class WavesMap extends HeatMap {
 
 	private boolean overrideFreq = true;
 	private boolean distanceDecay = true;
-	private double sourceFrequency = 500;
+	private double sourceFrequency = 250;
 	private double freq;
 	private double waveSpeed = 343;
 
-	public AcousticMap(int w, int h) {
+	public WavesMap(int w, int h) {
 		super(w, h);
 	}
 
-	public AcousticMap(Viewport v) {
+	public WavesMap(Viewport v) {
 		super(v);
 	}
 
@@ -62,7 +62,7 @@ public class AcousticMap extends HeatMap {
 
 	public void setWaveSpeed(double v) {
 		if (v > 0)
-			this.waveSpeed = waveSpeed;
+			this.waveSpeed = v;
 	}
 
 }
