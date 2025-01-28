@@ -8,7 +8,7 @@ public class WavesMap extends HeatMap {
 
 	private boolean overrideFreq = true;
 	private boolean distanceDecay = true;
-	private double sourceFrequency = 250;
+	private double sourceFrequency = 500;
 	private double freq;
 	private double waveSpeed = 343;
 
