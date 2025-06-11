@@ -1,4 +1,4 @@
-package gui.images;
+package gui.fieldmaps;
 
 import calculation.Vector;
 import elements.point.Particle;
@@ -8,7 +8,7 @@ public class WavesMap extends HeatMap {
 
 	private boolean overrideFreq = true;
 	private boolean distanceDecay = true;
-	private double sourceFrequency = 500;
+	private double sourceFrequency = 1250;
 	private double freq;
 	private double waveSpeed = 343;
 
@@ -24,7 +24,7 @@ public class WavesMap extends HeatMap {
 	protected double calculatePixel(double x, double y, Particle testParticle, Vector field, double distance,
 			double increment) {
 		freq = overrideFreq ? sourceFrequency : testParticle.getMass() * 1000.0;
-		increment = -Math.sin(2 * Math.PI * freq * distance / waveSpeed);
+		increment = -0.05 * Math.sin(2 * Math.PI * freq * distance / waveSpeed);
 		if (distanceDecay)
 			increment /= distance;
 		field.addToX(increment);

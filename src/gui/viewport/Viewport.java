@@ -27,9 +27,9 @@ import elements.Element;
 import elements.point.PointMass;
 import gui.ConsoleWindow;
 import gui.MainWindow;
-import gui.images.WavesMap;
+import gui.fieldmaps.HeatMap;
+import gui.fieldmaps.WavesMap;
 import gui.images.Background;
-import gui.images.HeatMap;
 import gui.lang.GUIStrings;
 import gui.shapes.Crosshair;
 import gui.shapes.Shape;
@@ -119,8 +119,6 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		labelsFont = new Font("Arial", Font.TRUETYPE_FONT, LABELS_FONT_SIZE);
 		refreshLabelsTimer = new Timer(REFRESH_MESSAGES_INTERVAL, this);
 		reset();
-
-		setDrawHeatMap(true);
 	}
 
 	public void paint() {

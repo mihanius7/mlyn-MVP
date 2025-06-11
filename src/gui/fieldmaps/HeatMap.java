@@ -1,4 +1,4 @@
-package gui.images;
+package gui.fieldmaps;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -24,7 +24,7 @@ public class HeatMap {
 	private int updateInterval = 4, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
-	private double range = 10;
+	private double range = 0.75;
 	private double resolution = 0.025;
 	private double minValue, minField;
 	private double maxValue, maxField;
