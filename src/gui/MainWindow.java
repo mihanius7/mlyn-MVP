@@ -290,9 +290,9 @@ public class MainWindow extends JFrame {
 			parser.loadFromFile(selectedFile);
 			setCaption(selectedFile.getName());
 			Simulation.getInstance().perfomStep(5, true);
-			refreshGUIControls();
 			viewport.reset();
 			viewport.scaleToAllParticles();
+			refreshGUIControls();
 		} else if (ret == JFileChooser.CANCEL_OPTION) {
 			startSimulationThread();
 		}

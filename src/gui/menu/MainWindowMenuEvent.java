@@ -77,6 +77,7 @@ public class MainWindowMenuEvent implements ActionListener {
 			Simulation.getInstance().clearAll();
 			viewport.reset();
 			viewport.scaleToBoundaries();
+			mainWindow.refreshGUIControls();
 		} else if (src.equals(mainWindowMenu.itemMouseSelect2)) {
 			viewport.setMouseMode(MouseMode.SELECT_PARTICLE);
 		} else if (src.equals(mainWindowMenu.itemMouseSelect1)) {

@@ -231,7 +231,7 @@ public class MainWindowMenu extends JMenuBar {
 		itemTracks.addActionListener(menuListener);
 		menuShow.add(itemTracks);
 		itemFields = new JCheckBoxMenuItem();
-		itemFields.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
+		itemFields.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.CTRL_MASK));
 		itemFields.addActionListener(menuListener);
 		menuShow.add(itemFields);
 		menuShow.addSeparator();
