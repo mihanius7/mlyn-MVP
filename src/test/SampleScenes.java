@@ -18,7 +18,7 @@ import simulation.components.TimeStepController.TimeStepMode;
 public class SampleScenes {
 
 	public void initializeScene() {
-		scenePreset2();
+		scenePreset1();
 	}
 
 	public void emptyScene() {
@@ -58,19 +58,25 @@ public class SampleScenes {
 		Simulation.getInstance().add(new Particle(290 * cm, 100 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
 		Simulation.getInstance().add(new Particle(320 * cm, 130 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
 		ParticleShape.drawForces = true;
+		MainWindow.getInstance().viewport.setDrawFieldMap(true);
 	}
 
 	public void scenePreset2() {
 		Simulation.getInstance().timeStepController.setModeAndReset(TimeStepMode.DYNAMIC);
 		Simulation.getInstance().timeStepController.setTimeScale(1E-6);
-		Simulation.getInstance().interactionProcessor.setUsePPCollisions(true);
+		Simulation.getInstance().interactionProcessor.setUsePPCollisions(false);
 		Simulation.getInstance().interactionProcessor.setUseExternalForces(false);
 		Simulation.getInstance().interactionProcessor.setInteractionType(InteractionType.COULOMB);
-		Simulation.getInstance().content().getBoundaries().setUseAll(false);
-		Simulation.getInstance().add(new Particle(0 * cm, 0 * cm, 1 * kg, 2.0E-6, 0, 0, 1 * cm, Color.RED));
-		Simulation.getInstance().add(new Particle(6 * cm, 0 * cm, 1 * kg, -2.0E-6, 0, 0, 1 * cm, Color.BLUE));
-		Simulation.getInstance().add(new Particle(0 * cm, -4 * cm, 1 * kg, 4.0E-6, 0, 0, 1 * cm, Color.RED));
-		Simulation.getInstance().add(new Particle(6 * cm, -4 * cm, 1 * kg, 1.0E-6, 0, 0, 1 * cm, Color.RED));
+		Boundaries b = Simulation.getInstance().content().getBoundaries();
+		b.setBounds(0, 4.0, 3.0, 0);
+		b.setUseAll(true);
+		Simulation.getInstance().add(new Particle(50 * cm, 100 * cm, 0.161 * kg, 2.0E-6, 0, 0, 8 * cm, Color.RED));
+		Simulation.getInstance().add(new Particle(-50 * cm, 100 * cm, 0.161 * kg, -2.0E-6, 0, 0, 8 * cm, Color.CYAN));
+		Simulation.getInstance().add(new Particle(50 * cm, -100 * cm, 0.161 * kg, 4.0E-6, 0, 0, 8 * cm, Color.CYAN));
+		Simulation.getInstance().add(new Particle(50 * cm, 500 * cm, 0.250 * kg, 1.0E-6, 0, 0, 8 * cm, Color.CYAN));
+		Simulation.getInstance().add(new Particle(750 * cm, 100 * cm, 0.250 * kg, 1.0E-6, 0, 0, 8 * cm, Color.CYAN));
+		Simulation.getInstance().content().getParticles().fix();
+		MainWindow.getInstance().viewport.setDrawFieldMap(true);
 	}
 
 	public void scenePreset3() {

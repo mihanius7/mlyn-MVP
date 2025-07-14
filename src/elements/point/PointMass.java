@@ -1,15 +1,14 @@
 package elements.point;
 
-import java.awt.geom.Point2D;
-
 import calculation.TrajectoryIntegrator;
 import calculation.Vector;
 import simulation.Simulation;
 
-public class PointMass implements Cloneable {
+public class PointMass extends Point implements Cloneable {
 
+	private static final double MIN_VELOCITY_THRESHOLD = 1e-15;
 	protected double m;
-	protected double x, y, lastx, lasty;
+	protected double lastx, lasty;
 	protected double oldVelocitySmoothed;
 	protected Vector velocity = new Vector();
 	protected Vector lastVelocity = new Vector();
@@ -17,15 +16,14 @@ public class PointMass implements Cloneable {
 	protected Vector lastForce = new Vector();
 	protected double frictionForce, stictionForce;
 	protected byte movableX = 1, movableY = 1;
-	
+
 	public static double maxVelocity;
 	public static double maxSquaredVelocityCandidate;
-	
+
 	protected static TrajectoryIntegrator integrator;
 
 	public PointMass(double x, double y, double m) {
-		this.x = x;
-		this.y = y;
+		super(x, y);
 		this.setMass(m);
 		integrator = new TrajectoryIntegrator();
 	}
@@ -40,7 +38,7 @@ public class PointMass implements Cloneable {
 		else
 			throw new RuntimeException("Can't set particle mass to zero. ");
 	}
-	
+
 	public double getX() {
 		return x;
 	}
@@ -277,9 +275,9 @@ public class PointMass implements Cloneable {
 	}
 
 	public boolean isMoving() {
-		return velocity.normSquared() > 1e-15;
+		return velocity.normSquared() > MIN_VELOCITY_THRESHOLD;
 	}
-	
+
 	public double getFrictionForce() {
 		return frictionForce;
 	}
@@ -295,7 +293,7 @@ public class PointMass implements Cloneable {
 	public void setStictionForce(double sff) {
 		this.stictionForce = (sff < 0) ? 0 : sff;
 	}
-	
+
 	public boolean isStictionReached() {
 		return lastForce.normSquared() > stictionForce * stictionForce;
 	}

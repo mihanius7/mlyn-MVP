@@ -75,6 +75,7 @@ public class International {
 		MENU_CONTROL = rb.getString("MENU_CONTROL");
 		MENU_TAKE_SCREENSHOT = rb.getString("MENU_TAKE_SCREENSHOT");
 		MENU_PARTICLE_TRACKS = rb.getString("MENU_PARTICLE_TRACKS");
+		MENU_PARTICLE_FIELDS = rb.getString("MENU_PARTICLE_FIELDS");
 		MENU_GRID = rb.getString("MENU_GRID");
 		MENU_TAGS = rb.getString("MENU_TAGS");
 		MENU_PRETTY = rb.getString("MENU_PRETTY");

@@ -27,12 +27,12 @@ import elements.Element;
 import elements.point.PointMass;
 import gui.ConsoleWindow;
 import gui.MainWindow;
+import gui.fieldmaps.FieldMap;
+import gui.fieldmaps.WavesMap;
 import gui.images.Background;
-import gui.images.HeatMap;
 import gui.lang.GUIStrings;
 import gui.shapes.Crosshair;
 import gui.shapes.Shape;
-import gui.shapes.SpringShape;
 import gui.viewport.listeners.MouseMode;
 import gui.viewport.listeners.ViewportKeyListener;
 import gui.viewport.listeners.ViewportMouseListener;
@@ -42,6 +42,7 @@ import simulation.Simulation;
 
 public class Viewport extends Canvas implements ActionListener, Runnable {
 
+	private static final long serialVersionUID = -1071873059037478882L;
 	private static final int SMOOTH_SCALING_STOPING_DIFFERENCE = 4;
 	private static final int SMOOTH_SCALING_COEFFICIENT = 2;
 	private static final int CROSS_SIZE_PX = 8;
@@ -66,6 +67,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 
 	private static ArrayList<Shape> shapes;
 	private static ArrayList<Shape> physicalShapes;
+	Boundaries b;
 
 	public Crosshair crosshair;
 
@@ -75,8 +77,9 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	public boolean drawGrid = true;
 	private boolean drawTracks = false;
 	private boolean firstTracksDrawing = true;
-	private boolean drawHeatMap = false;
+	private boolean drawFieldMap = false;
 	private boolean scaled;
+	private boolean saveScreenshot;
 	public Font labelsFont;
 	private Font mainFont;
 	private int fps = 0;
@@ -88,7 +91,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	private long time;
 	private String infoString1 = "N/A", infoString2 = "N/A";
 	private Timer refreshLabelsTimer;
-	public HeatMap heatMap;
+	public FieldMap fieldMap;
 	public Background background;
 	private BasicStroke arrowStroke = new BasicStroke(2f);
 	public BasicStroke crossStroke = new BasicStroke(3f);
@@ -108,6 +111,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		GraphicsConfiguration config = device.getDefaultConfiguration();
 		frameImage = config.createCompatibleImage(initW, initH);
 //		frameImage = new BufferedImage(initW, initH, BufferedImage.TYPE_INT_RGB);
+		b = Simulation.getInstance().content().getBoundaries();
 		setMouseMode(MouseMode.SELECT_PARTICLE);
 		setBounds(0, 0, initW, initH);
 		background = new Background(this);
@@ -115,7 +119,6 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		labelsFont = new Font("Arial", Font.TRUETYPE_FONT, LABELS_FONT_SIZE);
 		refreshLabelsTimer = new Timer(REFRESH_MESSAGES_INTERVAL, this);
 		reset();
-		setDrawHeatMap(true);
 	}
 
 	public void paint() {
@@ -125,8 +128,8 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 				frameGraphics.drawImage(renderFrame(), 0, 0, null);
 				frameGraphics.dispose();
 			} while (strategy.contentsRestored());
-				strategy.show();
-				fps++;
+			strategy.show();
+			fps++;
 		} while (strategy.contentsLost());
 	}
 
@@ -134,9 +137,12 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		currentFontSize = scaleLabelsFont();
 		frameGraphics = (Graphics2D) frameImage.getGraphics();
 		frameGraphics.setRenderingHints(rh);
-		if (drawHeatMap && !camera.isFollowing()) {
-			heatMap.updateImage();
-			frameGraphics.drawImage(heatMap.getImage(), 0, 0, null);
+		if (drawFieldMap && !camera.isFollowing()) {
+			fieldMap.updateImage();
+			drawBackgroundOn(frameGraphics);
+			int x0 = Math.max(0, CoordinateConverter.toScreenX(b.getLeft()));
+			int y0 = Math.max(0, CoordinateConverter.toScreenY(b.getUpper()));
+			frameGraphics.drawImage(fieldMap.getImage(), x0, y0, null);
 		} else if (drawTracks && scaled && !camera.isFollowing()) {
 			frameGraphics.drawImage(tracksImage, 0, 0, null);
 		} else
@@ -156,6 +162,10 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		drawScaleLineOn(frameGraphics);
 		if (drawInfo)
 			drawInfoStringsOn(frameGraphics);
+		if (saveScreenshot) {
+			saveScreenshot();
+			saveScreenshot = false;
+		}
 		return frameImage;
 	}
 
@@ -236,7 +246,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		Simulation.getInstance().timeStepController.updateTimeScale();
 		double r = Simulation.getInstance().interactionProcessor.getTimeStepReserveRatio();
 		double timeScale = Simulation.getInstance().timeStepController.getMeasuredTimeScale();
-		String displayedTimeScale = "нявызначаны";
+		String displayedTimeScale = "undefined";
 		infoString1 = String.format("t = %.3f c, ", Simulation.getInstance().time())
 				+ String.format("dt = %.4f", Simulation.getInstance().timeStepController.getTimeStepSize() * 1000)
 				+ " ms, " + String.format("Vmax = %.2f m/s", PointMass.maxVelocity) + ", fps = "
@@ -284,7 +294,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	}
 
 	public Color getMainFontColor() {
-		return drawHeatMap ? Color.WHITE : Colors.FONT_MAIN;
+		return drawFieldMap ? Color.DARK_GRAY : Colors.FONT_MAIN;
 	}
 
 	public void drawStringTilted(Graphics2D targetG2d, String string, int x1, int y1, int x2, int y2) {
@@ -317,7 +327,6 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	private void drawBoundariesOn(Graphics2D targetG2d) {
 		targetG2d.setColor(Colors.BOUNDARIES);
 		targetG2d.setStroke(arrowStroke);
-		Boundaries b = Simulation.getInstance().content().getBoundaries();
 		int x1 = CoordinateConverter.toScreenX(b.getLeft());
 		int y1 = CoordinateConverter.toScreenY(b.getUpper());
 		int w = CoordinateConverter.toScreen(b.getWidth());
@@ -409,6 +418,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 				scale = targetScale;
 				scaled = true;
 				initBackgroundImage();
+				initFieldMapImage();
 			}
 		}
 	}
@@ -455,6 +465,10 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	public boolean isDrawTracks() {
 		return drawTracks;
 	}
+	
+	public boolean isDrawFields() {
+		return drawFieldMap;
+	}
 
 	public void setDrawTracks(boolean b) {
 		drawTracks = b;
@@ -483,19 +497,20 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		}
 	}
 
-	public void setDrawHeatMap(boolean b) {
-		drawHeatMap = b;
-		initHeatMapImage();
+	public void setDrawFieldMap(boolean b) {
+		drawFieldMap = b;
+		initFieldMapImage();
 		setDrawCrosshair(b);
+		setDrawTracks(!b);
 	}
 
 	public boolean isDrawHeatMap() {
-		return drawHeatMap;
+		return drawFieldMap;
 	}
 
-	public void initHeatMapImage() {
-		if (drawHeatMap) {
-			heatMap = new HeatMap(this);
+	public void initFieldMapImage() {
+		if (drawFieldMap) {
+			fieldMap = new FieldMap(this);
 		}
 	}
 
@@ -577,8 +592,12 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		ConsoleWindow.println(GUIStrings.MOUSE_MODE + ": " + mouseMode);
 	}
 
-	public void saveScreenshot() {
-		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fс.png", Simulation.getInstance().time());
+	public void prepareScreenshotAndSave() {
+		saveScreenshot = true;
+	}
+
+	private void saveScreenshot() {
+		String fileName = String.format(GUIStrings.SCREENSHOT_NAME + "_%.6fs.png", Simulation.getInstance().time());
 		try {
 			if (javax.imageio.ImageIO.write(frameImage, "png", new java.io.File(fileName)))
 				ConsoleWindow.println(GUIStrings.IMAGE_SAVED_TO + " " + fileName);
@@ -601,7 +620,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		setCrossX(0);
 		setCrossY(0);
 		setDrawGrid(true);
-		setDrawHeatMap(false);
+		setDrawFieldMap(false);
 		initTracksImage();
 	}
 

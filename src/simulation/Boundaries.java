@@ -112,7 +112,7 @@ public class Boundaries implements Cloneable {
 	}
 
 	public boolean isInside(double x, double y) {
-		if (x >= left && x <= right && y >= upper && y <= bottom)
+		if (x >= left && x <= right && y >= bottom && y <= upper)
 			return true;
 		else
 			return false;

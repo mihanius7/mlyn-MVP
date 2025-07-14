@@ -71,10 +71,13 @@ public class MainWindowMenuEvent implements ActionListener {
 			viewport.setDrawGrid(mainWindowMenu.itemGrid.getState());
 		} else if (src.equals(mainWindowMenu.itemTracks)) {
 			viewport.setDrawTracks(mainWindowMenu.itemTracks.getState());			
+		} else if (src.equals(mainWindowMenu.itemFields)) {
+			viewport.setDrawFieldMap(mainWindowMenu.itemFields.getState());			
 		} else if (src.equals(mainWindowMenu.itemClear)) {
 			Simulation.getInstance().clearAll();
 			viewport.reset();
 			viewport.scaleToBoundaries();
+			mainWindow.refreshGUIControls();
 		} else if (src.equals(mainWindowMenu.itemMouseSelect2)) {
 			viewport.setMouseMode(MouseMode.SELECT_PARTICLE);
 		} else if (src.equals(mainWindowMenu.itemMouseSelect1)) {

@@ -11,7 +11,7 @@ import simulation.Simulation;
 
 public class Particle extends PointMass implements Cloneable, Element {
 
-	public static final double PARTICLE_ELASTICITY_DEFAULT = 0.99;
+	public static final double PARTICLE_ELASTICITY_DEFAULT = 0.8;
 	protected double r, q;
 	protected boolean visible = true, canCollide = true, isSelected = false;
 	protected double elasticity = PARTICLE_ELASTICITY_DEFAULT;
@@ -115,7 +115,8 @@ public class Particle extends PointMass implements Cloneable, Element {
 	@Override
 	public void doMovement() {
 		super.doMovement();
-		Simulation.getInstance().content().getBoundaries().applyTo(this);
+		if (isMovable())
+			Simulation.getInstance().content().getBoundaries().applyTo(this);
 	}
 
 	@Override

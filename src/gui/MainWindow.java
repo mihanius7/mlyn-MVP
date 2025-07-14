@@ -163,7 +163,7 @@ public class MainWindow extends JFrame {
 		viewport.resizeFrameImage();
 		viewport.initBackgroundImage();
 		viewport.initTracksImage();
-		viewport.initHeatMapImage();
+		viewport.initFieldMapImage();
 		int buttonsY = getHeight() - 92;
 		buttonStart.setBounds(getWidth() - 215, buttonsY, 192, 24);
 		labelTimeStep.setBounds(1, buttonsY + 4, 89, 16);
@@ -290,9 +290,9 @@ public class MainWindow extends JFrame {
 			parser.loadFromFile(selectedFile);
 			setCaption(selectedFile.getName());
 			Simulation.getInstance().perfomStep(5, true);
-			refreshGUIControls();
 			viewport.reset();
 			viewport.scaleToAllParticles();
+			refreshGUIControls();
 		} else if (ret == JFileChooser.CANCEL_OPTION) {
 			startSimulationThread();
 		}
@@ -318,6 +318,6 @@ public class MainWindow extends JFrame {
 	}
 
 	public void saveImageToFile() {
-		viewport.saveScreenshot();
+		viewport.prepareScreenshotAndSave();
 	}
 }
