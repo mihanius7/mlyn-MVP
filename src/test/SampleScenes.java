@@ -75,7 +75,7 @@ public class SampleScenes {
 		Simulation.getInstance().add(new Particle(50 * cm, 500 * cm, 0.250 * kg, 1.0E-6, 0, 0, 8 * cm, Color.CYAN));
 		Simulation.getInstance().add(new Particle(750 * cm, 100 * cm, 0.250 * kg, 1.0E-6, 0, 0, 8 * cm, Color.CYAN));
 		Simulation.getInstance().content().getParticles().fix();
-		MainWindow.getInstance().viewport.setDrawHeatMap(false);
+		MainWindow.getInstance().viewport.setDrawHeatMap(true);
 	}
 
 	public void scenePreset3() {
