@@ -18,7 +18,7 @@ import simulation.components.TimeStepController.TimeStepMode;
 public class SampleScenes {
 
 	public void initializeScene() {
-		scenePreset2();
+		scenePreset1();
 	}
 
 	public void emptyScene() {
@@ -58,6 +58,7 @@ public class SampleScenes {
 		Simulation.getInstance().add(new Particle(290 * cm, 100 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
 		Simulation.getInstance().add(new Particle(320 * cm, 130 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
 		ParticleShape.drawForces = true;
+		MainWindow.getInstance().viewport.setDrawFieldMap(true);
 	}
 
 	public void scenePreset2() {
@@ -75,7 +76,7 @@ public class SampleScenes {
 		Simulation.getInstance().add(new Particle(50 * cm, 500 * cm, 0.250 * kg, 1.0E-6, 0, 0, 8 * cm, Color.CYAN));
 		Simulation.getInstance().add(new Particle(750 * cm, 100 * cm, 0.250 * kg, 1.0E-6, 0, 0, 8 * cm, Color.CYAN));
 		Simulation.getInstance().content().getParticles().fix();
-		MainWindow.getInstance().viewport.setDrawHeatMap(true);
+		MainWindow.getInstance().viewport.setDrawFieldMap(true);
 	}
 
 	public void scenePreset3() {

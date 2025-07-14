@@ -2,9 +2,10 @@ package gui.fieldmaps;
 
 import calculation.Vector;
 import elements.point.Particle;
+import gui.viewport.Colors;
 import gui.viewport.Viewport;
 
-public class WavesMap extends HeatMap {
+public class WavesMap extends FieldMap {
 
 	private boolean overrideFreq = true;
 	private boolean distanceDecay = true;
@@ -14,10 +15,12 @@ public class WavesMap extends HeatMap {
 
 	public WavesMap(int w, int h) {
 		super(w, h);
+		setDefaultParameters();
 	}
 
 	public WavesMap(Viewport v) {
 		super(v);
+		setDefaultParameters();
 	}
 
 	@Override
@@ -63,6 +66,12 @@ public class WavesMap extends HeatMap {
 	public void setWaveSpeed(double v) {
 		if (v > 0)
 			this.waveSpeed = v;
+	}
+	
+	public void setDefaultParameters() {
+		range = 0.75;
+		resolution = waveSpeed / sourceFrequency / 8;
+		palette = Colors.RWB;
 	}
 
 }

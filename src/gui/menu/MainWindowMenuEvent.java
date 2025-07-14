@@ -71,6 +71,8 @@ public class MainWindowMenuEvent implements ActionListener {
 			viewport.setDrawGrid(mainWindowMenu.itemGrid.getState());
 		} else if (src.equals(mainWindowMenu.itemTracks)) {
 			viewport.setDrawTracks(mainWindowMenu.itemTracks.getState());			
+		} else if (src.equals(mainWindowMenu.itemFields)) {
+			viewport.setDrawFieldMap(mainWindowMenu.itemFields.getState());			
 		} else if (src.equals(mainWindowMenu.itemClear)) {
 			Simulation.getInstance().clearAll();
 			viewport.reset();

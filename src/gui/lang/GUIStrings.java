@@ -1,6 +1,7 @@
 package gui.lang;
 
 public class GUIStrings {
+
 	public static String MENU_FILE = "File";
 	public static String OPEN_SCENE_DIALOG = "Open scene";
 	public static String IMAGE_SAVING_DIALOG = "Save Image";
@@ -34,6 +35,7 @@ public class GUIStrings {
 	public static String MENU_PRETTY = "Gradients on particles";
 	public static String MENU_FORCES = "Forces";
 	public static String MENU_VELOCITIES = "Velocities";
+	public static String MENU_PARTICLE_FIELDS = "Fields";	
 	public static String MENU_FOLLOW_PARTICLE = "Follow the particle";
 	public static String MENU_ZOOM_TO_BOUNDARIES = "Zoom to boundaries";
 	public static String MENU_ZOOM_TO_PARTICLES = "Zoom to particles";

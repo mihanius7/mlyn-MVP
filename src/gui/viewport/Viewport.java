@@ -27,7 +27,7 @@ import elements.Element;
 import elements.point.PointMass;
 import gui.ConsoleWindow;
 import gui.MainWindow;
-import gui.fieldmaps.HeatMap;
+import gui.fieldmaps.FieldMap;
 import gui.fieldmaps.WavesMap;
 import gui.images.Background;
 import gui.lang.GUIStrings;
@@ -77,7 +77,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	public boolean drawGrid = true;
 	private boolean drawTracks = false;
 	private boolean firstTracksDrawing = true;
-	private boolean drawHeatMap = false;
+	private boolean drawFieldMap = false;
 	private boolean scaled;
 	private boolean saveScreenshot;
 	public Font labelsFont;
@@ -91,7 +91,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	private long time;
 	private String infoString1 = "N/A", infoString2 = "N/A";
 	private Timer refreshLabelsTimer;
-	public HeatMap heatMap;
+	public FieldMap fieldMap;
 	public Background background;
 	private BasicStroke arrowStroke = new BasicStroke(2f);
 	public BasicStroke crossStroke = new BasicStroke(3f);
@@ -137,12 +137,12 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		currentFontSize = scaleLabelsFont();
 		frameGraphics = (Graphics2D) frameImage.getGraphics();
 		frameGraphics.setRenderingHints(rh);
-		if (drawHeatMap && !camera.isFollowing()) {
-			heatMap.updateImage();
+		if (drawFieldMap && !camera.isFollowing()) {
+			fieldMap.updateImage();
 			drawBackgroundOn(frameGraphics);
 			int x0 = Math.max(0, CoordinateConverter.toScreenX(b.getLeft()));
 			int y0 = Math.max(0, CoordinateConverter.toScreenY(b.getUpper()));
-			frameGraphics.drawImage(heatMap.getImage(), x0, y0, null);
+			frameGraphics.drawImage(fieldMap.getImage(), x0, y0, null);
 		} else if (drawTracks && scaled && !camera.isFollowing()) {
 			frameGraphics.drawImage(tracksImage, 0, 0, null);
 		} else
@@ -294,7 +294,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	}
 
 	public Color getMainFontColor() {
-		return drawHeatMap ? Color.DARK_GRAY : Colors.FONT_MAIN;
+		return drawFieldMap ? Color.DARK_GRAY : Colors.FONT_MAIN;
 	}
 
 	public void drawStringTilted(Graphics2D targetG2d, String string, int x1, int y1, int x2, int y2) {
@@ -418,7 +418,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 				scale = targetScale;
 				scaled = true;
 				initBackgroundImage();
-				initHeatMapImage();
+				initFieldMapImage();
 			}
 		}
 	}
@@ -465,6 +465,10 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	public boolean isDrawTracks() {
 		return drawTracks;
 	}
+	
+	public boolean isDrawFields() {
+		return drawFieldMap;
+	}
 
 	public void setDrawTracks(boolean b) {
 		drawTracks = b;
@@ -493,19 +497,19 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		}
 	}
 
-	public void setDrawHeatMap(boolean b) {
-		drawHeatMap = b;
-		initHeatMapImage();
+	public void setDrawFieldMap(boolean b) {
+		drawFieldMap = b;
+		initFieldMapImage();
 		setDrawCrosshair(b);
 	}
 
 	public boolean isDrawHeatMap() {
-		return drawHeatMap;
+		return drawFieldMap;
 	}
 
-	public void initHeatMapImage() {
-		if (drawHeatMap) {
-			heatMap = new WavesMap(this);
+	public void initFieldMapImage() {
+		if (drawFieldMap) {
+			fieldMap = new FieldMap(this);
 		}
 	}
 
@@ -615,7 +619,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		setCrossX(0);
 		setCrossY(0);
 		setDrawGrid(true);
-		setDrawHeatMap(false);
+		setDrawFieldMap(false);
 		initTracksImage();
 	}
 

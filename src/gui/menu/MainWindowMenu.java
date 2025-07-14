@@ -67,6 +67,7 @@ public class MainWindowMenu extends JMenuBar {
 	JCheckBoxMenuItem itemPretty;
 	JCheckBoxMenuItem itemTags;
 	JCheckBoxMenuItem itemGrid;
+	JCheckBoxMenuItem itemFields;
 	JCheckBoxMenuItem itemTracks;
 	private Viewport viewport;
 
@@ -229,6 +230,10 @@ public class MainWindowMenu extends JMenuBar {
 		itemTracks.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, ActionEvent.ALT_MASK));
 		itemTracks.addActionListener(menuListener);
 		menuShow.add(itemTracks);
+		itemFields = new JCheckBoxMenuItem();
+		itemFields.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, ActionEvent.ALT_MASK));
+		itemFields.addActionListener(menuListener);
+		menuShow.add(itemFields);
 		menuShow.addSeparator();
 		itemScreenshot = new JMenuItem();
 		itemScreenshot.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_J, ActionEvent.ALT_MASK));
@@ -309,6 +314,7 @@ public class MainWindowMenu extends JMenuBar {
 		itemTags.setText(GUIStrings.MENU_TAGS);
 		itemGrid.setText(GUIStrings.MENU_GRID);
 		itemTracks.setText(GUIStrings.MENU_PARTICLE_TRACKS);
+		itemFields.setText(GUIStrings.MENU_PARTICLE_FIELDS);
 		itemScreenshot.setText(GUIStrings.MENU_TAKE_SCREENSHOT);
 
 		menuControl.setText(GUIStrings.MENU_CONTROL);
@@ -330,6 +336,7 @@ public class MainWindowMenu extends JMenuBar {
 		itemTags.setSelected(ParticleShape.drawTags);
 		itemGrid.setSelected(viewport.drawGrid);
 		itemTracks.setSelected(viewport.isDrawTracks());
+		itemFields.setSelected(viewport.isDrawFields());
 		if (viewport.getMouseMode() == MouseMode.SELECT_PARTICLE)
 			itemMouseSelect2.setSelected(true);
 		else if (viewport.getMouseMode() == MouseMode.SELECT_SPRING)

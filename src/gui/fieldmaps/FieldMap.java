@@ -16,26 +16,26 @@ import gui.viewport.Viewport;
 import simulation.Boundaries;
 import simulation.Simulation;
 
-public class HeatMap {
+public class FieldMap {
 
-	private static final int MIN_PIXEL_SIZE = 2;
-	private static final double MINIMAL_DISTANCE_COEF = 0.75;
-	private static final float AUTORANGE_VALUE_DIVIDER = 0.75f;
-	private int updateInterval = 4, updatesNumber = 0, width, height;
+	public static final int MIN_PIXEL_SIZE = 3;
+	public static final double MINIMAL_DISTANCE_COEF = 0.75;
+	public static final float AUTORANGE_VALUE_DIVIDER = 5f;
+	protected int updateInterval = 2, updatesNumber = 0, width, height;
 	private Graphics2D heatMapCanvas;
 	private BufferedImage heatMapImage;
-	private double range = 0.75;
-	private double resolution = 0.025;
-	private double minValue, minField;
-	private double maxValue, maxField;
-	private boolean isAdaptiveRange = false;
-	private FieldType fieldType = FieldType.STRENGTH;
-	private ProjectionType projectionType = ProjectionType.X;
-	private Boundaries b;
-	private PairForce pairForce;
-	public static final int palette[][] = Colors.RWB;
+	protected double range = 5E5;
+	protected double resolution = 0.025;
+	protected double minValue, minField;
+	protected double maxValue, maxField;
+	protected boolean isAdaptiveRange = true;
+	protected FieldType fieldType = FieldType.STRENGTH;
+	protected ProjectionType projectionType = ProjectionType.X;
+	protected Boundaries b;
+	protected PairForce pairForce;
+	protected int palette[][] = Colors.WBW;
 
-	public HeatMap(int w, int h) {
+	public FieldMap(int w, int h) {
 		b = Simulation.getInstance().content().getBoundaries();
 		width = Math.min(w, CoordinateConverter.toScreen(b.getWidth()));
 		height = Math.min(h, CoordinateConverter.toScreen(b.getHeight()));
@@ -43,7 +43,7 @@ public class HeatMap {
 		heatMapCanvas = heatMapImage.createGraphics();
 	}
 
-	public HeatMap(Viewport v) {
+	public FieldMap(Viewport v) {
 		this(v.getWidth(), v.getHeight());
 	}
 
