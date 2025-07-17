@@ -72,6 +72,11 @@ public class WavesMap extends FieldMap {
 		range = 0.75;
 		resolution = waveSpeed / sourceFrequency / 8;
 		palette = Colors.RWB;
+		projectionType = ProjectionType.X;
+	}
+	
+	public String getCrosshairTagFor(double value) {
+		return String.format("SPL = %.1f [dB]", 20 * Math.log10(Math.max(value, 0.00002) / 0.00002));
 	}
 
 }

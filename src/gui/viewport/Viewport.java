@@ -504,7 +504,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		setDrawTracks(!b);
 	}
 
-	public boolean isDrawHeatMap() {
+	public boolean isDrawFieldMap() {
 		return drawFieldMap;
 	}
 
