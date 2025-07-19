@@ -73,6 +73,7 @@ public class WavesMap extends FieldMap {
 		resolution = waveSpeed / sourceFrequency / 8;
 		palette = Colors.RWB;
 		projectionType = ProjectionType.X;
+		isAdaptiveRange = false;
 	}
 	
 	public String getCrosshairTagFor(double value) {
