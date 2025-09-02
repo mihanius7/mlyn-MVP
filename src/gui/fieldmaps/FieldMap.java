@@ -20,7 +20,7 @@ public class FieldMap {
 
 	public static final int MIN_PIXEL_SIZE = 3;
 	public static final double MINIMAL_DISTANCE_COEF = 0.75;
-	public static final float AUTORANGE_VALUE_DIVIDER = 5f;
+	public static final float AUTORANGE_VALUE_DIVIDER = 1f;
 	protected int updateInterval = 2, updatesNumber = 0, width, height;
 	private Graphics2D fieldMapCanvas;
 	private BufferedImage fieldMapImage;
@@ -28,7 +28,7 @@ public class FieldMap {
 	protected double resolution = 0.025;
 	protected double minValue, minField;
 	protected double maxValue, maxField;
-	protected boolean isAdaptiveRange = true;
+	public boolean isAdaptiveRange = true;
 	protected FieldType fieldType = FieldType.STRENGTH;
 	protected ProjectionType projectionType = ProjectionType.MAGNITUDE;
 	protected Boundaries b;
