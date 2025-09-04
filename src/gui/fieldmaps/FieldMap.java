@@ -24,16 +24,20 @@ public class FieldMap {
 	protected int updateInterval = 2, updatesNumber = 0, width, height;
 	private Graphics2D fieldMapCanvas;
 	private BufferedImage fieldMapImage;
+	protected boolean isAdaptiveRange = true;
 	protected double range = 5E5;
 	protected double resolution = 0.025;
 	protected double minValue, minField;
 	protected double maxValue, maxField;
+<<<<<<< HEAD
 	public boolean isAdaptiveRange = true;
+=======
+>>>>>>> branch 'splmap' of https://github.com/mihanius7/mlyn-MVP.git
 	protected FieldType fieldType = FieldType.STRENGTH;
 	protected ProjectionType projectionType = ProjectionType.MAGNITUDE;
 	protected Boundaries b;
 	protected PairForce pairForce;
-	protected int palette[][] = Colors.WBW;
+	protected int palette[][] = Colors.TURBO;
 
 	public FieldMap(int w, int h) {
 		b = Simulation.getInstance().content().getBoundaries();
@@ -55,7 +59,7 @@ public class FieldMap {
 		updatesNumber++;
 		int ui = (Simulation.getInstance().isActive()) ? updateInterval : 15;
 		if (updatesNumber >= ui) {
-			adjustRange();
+			//adjustRange();
 			updatesNumber = 0;
 			int dh = Math.max(CoordinateConverter.toScreen(resolution), MIN_PIXEL_SIZE);
 			int wSteps = (int) (width / dh);
@@ -108,7 +112,7 @@ public class FieldMap {
 	public Color defineColor(double value, double range) {
 		Color c1;
 		int colorIndex;
-		colorIndex = (int) Functions.linear2DInterpolation(-range / 2, 0, range / 2, 255, value);
+		colorIndex = (int) (isAdaptiveRange? Functions.linear2DInterpolation(minField, 0, maxField, 255, value) : Functions.linear2DInterpolation(-range / 2, 0, range / 2, 255, value));
 		c1 = new Color(palette[colorIndex][0], palette[colorIndex][1], palette[colorIndex][2]);
 		return c1;
 	}
