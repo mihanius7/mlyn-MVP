@@ -29,10 +29,6 @@ public class FieldMap {
 	protected double resolution = 0.025;
 	protected double minValue, minField;
 	protected double maxValue, maxField;
-<<<<<<< HEAD
-	public boolean isAdaptiveRange = true;
-=======
->>>>>>> branch 'splmap' of https://github.com/mihanius7/mlyn-MVP.git
 	protected FieldType fieldType = FieldType.STRENGTH;
 	protected ProjectionType projectionType = ProjectionType.MAGNITUDE;
 	protected Boundaries b;
