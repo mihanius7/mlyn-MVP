@@ -262,7 +262,7 @@ public class InteractionProcessor implements SimulationComponent {
 	}
 
 	public void setInteractionType(InteractionType interactionType) {
-		pairForce = PairForceFactory.getCentralForce(interactionType);
+		pairForce = PairForceFactory.createCentralForce(interactionType);
 		pairInteractionMaxDistance = pairForce.distanceLimit();
 		neighborRange = pairInteractionMaxDistance * 1.1;
 		this.interactionType = interactionType;

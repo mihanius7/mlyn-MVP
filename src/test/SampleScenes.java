@@ -46,6 +46,7 @@ public class SampleScenes {
 		Simulation.getInstance().timeStepController.setTimeScale(0.001);
 		Simulation.getInstance().interactionProcessor.setUsePPCollisions(true);
 		Simulation.getInstance().interactionProcessor.setUseExternalForces(false);
+		Simulation.getInstance().interactionProcessor.setInteractionType(InteractionType.LENNARDJONES);
 		Boundaries b = Simulation.getInstance().content().getBoundaries();
 		b.setBounds(0, 9.2, 4.2, 0);
 		b.setUseAll(false);
@@ -88,6 +89,22 @@ public class SampleScenes {
 		Simulation.getInstance().content().getBoundaries().setUseAll(false);
 		Simulation.getInstance().add(new Particle(0, 0, 5.97E24, 0, 0, 0, 6397000, Color.BLUE));
 		Simulation.getInstance().add(new Particle(384400000, 0, 7.35E22, 0, 0, 1022, 1794400, Color.LIGHT_GRAY));
+	}
+	
+	public void sceneTonsil() {
+		Simulation.getInstance().timeStepController.setModeAndReset(TimeStepMode.DYNAMIC);
+		Simulation.getInstance().timeStepController.setTimeScale(0.75);
+		Simulation.getInstance().interactionProcessor.setUsePPCollisions(false);
+		Simulation.getInstance().interactionProcessor.setUseExternalForces(false);
+		Simulation.getInstance().interactionProcessor.setUseInterparticleForces(true);
+		Simulation.getInstance().interactionProcessor.setInteractionType(InteractionType.LENNARDJONES);
+		Boundaries b = Simulation.getInstance().content().getBoundaries();
+		b.setBounds(0, 5.1, 3.9, 0);
+		b.setUseAll(true);		
+		Simulation.getInstance()
+				.add(new Particle(450 * cm, 195 * cm, 0.161 * kg, -2.0E-6, 0, 0, 8 * cm, Color.DARK_GRAY));
+		MainWindow.getInstance().viewport.setDrawTracks(false);
+		MainWindow.getInstance().viewport.setDrawFieldMap(true);
 	}
 
 }

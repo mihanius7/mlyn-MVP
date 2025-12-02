@@ -11,9 +11,9 @@ public class LennardJones extends PairForce {
 	LennardJonesTable table;
 
 	public LennardJones() {
-		table = new LennardJonesTable(0.1, 150 * cm, 0.1 * cm);
+		table = new LennardJonesTable(0.1 * cm, 100 * cm, 1 * cm);
 		table.setParam1(20 * cm);
-		table.setParam2(40 * dj);
+		table.setParam2(0.1 * dj);
 		table.calculateTable();
 	}
 
@@ -23,22 +23,22 @@ public class LennardJones extends PairForce {
 
 	@Override
 	public double calculatePotential(Particle p1, double r) {
-		return 0;
+		return table.getFromTable(r);
 	}
 
 	@Override
 	public double calculateForce(Particle p1, Particle p2, double r) {
-		return 0;
+		return table.getFromTable(r);
 	}
 
 	@Override
 	public double calculateStrength(Particle p1, double r) {
-		return 0;
+		return table.getFromTable(r);
 	}
 
 	@Override
 	public double calculatePotentialEnergy(Particle p1, Particle p2, double r) {
-		return 0;
+		return table.getFromTable(r);
 	}
 
 	@Override

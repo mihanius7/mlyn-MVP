@@ -3,7 +3,7 @@ package calculation.pairforce;
 import simulation.components.InteractionType;
 
 public class PairForceFactory {
-	public static PairForce getCentralForce(InteractionType type) {
+	public static PairForce createCentralForce(InteractionType type) {
 		switch (type) {
 		case COULOMB:
 			return new Coulomb();

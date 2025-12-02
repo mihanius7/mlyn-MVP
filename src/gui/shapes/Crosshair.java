@@ -28,7 +28,7 @@ public class Crosshair extends Shape {
 		double value = Math.abs(v.fieldMap.calculateField(x, y).X());
 		if (Simulation.getInstance().content().getBoundaries().isInside(CoordinateConverter.fromScreenX(x),
 				CoordinateConverter.fromScreenY(y)))
-			g.drawString(String.format("SPL = %.1f [dB]", 20 * Math.log10(Math.max(value, 0.00002) / 0.00002)),
+			g.drawString(v.fieldMap.getCrosshairTagFor(value),
 					x + COORDINATES_MARGIN_PX, y - COORDINATES_MARGIN_PX);
 		g.drawString(String.format("%.2f m", CoordinateConverter.fromScreenX(x)), x + COORDINATES_MARGIN_PX,
 				v.getHeight() - COORDINATES_MARGIN_PX);

@@ -22,25 +22,25 @@ public class FieldMap {
 	public static final double MINIMAL_DISTANCE_COEF = 0.75;
 	public static final float AUTORANGE_VALUE_DIVIDER = 5f;
 	protected int updateInterval = 2, updatesNumber = 0, width, height;
-	private Graphics2D heatMapCanvas;
-	private BufferedImage heatMapImage;
+	private Graphics2D fieldMapCanvas;
+	private BufferedImage fieldMapImage;
+	protected boolean isAdaptiveRange = true;
 	protected double range = 5E5;
-	protected double resolution = 0.025;
+	protected double resolution = 0.05;
 	protected double minValue, minField;
 	protected double maxValue, maxField;
-	protected boolean isAdaptiveRange = true;
 	protected FieldType fieldType = FieldType.STRENGTH;
-	protected ProjectionType projectionType = ProjectionType.X;
+	protected ProjectionType projectionType = ProjectionType.MAGNITUDE;
 	protected Boundaries b;
 	protected PairForce pairForce;
-	protected int palette[][] = Colors.WBW;
+	protected int palette[][] = Colors.TURBO;
 
 	public FieldMap(int w, int h) {
 		b = Simulation.getInstance().content().getBoundaries();
 		width = Math.min(w, CoordinateConverter.toScreen(b.getWidth()));
 		height = Math.min(h, CoordinateConverter.toScreen(b.getHeight()));
-		heatMapImage = new BufferedImage(width + 1, height + 1, BufferedImage.TYPE_INT_RGB);
-		heatMapCanvas = heatMapImage.createGraphics();
+		fieldMapImage = new BufferedImage(width + 1, height + 1, BufferedImage.TYPE_INT_RGB);
+		fieldMapCanvas = fieldMapImage.createGraphics();
 	}
 
 	public FieldMap(Viewport v) {
@@ -48,7 +48,7 @@ public class FieldMap {
 	}
 
 	public BufferedImage getImage() {
-		return heatMapImage;
+		return fieldMapImage;
 	}
 
 	public void updateImage() {
@@ -71,8 +71,8 @@ public class FieldMap {
 					Vector fieldVector = new Vector();
 					fieldVector = calculateField(xc, yc);
 					double fieldValue = defineProjection(fieldVector);
-					heatMapCanvas.setColor(defineColor(fieldValue, range));
-					heatMapCanvas.fill(new Rectangle2D.Double(stepX * dh, stepY * dh, dh, dh));
+					fieldMapCanvas.setColor(defineColor(fieldValue, range));
+					fieldMapCanvas.fill(new Rectangle2D.Double(stepX * dh, stepY * dh, dh, dh));
 //					viewport.drawArrowLine(heatMapCanvas, (int) (stepX + 0.5) * resolution, (int) (stepY + 0.5) * resolution,
 //							fieldVector.multiply(0.5), Color.BLACK, "");
 					if (fieldValue > maxValue)
@@ -108,7 +108,7 @@ public class FieldMap {
 	public Color defineColor(double value, double range) {
 		Color c1;
 		int colorIndex;
-		colorIndex = (int) Functions.linear2DInterpolation(-range / 2, 0, range / 2, 255, value);
+		colorIndex = (int) (isAdaptiveRange? Functions.linear2DInterpolation(minField, 0, maxField, 255, value) : Functions.linear2DInterpolation(-range / 2, 0, range / 2, 255, value));
 		c1 = new Color(palette[colorIndex][0], palette[colorIndex][1], palette[colorIndex][2]);
 		return c1;
 	}
@@ -116,7 +116,7 @@ public class FieldMap {
 	private Vector calculateField(double x, double y) {
 		Particle testParticle;
 		pairForce = PairForceFactory
-				.getCentralForce(Simulation.getInstance().interactionProcessor.getInteractionType());
+				.createCentralForce(Simulation.getInstance().interactionProcessor.getInteractionType());
 		Vector field = new Vector();
 		double distance;
 		double increment = 0;
@@ -185,6 +185,10 @@ public class FieldMap {
 
 	public void setProjectionType(ProjectionType projectionType) {
 		this.projectionType = projectionType;
+	}
+
+	public String getCrosshairTagFor(double value) {
+		return String.format("|E| = %.1e [V/m]", value);
 	}
 
 }
