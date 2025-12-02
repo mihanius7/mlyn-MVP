@@ -27,7 +27,6 @@ import elements.Element;
 import elements.point.PointMass;
 import gui.ConsoleWindow;
 import gui.MainWindow;
-import gui.fieldmaps.EigenModesMap;
 import gui.fieldmaps.FieldMap;
 import gui.fieldmaps.WavesMap;
 import gui.images.Background;
@@ -511,7 +510,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 
 	public void initFieldMapImage() {
 		if (drawFieldMap) {
-			fieldMap = new EigenModesMap(this);
+			fieldMap = new FieldMap(this);
 		}
 	}
 
