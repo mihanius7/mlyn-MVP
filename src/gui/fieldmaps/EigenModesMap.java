@@ -8,7 +8,7 @@ import simulation.Simulation;
 
 public class EigenModesMap extends WavesMap {
 
-	private double z = 1.35;
+	private double z = 1.6;
 	private double a, b, c;
 	private byte kmax = 4;
 	private byte lmax = 4;
@@ -39,10 +39,10 @@ public class EigenModesMap extends WavesMap {
 
 	@Override
 	public void setDefaultParameters() {
-		isAdaptiveRange = true;
-		range = 5;
+		isAdaptiveRange = false;
+		range = 15;
 		resolution = 0.09;
-		palette = Colors.WBW;
+		palette = Colors.RWB;
 		projectionType = ProjectionType.X;
 		a = Simulation.getInstance().content().getBoundaries().getWidth();
 		b = Simulation.getInstance().content().getBoundaries().getHeight();

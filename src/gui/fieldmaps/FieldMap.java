@@ -26,7 +26,7 @@ public class FieldMap {
 	private BufferedImage fieldMapImage;
 	protected boolean isAdaptiveRange = true;
 	protected double range = 5E5;
-	protected double resolution = 0.025;
+	protected double resolution = 0.05;
 	protected double minValue, minField;
 	protected double maxValue, maxField;
 	protected FieldType fieldType = FieldType.STRENGTH;
@@ -55,7 +55,7 @@ public class FieldMap {
 		updatesNumber++;
 		int ui = (Simulation.getInstance().isActive()) ? updateInterval : 15;
 		if (updatesNumber >= ui) {
-			//adjustRange();
+			adjustRange();
 			updatesNumber = 0;
 			int dh = Math.max(CoordinateConverter.toScreen(resolution), MIN_PIXEL_SIZE);
 			int wSteps = (int) (width / dh);
@@ -116,7 +116,7 @@ public class FieldMap {
 	private Vector calculateField(double x, double y) {
 		Particle testParticle;
 		pairForce = PairForceFactory
-				.getCentralForce(Simulation.getInstance().interactionProcessor.getInteractionType());
+				.createCentralForce(Simulation.getInstance().interactionProcessor.getInteractionType());
 		Vector field = new Vector();
 		double distance;
 		double increment = 0;

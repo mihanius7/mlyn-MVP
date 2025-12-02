@@ -27,6 +27,7 @@ import elements.Element;
 import elements.point.PointMass;
 import gui.ConsoleWindow;
 import gui.MainWindow;
+import gui.fieldmaps.EigenModesMap;
 import gui.fieldmaps.FieldMap;
 import gui.fieldmaps.WavesMap;
 import gui.images.Background;
