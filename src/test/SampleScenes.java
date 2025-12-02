@@ -18,7 +18,7 @@ import simulation.components.TimeStepController.TimeStepMode;
 public class SampleScenes {
 
 	public void initializeScene() {
-		scenePreset1();
+		sceneTonsil();
 	}
 
 	public void emptyScene() {

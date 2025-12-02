@@ -1,0 +1,1 @@
+java -jar bin/MLYN2D.jar
