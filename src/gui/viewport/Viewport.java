@@ -511,7 +511,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 
 	public void initFieldMapImage() {
 		if (drawFieldMap) {
-			fieldMap = new FieldMap(this);
+			fieldMap = new EigenModesMap(this);
 		}
 	}
 
@@ -557,7 +557,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 
 	public void scaleToBoundaries() {
 		Boundaries b = Simulation.getInstance().content().getBoundaries();
-		if (!b.isUseLeft() || !b.isUseRight() || !b.isUseBottom())
+		if (!b.isUseRight() || !b.isUseUpper())
 			scaleToAllParticles();
 		else {
 			double h = b.getHeight();

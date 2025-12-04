@@ -21,7 +21,7 @@ public class FieldMap {
 	public static final int MIN_PIXEL_SIZE = 3;
 	public static final double MINIMAL_DISTANCE_COEF = 0.75;
 	public static final float AUTORANGE_VALUE_DIVIDER = 5f;
-	protected int updateInterval = 2, updatesNumber = 0, width, height;
+	protected int updateInterval = 3, updatesNumber = 0, width, height;
 	private Graphics2D fieldMapCanvas;
 	private BufferedImage fieldMapImage;
 	protected boolean isAdaptiveRange = true;
@@ -29,11 +29,11 @@ public class FieldMap {
 	protected double resolution = 0.05;
 	protected double minValue, minField;
 	protected double maxValue, maxField;
-	protected FieldType fieldType = FieldType.STRENGTH;
+	protected FieldType fieldType = FieldType.POTENTIAL;
 	protected ProjectionType projectionType = ProjectionType.MAGNITUDE;
 	protected Boundaries b;
 	protected PairForce pairForce;
-	protected int palette[][] = Colors.TURBO;
+	protected int palette[][] = Colors.WBW;
 
 	public FieldMap(int w, int h) {
 		b = Simulation.getInstance().content().getBoundaries();
@@ -108,7 +108,8 @@ public class FieldMap {
 	public Color defineColor(double value, double range) {
 		Color c1;
 		int colorIndex;
-		colorIndex = (int) (isAdaptiveRange? Functions.linear2DInterpolation(minField, 0, maxField, 255, value) : Functions.linear2DInterpolation(-range / 2, 0, range / 2, 255, value));
+		colorIndex = (int) (isAdaptiveRange ? Functions.linear2DInterpolation(minField, 0, maxField, 255, value)
+				: Functions.linear2DInterpolation(-range / 2, 0, range / 2, 255, value));
 		c1 = new Color(palette[colorIndex][0], palette[colorIndex][1], palette[colorIndex][2]);
 		return c1;
 	}
@@ -132,8 +133,8 @@ public class FieldMap {
 		return field;
 	}
 
-	protected double calculatePixel(double x, double y, Particle testParticle, Vector field,
-			double distance, double increment) {
+	protected double calculatePixel(double x, double y, Particle testParticle, Vector field, double distance,
+			double increment) {
 		if (fieldType == FieldType.POTENTIAL)
 			increment = pairForce.calculatePotential(testParticle, distance);
 		else if (fieldType == FieldType.STRENGTH)

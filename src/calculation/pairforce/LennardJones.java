@@ -3,42 +3,39 @@ package calculation.pairforce;
 import static calculation.constants.PhysicalConstants.cm;
 import static calculation.constants.PhysicalConstants.dj;
 
-import calculation.pairforce.tabulated.LennardJonesTable;
+import calculation.pairforce.tabulated.LennardJonesPotential;
 import elements.point.Particle;
 
 public class LennardJones extends PairForce {
 
-	LennardJonesTable table;
+	LennardJonesPotential table;
 
 	public LennardJones() {
-		table = new LennardJonesTable(0.1 * cm, 100 * cm, 1 * cm);
-		table.setParam1(20 * cm);
-		table.setParam2(0.1 * dj);
-		table.calculateTable();
+		table = new LennardJonesPotential(0.5 * cm, 150 * cm, 1 * cm);
+		table.setParam1(14 * cm);
+		table.setParam2(1 * dj);
+		//table.calculateTable();
 	}
 
-	public double calculateForce(double a, double b, double r) {
-		return table.getFromTable(r);
-	}
 
 	@Override
 	public double calculatePotential(Particle p1, double r) {
-		return table.getFromTable(r);
+		return table.calculatePotential(table.getParam1(), table.getParam2(), r);
 	}
 
 	@Override
 	public double calculateForce(Particle p1, Particle p2, double r) {
-		return table.getFromTable(r);
+		return table.calculateForce(table.getParam1(), table.getParam2(), r);
 	}
 
 	@Override
 	public double calculateStrength(Particle p1, double r) {
-		return table.getFromTable(r);
+		return table.calculatePotential(table.getParam1(), table.getParam2(), r);
 	}
 
 	@Override
 	public double calculatePotentialEnergy(Particle p1, Particle p2, double r) {
-		return table.getFromTable(r);
+		return -1;
 	}
 
 	@Override
