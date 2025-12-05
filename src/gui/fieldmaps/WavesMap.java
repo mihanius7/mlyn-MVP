@@ -71,7 +71,7 @@ public class WavesMap extends FieldMap {
 	public void setDefaultParameters() {
 		range = 0.75;
 		resolution = waveSpeed / sourceFrequency / 8;
-		palette = Colors.RWB;
+		palette = Colors.BWR;
 		projectionType = ProjectionType.X;
 		isAdaptiveRange = false;
 	}
