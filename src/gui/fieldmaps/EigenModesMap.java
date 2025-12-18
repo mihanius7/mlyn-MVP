@@ -10,10 +10,6 @@ public class EigenModesMap extends WavesMap {
 
 	private double z = 1.6;
 	private double a, b, c;
-//	private byte kmax = 0;
-//	private byte lmax = 0;
-//	private byte mmax = 0;
-
 	private byte modes[][] = { { 2, 0, 0 }, { 1, 0, 0 }, { 0, 1, 0 }};
 
 	public EigenModesMap(Viewport v) {
@@ -31,14 +27,6 @@ public class EigenModesMap extends WavesMap {
 			amplitude += Math.cos(modes[i][0] * Math.PI * x / a) * Math.cos(modes[i][1] * Math.PI * y / b)
 					* Math.cos(modes[i][2] * Math.PI * z / c);
 		}
-//		for (int k = 0; k <= kmax; k++) {
-//			for (int l = 0; l <= lmax; l++) {
-//				for (int m = 0; m <= mmax; m++) {
-//					amplitude += Math.cos(k * Math.PI * x / a) * Math.cos(l * Math.PI * y / b)
-//							* Math.cos(m * Math.PI * z / c);
-//				}
-//			}
-//		}
 		field.addToX(amplitude);
 		return amplitude;
 	}

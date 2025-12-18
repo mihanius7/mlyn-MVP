@@ -511,7 +511,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 
 	public void initFieldMapImage() {
 		if (drawFieldMap) {
-			fieldMap = new EigenModesMap(this);
+			fieldMap = new WavesMap(this);
 		}
 	}
 

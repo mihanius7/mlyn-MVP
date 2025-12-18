@@ -9,7 +9,7 @@ public class WavesMap extends FieldMap {
 
 	private boolean overrideFreq = true;
 	private boolean distanceDecay = true;
-	private double sourceFrequency = 1250;
+	private double sourceFrequency = 440;
 	private double freq;
 	private double waveSpeed = 343;
 
@@ -69,8 +69,8 @@ public class WavesMap extends FieldMap {
 	}
 	
 	public void setDefaultParameters() {
-		range = 0.75;
-		resolution = waveSpeed / sourceFrequency / 8;
+		range = 0.5;
+		resolution = waveSpeed / sourceFrequency / 10;
 		palette = Colors.BWR;
 		projectionType = ProjectionType.X;
 		isAdaptiveRange = false;

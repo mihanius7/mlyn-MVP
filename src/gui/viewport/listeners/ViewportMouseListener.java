@@ -33,14 +33,13 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 	protected MainWindow mainWindow;
 
 	private Meter meter;
-	private Rectangle selectionRectangle;
+	private Rectangle selectionRectangle = new Rectangle();
 
 	public ViewportMouseListener(Viewport v, MainWindow w) {
 		viewport = v;
 		mainWindow = w;
 		getInstance().content().setMaxSelectionNumber(0);
 	}
-
 
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
@@ -75,8 +74,6 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 		if (viewport.getMouseMode() == MouseMode.SELECT_PARTICLE) {
 			meter = new Meter();
 			viewport.addShape(meter);
-			selectionRectangle = new Rectangle();
-			viewport.addShape(selectionRectangle);
 			p = Simulation.getInstance().content().getParticles().findNearestParticle(
 					CoordinateConverter.fromScreenX(x1), CoordinateConverter.fromScreenY(y1),
 					CoordinateConverter.fromScreen(10));
@@ -91,9 +88,6 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 				} else {
 					Simulation.getInstance().content().deselect(p);
 				}
-			} else {
-				viewport.setCrossX(CoordinateConverter.fromScreenX(x1));
-				viewport.setCrossY(CoordinateConverter.fromScreenY(y1));
 			}
 		} else if (viewport.getMouseMode() == MouseMode.SELECT_SPRING) {
 			s = Simulation.getInstance().content().getSprings().findNearestSpring(CoordinateConverter.fromScreenX(x1),
@@ -132,6 +126,7 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 		x2 = arg0.getX();
 		y2 = arg0.getY();
 		if (viewport.getMouseMode() == MouseMode.SELECT_PARTICLE) {
+			viewport.addShape(selectionRectangle);
 			selectionRectangle.setX1(x1);
 			selectionRectangle.setY1(y1);
 			selectionRectangle.setX2(x2);
@@ -149,6 +144,10 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 			meter.refresh();
 		} else {
 			viewport.removeShape(meter);
+		}
+		if (viewport.getMouseMode() == MouseMode.SELECT_PARTICLE) {
+			viewport.setCrossX(CoordinateConverter.fromScreenX(x2));
+			viewport.setCrossY(CoordinateConverter.fromScreenY(y2));
 		}
 	}
 
