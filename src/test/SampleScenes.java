@@ -18,7 +18,7 @@ import simulation.components.TimeStepController.TimeStepMode;
 public class SampleScenes {
 
 	public void initializeScene() {
-		scenePreset1();
+		sceneTonsil();
 	}
 
 	public void emptyScene() {
@@ -46,7 +46,7 @@ public class SampleScenes {
 		Simulation.getInstance().timeStepController.setTimeScale(0.001);
 		Simulation.getInstance().interactionProcessor.setUsePPCollisions(true);
 		Simulation.getInstance().interactionProcessor.setUseExternalForces(false);
-		Simulation.getInstance().interactionProcessor.setInteractionType(InteractionType.LENNARDJONES);
+		Simulation.getInstance().interactionProcessor.setInteractionType(InteractionType.GRAVITATION);
 		Boundaries b = Simulation.getInstance().content().getBoundaries();
 		b.setBounds(0, 9.2, 4.2, 0);
 		b.setUseAll(false);

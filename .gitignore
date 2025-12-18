@@ -1,6 +1,7 @@
 *.class
 *.log
 /screenshots/
+bin/.gitignore
 МлынMVP.iml
 МлынMVP.rar
 .classpath
