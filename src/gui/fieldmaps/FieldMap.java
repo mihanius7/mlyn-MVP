@@ -33,7 +33,7 @@ public class FieldMap {
 	protected ProjectionType projectionType = ProjectionType.MAGNITUDE;
 	protected Boundaries b;
 	protected PairForce pairForce;
-	protected int palette[][] = Colors.WBW;
+	protected int palette[][] = Colors.TURBO;
 
 	public FieldMap(int w, int h) {
 		b = Simulation.getInstance().content().getBoundaries();
