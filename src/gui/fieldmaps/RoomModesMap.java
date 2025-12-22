@@ -6,18 +6,20 @@ import gui.viewport.Colors;
 import gui.viewport.Viewport;
 import simulation.Simulation;
 
-public class EigenModesMap extends WavesMap {
+public class RoomModesMap extends PhysicalFieldMap {
 
 	private double z = 1.6;
 	private double a, b, c;
 	private byte modes[][] = { { 2, 0, 0 }, { 1, 0, 0 }, { 0, 1, 0 }};
 
-	public EigenModesMap(Viewport v) {
+	public RoomModesMap(Viewport v) {
 		super(v);
+		setDefaultParameters();
 	}
 
-	public EigenModesMap(int w, int h) {
+	public RoomModesMap(int w, int h) {
 		super(w, h);
+		setDefaultParameters();
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 package gui.fieldmaps;
 
-public enum FieldType {
+public enum FieldParameter {
 	POTENTIAL, STRENGTH
 }

@@ -16,7 +16,7 @@ import gui.viewport.Viewport;
 import simulation.Boundaries;
 import simulation.Simulation;
 
-public class FieldMap {
+public class PhysicalFieldMap {
 
 	public static final int MIN_PIXEL_SIZE = 3;
 	public static final double MINIMAL_DISTANCE_COEF = 0.75;
@@ -29,13 +29,13 @@ public class FieldMap {
 	protected double resolution = 0.05;
 	protected double minValue, minField;
 	protected double maxValue, maxField;
-	protected FieldType fieldType = FieldType.POTENTIAL;
+	protected FieldParameter fieldType = FieldParameter.POTENTIAL;
 	protected ProjectionType projectionType = ProjectionType.MAGNITUDE;
 	protected Boundaries b;
 	protected PairForce pairForce;
 	protected int palette[][] = Colors.TURBO;
 
-	public FieldMap(int w, int h) {
+	public PhysicalFieldMap(int w, int h) {
 		b = Simulation.getInstance().content().getBoundaries();
 		width = Math.min(w, CoordinateConverter.toScreen(b.getWidth()));
 		height = Math.min(h, CoordinateConverter.toScreen(b.getHeight()));
@@ -43,7 +43,7 @@ public class FieldMap {
 		fieldMapCanvas = fieldMapImage.createGraphics();
 	}
 
-	public FieldMap(Viewport v) {
+	public PhysicalFieldMap(Viewport v) {
 		this(v.getWidth(), v.getHeight());
 	}
 
@@ -135,9 +135,9 @@ public class FieldMap {
 
 	protected double calculatePixel(double x, double y, Particle testParticle, Vector field, double distance,
 			double increment) {
-		if (fieldType == FieldType.POTENTIAL)
+		if (fieldType == FieldParameter.POTENTIAL)
 			increment = pairForce.calculatePotential(testParticle, distance);
-		else if (fieldType == FieldType.STRENGTH)
+		else if (fieldType == FieldParameter.STRENGTH)
 			increment = pairForce.calculateStrength(testParticle, distance);
 		field.addToX(increment * (x - testParticle.getX()) / distance);
 		field.addToY(increment * (y - testParticle.getY()) / distance);
@@ -172,11 +172,11 @@ public class FieldMap {
 		this.range = range;
 	}
 
-	public FieldType getFieldType() {
+	public FieldParameter getFieldType() {
 		return fieldType;
 	}
 
-	public void setFieldType(FieldType fieldType) {
+	public void setFieldType(FieldParameter fieldType) {
 		this.fieldType = fieldType;
 	}
 
@@ -190,6 +190,16 @@ public class FieldMap {
 
 	public String getCrosshairTagFor(double value) {
 		return String.format("|E| = %.1e [V/m]", value);
+	}
+
+	public void setDefaultParameters() {
+		setAdaptiveRange(true);
+		setRange(5E5);
+		setResolution(.05);
+	}
+
+	public void setAdaptiveRange(boolean a) {
+		isAdaptiveRange = a;
 	}
 
 }

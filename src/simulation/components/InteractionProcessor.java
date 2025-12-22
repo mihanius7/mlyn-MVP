@@ -22,7 +22,7 @@ import elements.line.Spring;
 import elements.point.Particle;
 import elements.point.PointMass;
 import gui.ConsoleWindow;
-import gui.fieldmaps.FieldType;
+import gui.fieldmaps.FieldParameter;
 import gui.lang.GUIStrings;
 import gui.viewport.CoordinateConverter;
 import simulation.ExternalForce;

@@ -5,7 +5,7 @@ import elements.point.Particle;
 import gui.viewport.Colors;
 import gui.viewport.Viewport;
 
-public class WavesMap extends FieldMap {
+public class StandingWavesMap extends PhysicalFieldMap {
 
 	private boolean overrideFreq = true;
 	private boolean distanceDecay = true;
@@ -13,12 +13,12 @@ public class WavesMap extends FieldMap {
 	private double freq;
 	private double waveSpeed = 343;
 
-	public WavesMap(int w, int h) {
+	public StandingWavesMap(int w, int h) {
 		super(w, h);
 		setDefaultParameters();
 	}
 
-	public WavesMap(Viewport v) {
+	public StandingWavesMap(Viewport v) {
 		super(v);
 		setDefaultParameters();
 	}
@@ -68,6 +68,7 @@ public class WavesMap extends FieldMap {
 			this.waveSpeed = v;
 	}
 	
+	@Override
 	public void setDefaultParameters() {
 		range = 0.5;
 		resolution = waveSpeed / sourceFrequency / 10;

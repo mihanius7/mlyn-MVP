@@ -9,6 +9,7 @@ import elements.line.Spring;
 import elements.point.Particle;
 import gui.ConsoleWindow;
 import gui.MainWindow;
+import gui.fieldmaps.FieldType;
 import gui.lang.GUIStrings;
 import gui.shapes.ParticleShape;
 import simulation.Boundaries;
@@ -19,7 +20,7 @@ import simulation.components.TimeStepController.TimeStepMode;
 public class SampleScenes {
 
 	public void initializeScene() {
-		scenePreset4();
+		scenePreset2();
 	}
 
 	public void emptyScene() {
@@ -60,7 +61,7 @@ public class SampleScenes {
 		Simulation.getInstance().add(new Particle(290 * cm, 100 * cm, 1 * kg, -1E-5, 0, 0, 5 * cm, Color.BLUE));
 		Simulation.getInstance().add(new Particle(320 * cm, 130 * cm, 1 * kg, 1E-5, 0, 0, 5 * cm, Color.RED));
 		ParticleShape.drawForces = true;
-		MainWindow.getInstance().viewport.setDrawFieldMap(true);
+		MainWindow.getInstance().viewport.setDrawFieldMap(true, FieldType.PHYSICAL_FIELD);
 	}
 
 	public void scenePreset2() {
@@ -78,7 +79,7 @@ public class SampleScenes {
 		Simulation.getInstance().add(new Particle(50 * cm, 500 * cm, 0.250 * kg, 1.0E-6, 0, 0, 8 * cm, Color.CYAN));
 		Simulation.getInstance().add(new Particle(750 * cm, 100 * cm, 0.250 * kg, 1.0E-6, 0, 0, 8 * cm, Color.CYAN));
 		Simulation.getInstance().content().getParticles().fix();
-		MainWindow.getInstance().viewport.setDrawFieldMap(true);
+		MainWindow.getInstance().viewport.setDrawFieldMap(true, FieldType.STANDING_WAVES);
 	}
 
 	public void scenePreset3() {
@@ -105,7 +106,7 @@ public class SampleScenes {
 		Spring s1 = new Spring(0, 1, 1000, 10);
 		s1.setIsLine(false);
 		Simulation.getInstance().add(s1);
-		MainWindow.getInstance().viewport.setDrawFieldMap(false);
+		MainWindow.getInstance().viewport.setDrawFieldMap(false, FieldType.PHYSICAL_FIELD);
 	}
 	
 	public void sceneTonsil() {
@@ -121,7 +122,7 @@ public class SampleScenes {
 		Simulation.getInstance()
 				.add(new Particle(450 * cm, 195 * cm, 0.161 * kg, -2.0E-6, 0, 0, 8 * cm, Color.DARK_GRAY));
 		MainWindow.getInstance().viewport.setDrawTracks(false);
-		MainWindow.getInstance().viewport.setDrawFieldMap(true);
+		MainWindow.getInstance().viewport.setDrawFieldMap(true, FieldType.ROOM_MODES);
 	}
 
 }

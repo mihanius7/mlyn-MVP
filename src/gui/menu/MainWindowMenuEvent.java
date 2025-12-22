@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import calculation.Vector;
 import gui.ConsoleWindow;
 import gui.MainWindow;
+import gui.fieldmaps.FieldType;
 import gui.shapes.ParticleShape;
 import gui.viewport.Viewport;
 import gui.viewport.listeners.MouseMode;
@@ -72,7 +73,7 @@ public class MainWindowMenuEvent implements ActionListener {
 		} else if (src.equals(mainWindowMenu.itemTracks)) {
 			viewport.setDrawTracks(mainWindowMenu.itemTracks.getState());			
 		} else if (src.equals(mainWindowMenu.itemFields)) {
-			viewport.setDrawFieldMap(mainWindowMenu.itemFields.getState());			
+			viewport.setDrawFieldMap(mainWindowMenu.itemFields.getState(), FieldType.PHYSICAL_FIELD);			
 		} else if (src.equals(mainWindowMenu.itemClear)) {
 			Simulation.getInstance().clearAll();
 			viewport.reset();
