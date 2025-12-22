@@ -27,9 +27,12 @@ import elements.Element;
 import elements.point.PointMass;
 import gui.ConsoleWindow;
 import gui.MainWindow;
-import gui.fieldmaps.EigenModesMap;
-import gui.fieldmaps.FieldMap;
-import gui.fieldmaps.WavesMap;
+import gui.fieldmaps.RoomModesMap;
+import gui.fieldmaps.SPLMap;
+import gui.fieldmaps.FieldParameter;
+import gui.fieldmaps.FieldType;
+import gui.fieldmaps.PhysicalFieldMap;
+import gui.fieldmaps.StandingWavesMap;
 import gui.images.Background;
 import gui.lang.GUIStrings;
 import gui.shapes.Crosshair;
@@ -92,7 +95,8 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	private long time;
 	private String infoString1 = "N/A", infoString2 = "N/A";
 	private Timer refreshLabelsTimer;
-	public FieldMap fieldMap;
+	public PhysicalFieldMap fieldMap;
+	private FieldType fieldType;
 	public Background background;
 	private BasicStroke arrowStroke = new BasicStroke(2f);
 	public BasicStroke crossStroke = new BasicStroke(3f);
@@ -466,7 +470,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 	public boolean isDrawTracks() {
 		return drawTracks;
 	}
-	
+
 	public boolean isDrawFields() {
 		return drawFieldMap;
 	}
@@ -498,11 +502,12 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		}
 	}
 
-	public void setDrawFieldMap(boolean b) {
+	public void setDrawFieldMap(boolean b, FieldType type) {
+		this.fieldType = type;
 		drawFieldMap = b;
 		initFieldMapImage();
 		setDrawCrosshair(b);
-		setDrawTracks(!b);
+		setDrawTracks(false);
 	}
 
 	public boolean isDrawFieldMap() {
@@ -511,7 +516,20 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 
 	public void initFieldMapImage() {
 		if (drawFieldMap) {
-			fieldMap = new FieldMap(this);
+			switch (this.fieldType) {
+			case SPL_MAP:
+				fieldMap = new SPLMap(this);
+				break;
+			case STANDING_WAVES:
+				fieldMap = new StandingWavesMap(this);
+				break;
+			case ROOM_MODES:
+				fieldMap = new RoomModesMap(this);
+				break;
+			default:
+				fieldMap = new PhysicalFieldMap(this);
+				break;
+			}
 		}
 	}
 
@@ -621,7 +639,7 @@ public class Viewport extends Canvas implements ActionListener, Runnable {
 		setCrossX(0);
 		setCrossY(0);
 		setDrawGrid(true);
-		setDrawFieldMap(false);
+		setDrawFieldMap(false, fieldType);
 		initTracksImage();
 	}
 
