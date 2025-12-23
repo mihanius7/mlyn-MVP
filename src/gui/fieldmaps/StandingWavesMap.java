@@ -11,7 +11,7 @@ public class StandingWavesMap extends PhysicalFieldMap {
 	private boolean distanceDecay = true;
 	private double sourceFrequency = 440;
 	private double freq;
-	private double waveSpeed = 343;
+	protected double waveSpeed = 343;
 
 	public StandingWavesMap(int w, int h) {
 		super(w, h);

@@ -20,7 +20,7 @@ import simulation.components.TimeStepController.TimeStepMode;
 public class SampleScenes {
 
 	public void initializeScene() {
-		scenePreset2();
+		scenePreset4();
 	}
 
 	public void emptyScene() {
@@ -97,16 +97,17 @@ public class SampleScenes {
 		Simulation.getInstance().timeStepController.setModeAndReset(TimeStepMode.DYNAMIC);
 		Simulation.getInstance().timeStepController.setTimeScale(1);
 		Simulation.getInstance().interactionProcessor.setUsePPCollisions(false);
-		Simulation.getInstance().interactionProcessor.setUseExternalForces(false);
-		Simulation.getInstance().interactionProcessor.setInteractionType(InteractionType.GRAVITATION);
-		Simulation.getInstance().content().getBoundaries().setUseAll(false);
-		Simulation.getInstance().add(new Particle(3, 0, 100, 0, 0, 0, 0.2, Color.RED));
+		Simulation.getInstance().interactionProcessor.setUseExternalForces(true);
+		Simulation.getInstance().content().getBoundaries().setUseAll(true);
+		Simulation.getInstance().add(new Particle(5, 1, 100, 0, 0, 0, 0.2, Color.RED));
 		Simulation.getInstance().content().getLastAddedParticle().setMovable(false);
-		Simulation.getInstance().add(new Particle(3, 1, 10, 0, 0, 0, 0.1, Color.ORANGE));
+		Simulation.getInstance().add(new Particle(3, 2, 10, 0, 0, 0, 0.1, Color.ORANGE));
 		Spring s1 = new Spring(0, 1, 1000, 10);
 		s1.setIsLine(false);
 		Simulation.getInstance().add(s1);
-		MainWindow.getInstance().viewport.setDrawFieldMap(false, FieldType.PHYSICAL_FIELD);
+		Simulation.getInstance().add(new Particle(2, 1, 16, 0, -1.0, 0.2, 0.1, Color.GREEN));
+		Simulation.getInstance().add(new Particle(6, 4, 8, 0, 0.1, 0.2, 0.13, Color.CYAN));
+		MainWindow.getInstance().viewport.setDrawFieldMap(true, FieldType.SPL_MAP);
 	}
 	
 	public void sceneTonsil() {

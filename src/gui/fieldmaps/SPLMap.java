@@ -5,7 +5,7 @@ import elements.point.Particle;
 import gui.viewport.Colors;
 import gui.viewport.Viewport;
 
-public class SPLMap extends PhysicalFieldMap {
+public class SPLMap extends StandingWavesMap {
 
 	public SPLMap(int w, int h) {
 		super(w, h);
@@ -20,21 +20,17 @@ public class SPLMap extends PhysicalFieldMap {
 	@Override
 	protected double calculatePixel(double x, double y, Particle testParticle, Vector field, double distance,
 			double increment) {
-		if (fieldType == FieldParameter.POTENTIAL)
-			increment = pairForce.calculatePotential(testParticle, distance);
-		else if (fieldType == FieldParameter.STRENGTH)
-			increment = pairForce.calculateStrength(testParticle, distance);
-		field.addToX(increment * (x - testParticle.getX()) / distance);
-		field.addToY(increment * (y - testParticle.getY()) / distance);
+		increment = testParticle.getMass() / distance / distance;
+		field.addToX(increment);
 		return increment;
 	}
 
 	@Override
 	public void setDefaultParameters() {
 		isAdaptiveRange = false;
-		range = 5;
+		range = 1000;
 		resolution = 0.1;
-		palette = Colors.BWR;
+		palette = Colors.TURBO;
 		projectionType = ProjectionType.X;
 	}
 
