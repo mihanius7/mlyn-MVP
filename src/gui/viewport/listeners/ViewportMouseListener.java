@@ -33,7 +33,7 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 	protected MainWindow mainWindow;
 
 	private Meter meter;
-	private Rectangle selectionRectangle = new Rectangle();
+	private Rectangle selectionRectangle;
 
 	public ViewportMouseListener(Viewport v, MainWindow w) {
 		viewport = v;
@@ -126,6 +126,8 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 		x2 = arg0.getX();
 		y2 = arg0.getY();
 		if (viewport.getMouseMode() == MouseMode.SELECT_PARTICLE) {
+			if (selectionRectangle == null) 
+				selectionRectangle = new Rectangle();
 			viewport.addShape(selectionRectangle);
 			selectionRectangle.setX1(x1);
 			selectionRectangle.setY1(y1);
@@ -140,6 +142,7 @@ public class ViewportMouseListener implements MouseListener, MouseMotionListener
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		viewport.removeShape(selectionRectangle);
+		selectionRectangle = null;
 		if (Simulation.getInstance().content().getSelectedParticles().size() >= 2 && arg0.isControlDown()) {
 			meter.refresh();
 		} else {

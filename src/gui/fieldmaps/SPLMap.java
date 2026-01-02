@@ -20,7 +20,7 @@ public class SPLMap extends StandingWavesMap {
 	@Override
 	protected double calculatePixel(double x, double y, Particle testParticle, Vector field, double distance,
 			double increment) {
-		increment = testParticle.getMass() / distance / distance;
+		increment = Math.min(testParticle.getMass() / distance / 100, testParticle.getMass());
 		field.addToX(increment);
 		return increment;
 	}
@@ -28,10 +28,15 @@ public class SPLMap extends StandingWavesMap {
 	@Override
 	public void setDefaultParameters() {
 		isAdaptiveRange = false;
-		range = 1000;
+		range = 7.5;
 		resolution = 0.1;
-		palette = Colors.TURBO;
+		palette = Colors.BWR;
 		projectionType = ProjectionType.X;
+	}
+	
+	@Override
+	public String getCrosshairTagFor(double value) {
+		return String.format("P = %.1f [Pa]", value);
 	}
 
 }

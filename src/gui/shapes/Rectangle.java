@@ -10,7 +10,7 @@ import gui.viewport.Viewport;
 
 public class Rectangle extends Shape {
 
-	public static final Color RECTANGLE = new Color(255, 32, 32);
+	public static final Color RECTANGLE = new Color(255, 128, 32);
 
 	private int x1;
 	private int x2;
@@ -22,7 +22,8 @@ public class Rectangle extends Shape {
 		double screenDistance = Functions.defineDistance(x1, x2, y1, y2);
 		if (screenDistance > 0) {
 			g.setColor(RECTANGLE);
-			g.setStroke(new BasicStroke(2f));
+			g.setStroke(new BasicStroke(2f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
+                    0, new float[]{9}, 0));
 			g.drawRect(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x2 - x1), Math.abs(y2 - y1));
 		}
 	}
