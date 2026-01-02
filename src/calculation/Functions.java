@@ -2,6 +2,7 @@ package calculation;
 
 import static java.lang.Math.*;
 
+import elements.line.Pair;
 import elements.line.Spring;
 import elements.point.Particle;
 import simulation.Simulation;
@@ -55,14 +56,14 @@ public class Functions {
 		return pow(p.getX() - x, 2) + pow(p.getY() - y, 2);
 	}
 
-	public static double defineDistanceToLine(Spring s, double x, double y) {
-		Particle p1 = s.getFirstParticle();
-		Particle p2 = s.getSecondParticle();
+	public static double defineDistanceToLine(Pair pair, double x, double y) {
+		Particle p1 = pair.getFirstParticle();
+		Particle p2 = pair.getSecondParticle();
 		double x1 = p1.getX();
 		double y1 = p1.getY();
 		double x2 = p2.getX();
 		double y2 = p2.getY();
-		return Math.abs(x * (y1 - y2) + y * (x2 - x1) + (x1 * y2 - x2 * y1)) / s.getDeformatedLength();
+		return Math.abs(x * (y1 - y2) + y * (x2 - x1) + (x1 * y2 - x2 * y1)) / defineDistance(x1, x2, y1, y2);
 	}
 
 	public static double defineDistanceV2(Spring s, double x, double y) {
@@ -71,9 +72,9 @@ public class Functions {
 		return defineDistance(p1, x, y) + defineDistance(p2, x, y);
 	}
 
-	public static double defineDistanceToLineSegment(Spring s, double x, double y) {
-		Particle p1 = s.getFirstParticle();
-		Particle p2 = s.getSecondParticle();
+	public static double defineDistanceToLineSegment(Pair pair, double x, double y) {
+		Particle p1 = pair.getFirstParticle();
+		Particle p2 = pair.getSecondParticle();
 		double x1 = p1.getX();
 		double y1 = p1.getY();
 		double x2 = p2.getX();
@@ -87,7 +88,7 @@ public class Functions {
 		if (dot >= 0) {
 			return defineDistance(p2, x, y);
 		} else
-			return Math.abs((x * (y1 - y2) + y * (x2 - x1) + (x1 * y2 - x2 * y1)) / s.getDeformatedLength());
+			return defineDistanceToLine(pair, x, y);
 	}
 
 	public static double dot(double x1, double y1, double x2, double y2) {
@@ -102,7 +103,7 @@ public class Functions {
 		return (i.getMass() * j.getMass()) / (i.getMass() + j.getMass());
 	}
 
-	public static double linear2DInterpolation(double x1, double y1, double x2, double y2, double x) {
+	public static double linearInterpolation(double x1, double y1, double x2, double y2, double x) {
 		double returnValue;
 		if (x <= x2 && x >= x1)
 			returnValue = y1 + (x - x1) * (y2 - y1) / (x2 - x1);

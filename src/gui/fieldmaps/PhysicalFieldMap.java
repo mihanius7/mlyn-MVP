@@ -108,8 +108,8 @@ public class PhysicalFieldMap {
 	public Color defineColor(double value, double range) {
 		Color c1;
 		int colorIndex;
-		colorIndex = (int) (isAdaptiveRange ? Functions.linear2DInterpolation(minField, 0, maxField, 255, value)
-				: Functions.linear2DInterpolation(-range / 2, 0, range / 2, 255, value));
+		colorIndex = (int) (isAdaptiveRange ? Functions.linearInterpolation(minField, 0, maxField, 255, value)
+				: Functions.linearInterpolation(-range / 2, 0, range / 2, 255, value));
 		c1 = new Color(palette[colorIndex][0], palette[colorIndex][1], palette[colorIndex][2]);
 		return c1;
 	}
